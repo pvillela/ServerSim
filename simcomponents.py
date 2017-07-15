@@ -2,7 +2,7 @@
 Components representing the core concepts being simulated.
 """
 
-from Service import (
+from service import (
     SvcRequester, CoreSvcRequester, Async, Block, CallSeq, CallPar, Cont)
-from Server import Server
-from UserGroup import UserGroup
+from server import Server
+from usergroup import UserGroup
