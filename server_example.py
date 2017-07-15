@@ -9,7 +9,7 @@ import logging
 
 import simpy
 
-from simcomponents import *
+from serversim import *
 
 
 logging.basicConfig(level=logging.INFO,
