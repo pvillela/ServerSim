@@ -19,17 +19,20 @@ logging.basicConfig(level=logging.INFO,
 fi = sys.stdout
 
 
-def cug(mid, delta):  # compUnitsGen
+def cug(mid, delta):
+    """Computation units geneartor"""
     def f():
         return random.uniform(mid - delta, mid + delta)
     return f
 
 
 def appLdBal(_svcType):
+    """Application server load-balancer."""
     return appServer
 
 
 def dbLdBal(_svcType):
+    """Database server load-balancer."""
     return dbServer
 
 
@@ -98,16 +101,16 @@ try:
                 print >> fi, indent*2 + "minThinkTime =", grp.minThinkTime
                 print >> fi, indent*2 + "maxThinkTime =", grp.maxThinkTime
                 print >> fi, indent*2 + "request count =", \
-                    grp.overallTally.num()
+                    grp._overallTally.num()
                 print >> fi, indent*2 + "avg response time =", \
-                    grp.overallTally.mean()
+                    grp._overallTally.mean()
 
-                for txn in grp.txns:
+                for txn in grp._txns:
                     print >> fi, indent*2 + txn.name + ":"
-                    print >> fi, indent*3 + "count =", grp.tallyDict[txn].num()
-                    print >> fi, indent*3 + "avg response time =", grp.tallyDict[txn].mean()
+                    print >> fi, indent*3 + "count =", grp._tallyDict[txn].num()
+                    print >> fi, indent*3 + "avg response time =", grp._tallyDict[txn].mean()
                     print >> fi, indent*3 + "std dev of response time =", \
-                        math.sqrt(abs(grp.tallyDict[txn].variance()))
+                        math.sqrt(abs(grp._tallyDict[txn].variance()))
 
 finally:
     if not fi == sys.stdout:

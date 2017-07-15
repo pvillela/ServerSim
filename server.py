@@ -1,23 +1,28 @@
+"""
+Classes representing computer servers.
+"""
+
 from measuredresource import MeasuredResource
 
 
 class Server(MeasuredResource):
     """
-    Represents a server.  A server can take a finite number of connections and
+    Represents a server.  
+    
+    A server can take a finite number of connections and
     support arbitrary service request types.
+    
+    Attributes:
+        env: SimPy Environment
+        maxConcurrency: The maximum of hardware threads for the server.
+        numThreads: The maximum number of software threads for the server.
+        threads: Simpy Resource representing the server's software threads.
+        speed: Aggregate server speed across all hardware threads.
+        name: The server's name.
     """
     
     def __init__(self, env, maxConcurrency, numThreads, speed, name):
-        """
-        Initializer.
-
-        @env: SimPy Environment
-        @param maxConcurrency: the maximum of hardware threads for the server.
-        @param numThreads: the maximum number of software threads for the server.
-        @param speed: number of compute units processed per second per 
-            connection.
-        @param name: the server's name
-        """
+        """Initializer."""
         MeasuredResource.__init__(self, env, maxConcurrency)
         self.env = env
         self.maxConcurrency = maxConcurrency
@@ -27,42 +32,36 @@ class Server(MeasuredResource):
         self.name = name
     
     def requestProcessDuration(self, compUnits):
-        """The time required to process a request wth compUnits."""
+        """The time required to process a request of compUnits compute units."""
         return compUnits / (self.speed / self.maxConcurrency)
     
     avgProcessTime = MeasuredResource.avgUseTime
-    """
-    Returns the average processing time per completion.
-    """
+    """Returns the average processing time per completed request."""
     
+    @property
     def avgThreadQueueTime(self):
-        """
-        Returns the average thread queuing time per thread completion.
-        """
+        """The average thread queuing time per thread completion."""
         return self.threads.avgQueueTime
 
+    @property
     def avgThreadUseTime(self):
-        """
-        Returns the average use thread time per thread completion.
-        """
+        """The average thread use time per thread completion."""
         return self.threads.avgUseTime
 
+    @property
     def avgThreadServiceTime(self):
-        """
-        Returns the average thread service time per thread completion.
-        """
+        """The average thread service (wait + use) time per thread completion."""
         return self.threads.avgServiceTime
 
+    @property
     def avgThreadQueueLength(self):
-        """
-        Returns the time-average length of queue of requests waiting to
-        be granted a thread, for completed thread requests, using Little's
-        formula.
+        """The time-average length of the queue of requests to be granted a thread,
+
+        For completed thread requests, using Little's formula.
         """
         return self.threads.avgQueueLength
 
+    @property
     def threadUtilization(self):
-        """
-        Return the fraction of thread capacity used.
-        """
+        """The fraction of thread capacity used."""
         return self.threads.utilization
