@@ -2,7 +2,7 @@
 Classes representing computer servers.
 """
 
-from measuredresource import MeasuredResource
+from .measuredresource import MeasuredResource
 
 
 class Server(MeasuredResource):

@@ -4,7 +4,7 @@ execution requests.
 """
 
 import random
-from util import probChooser
+from .util import probChooser
 from livestats import livestats
 
 
