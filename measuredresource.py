@@ -41,38 +41,44 @@ class MeasuredResource(simpy.Resource):
         self.cumServiceTime += self.env.now - req.submissionTime
         return simpy.Resource.release(self, req)
         
+    @property
     def throughput(self):
         """
         Returns the throughput of this resource up until now.
         """
         return self.completions * 1.0 / self.env.now
     
+    @property
     def avgQueueTime(self):
         """
         Returns the average queuing time per completion.
         """
         return self.cumQueueTime / self.completions
     
+    @property
     def avgServiceTime(self):
         """
         Returns the average service time per completion.
         """
         return self.cumServiceTime / self.completions
     
+    @property
     def avgUseTime(self):
         """
         Returns the average use time per completion.
         """
-        return self.avgServiceTime() - self.avgQueueTime()
-    
+        return self.avgServiceTime - self.avgQueueTime
+
+    @property
     def avgQueueLength(self):
         """
         Returns the time-average length of queue of requests waiting to
         be granted by this resource, for completed requests, using Little's
         formula.
         """
-        return self.throughput() * self.avgQueueTime()
-    
+        return self.throughput * self.avgQueueTime
+
+    @property
     def utilization(self):
         """
         Return the fraction of capacity used.

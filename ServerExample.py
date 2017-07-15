@@ -84,12 +84,12 @@ try:
                 print >> fi, indent*2 + "maxConcurrency =", svr.maxConcurrency
                 print >> fi, indent*2 + "numThreads =", svr.numThreads
                 print >> fi, indent*2 + "speed =", svr.speed
-                print >> fi, indent*2 + "throughput =", svr.throughput()
-                print >> fi, indent*2 + "avgProcessTime =", svr.avgProcessTime()
-                print >> fi, indent*2 + "avgQueueTime =", svr.avgQueueTime()
-                print >> fi, indent*2 + "avgServiceTime =", svr.avgServiceTime()
-                print >> fi, indent*2 + "avgQueueLength =", svr.avgQueueLength()
-                print >> fi, indent*2 + "utilization =", svr.utilization()
+                print >> fi, indent*2 + "throughput =", svr.throughput
+                print >> fi, indent*2 + "avgProcessTime =", svr.avgProcessTime
+                print >> fi, indent*2 + "avgQueueTime =", svr.avgQueueTime
+                print >> fi, indent*2 + "avgServiceTime =", svr.avgServiceTime
+                print >> fi, indent*2 + "avgQueueLength =", svr.avgQueueLength
+                print >> fi, indent*2 + "utilization =", svr.utilization
 
             print >> fi, "\n" + "User Groups:"
             for grp in userGroups:
