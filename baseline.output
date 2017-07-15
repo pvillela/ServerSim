@@ -1,0 +1,48 @@
+
+
+***** Start Simulation *****
+Simulation: nUsers = 400 ; simTime = 100
+<< ServerExample >>
+
+
+maxSimtime = 100
+
+Servers:
+    Server: AppServer
+        maxConcurrency = 20
+        numThreads = 40
+        speed = 100
+        throughput = 17.93
+        avgProcessTime = 0.448213165051
+        avgQueueTime = 0.0
+        avgServiceTime = 0.448213165051
+        avgQueueLength = 0.0
+        utilization = 0.401823102468
+    Server: DbServer
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 200
+        throughput = 8.59
+        avgProcessTime = 0.689806525937
+        avgQueueTime = 0.0687063639346
+        avgServiceTime = 0.758512889871
+        avgQueueLength = 0.590187666198
+        utilization = 0.592543805779
+
+User Groups:
+    Group: UserTypeX
+        numUsers = 400
+        minThinkTime = 5
+        maxThinkTime = 35
+        request count = 1788
+        avg response time = 0.607636448843
+        txn_1:
+            count = 1357
+            avg response time = 0.396868180286
+            std dev of response time = 0.114340196302
+        txn_2_1:
+            count = 431
+            avg response time = 1.27123863082
+            std dev of response time = 0.332542100803
+
+*** Done ***

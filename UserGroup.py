@@ -10,14 +10,14 @@ class UserGroup(object):
     service requests specified for the group.
     """
     
-    def __init__(self, env, numUsers, name, txnDict, minThinkTime, maxThinkTime):
+    def __init__(self, env, numUsers, name, weightedTxns, minThinkTime, maxThinkTime):
         """
         Initializes the instance.
         
         @env: Simpy Environment
         @numUsers: number of users in group.
         @param name: this user group's name.
-        @param txnDict: dictionary mapping SvcRequestFactory instances to positive numbers.
+        @param weightedTxns: dictionary mapping SvcRequestFactory instances to positive numbers.
             The positive numbers are the relative frequencies with which the
             svcRequests will be executed (these frequencies do not need to
             add up to 1, as they will be normalized by this class).
@@ -31,12 +31,12 @@ class UserGroup(object):
         self.env = env
         self.numUsers = numUsers
         self.name = name
-        self.txnDict = txnDict
-        self.txns = txnDict.keys()
+        self.weightedTxns = weightedTxns
+        self.txns = [x[0] for x in weightedTxns]
         self.minThinkTime = minThinkTime
         self.maxThinkTime = maxThinkTime
 
-        self.pickSvcRequestFactory = probChooser(txnDict)
+        self.pickSvcRequestFactory = probChooser(weightedTxns)
         
         # create Tally objects for response times: overall and by svcRequest
         self.overallTally = livestats.LiveStats([0.5, 0.95, 0.99])  # overall tally

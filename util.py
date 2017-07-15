@@ -12,15 +12,14 @@ def probChooser(weightedItems):
     The weights do not need to add up to 1.
 
     Args:
-        weightedItems (dict[any, number]): item-weight associations to be picked from.
+        weightedItems (list[(any, number)]): item-weight associations to be picked from.
     
     Returns:
         () -> any: a function which randomly picks a key in weightedItems with a 
             probability proportional to the associated values.
     """
-    pairs = weightedItems.items()
-    items = [z[0] for z in pairs]
-    rawFreqs = [z[1] for z in pairs]
+    items = [z[0] for z in weightedItems]
+    rawFreqs = [z[1] for z in weightedItems]
     sumRawFreqs = float(sum(rawFreqs))
     freqs = [x / sumRawFreqs for x in rawFreqs]
     

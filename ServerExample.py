@@ -42,9 +42,9 @@ try:
 
             appServer = Server(env, 20, 40, 100, "AppServer")
             dbServer = Server(env, 10, 20, 200, "DbServer")
-            
+
             servers = (appServer, dbServer)  # to facilitate printing of inputs
-            
+
             txn_1 = CoreSvcRequester(env, "txn_1", cug(2, 1), appLdBal)
             txn_2_2 = CoreSvcRequester(env, "txn_2_2", cug(12, 6), dbLdBal)
             txn_2_3 = CoreSvcRequester(env, "txn_2_3", cug(16, 8), dbLdBal)
@@ -52,31 +52,32 @@ try:
             txn_2_0 = CoreSvcRequester(env, "txn_2_0", cug(3, 1.5), appLdBal)
             txn_2_1 = CallSeq(env, "txn_2_1", txn_2_0, [txn_2_3a, txn_2_2])
 
-            txnDict = {txn_1: 3,
-                       txn_2_1: 1}
-            
+            weightedTxns = [(txn_1, 3),
+                            (txn_2_1, 1)
+                           ]
+
             minThinkTime = 5
             maxThinkTime = 35
-    
-            userGroup = UserGroup(env, nUsers, "UserTypeX", txnDict, minThinkTime, maxThinkTime)
+
+            userGroup = UserGroup(env, nUsers, "UserTypeX", weightedTxns, minThinkTime, maxThinkTime)
             userGroups = (userGroup,)  # to facilitate printing of inputs
-            
+
             userGroup.activateUsers()
-            
+
             maxSimtime = simTime
 
             print >> fi, "\n\n***** Start Simulation *****"
             print "Simulation: nUsers =", nUsers, "; simTime =", simTime
 
             env.run(until=maxSimtime)
-            
+
             print >> fi, "<< ServerExample >>\n"
-            
+
             indent = " " * 4
-            
+
             # print parameters
             print >> fi, "\n" + "maxSimtime =", maxSimtime
-            
+
             print >> fi, "\n" + "Servers:"
             for svr in servers:
                 print >> fi, indent*1 + "Server:", svr.name
@@ -89,7 +90,7 @@ try:
                 print >> fi, indent*2 + "avgServiceTime =", svr.avgServiceTime()
                 print >> fi, indent*2 + "avgQueueLength =", svr.avgQueueLength()
                 print >> fi, indent*2 + "utilization =", svr.utilization()
-            
+
             print >> fi, "\n" + "User Groups:"
             for grp in userGroups:
                 print >> fi, indent*1 + "Group:", grp.name
@@ -100,14 +101,14 @@ try:
                     grp.overallTally.num()
                 print >> fi, indent*2 + "avg response time =", \
                     grp.overallTally.mean()
-                
+
                 for txn in grp.txns:
                     print >> fi, indent*2 + txn.name + ":"
                     print >> fi, indent*3 + "count =", grp.tallyDict[txn].num()
                     print >> fi, indent*3 + "avg response time =", grp.tallyDict[txn].mean()
                     print >> fi, indent*3 + "std dev of response time =", \
                         math.sqrt(abs(grp.tallyDict[txn].variance()))
-            
+
 finally:
     if not fi == sys.stdout:
         fi.close()
