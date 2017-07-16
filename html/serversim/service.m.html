@@ -1,0 +1,3023 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>serversim.service API documentation</title>
+    <meta name="description" content="Classes representing computing services that are executed in servers." />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 105%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+
+    <li class="set"><h3><a href="#header-functions">Functions</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#serversim.service.debug">debug</a></li>
+  </ul>
+
+    </li>
+
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#serversim.service.Async">Async</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#serversim.service.Async.__init__">__init__</a></li>
+    <li class="mono"><a href="#serversim.service.Async.preSubmit">preSubmit</a></li>
+    <li class="mono"><a href="#serversim.service.Async.submit">submit</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#serversim.service.Block">Block</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#serversim.service.Block.__init__">__init__</a></li>
+    <li class="mono"><a href="#serversim.service.Block.preSubmit">preSubmit</a></li>
+    <li class="mono"><a href="#serversim.service.Block.submit">submit</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#serversim.service.CallPar">CallPar</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#serversim.service.CallPar.__init__">__init__</a></li>
+    <li class="mono"><a href="#serversim.service.CallPar.preSubmit">preSubmit</a></li>
+    <li class="mono"><a href="#serversim.service.CallPar.submit">submit</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#serversim.service.CallSeq">CallSeq</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#serversim.service.CallSeq.__init__">__init__</a></li>
+    <li class="mono"><a href="#serversim.service.CallSeq.preSubmit">preSubmit</a></li>
+    <li class="mono"><a href="#serversim.service.CallSeq.submit">submit</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#serversim.service.Cont">Cont</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#serversim.service.Cont.__init__">__init__</a></li>
+    <li class="mono"><a href="#serversim.service.Cont.preSubmit">preSubmit</a></li>
+    <li class="mono"><a href="#serversim.service.Cont.submit">submit</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#serversim.service.CoreSvcRequester">CoreSvcRequester</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#serversim.service.CoreSvcRequester.__init__">__init__</a></li>
+    <li class="mono"><a href="#serversim.service.CoreSvcRequester.preSubmit">preSubmit</a></li>
+    <li class="mono"><a href="#serversim.service.CoreSvcRequester.submit">submit</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#serversim.service.SvcRequester">SvcRequester</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#serversim.service.SvcRequester.__init__">__init__</a></li>
+    <li class="mono"><a href="#serversim.service.SvcRequester.preSubmit">preSubmit</a></li>
+    <li class="mono"><a href="#serversim.service.SvcRequester.submit">submit</a></li>
+  </ul>
+
+        </li>
+      </ul>
+    </li>
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">serversim.service</span> module</h1>
+  <p>Classes representing computing services that are executed in servers.</p>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service" class="source">
+    <pre><code>"""
+Classes representing computing services that are executed in servers.
+"""
+
+import logging
+from simpy.events import Condition
+
+debug = logging.debug
+
+
+class SvcRequester(object):
+    """Base class of service requesters.
+
+    A service request is a request for execution of computation units
+    on one or more servers.  A service request can be a composite of
+    sub-requests.  A service request is implemented as a SimPy Process.
+
+    A service requester is a service request factory.
+    A service requester can be a composite of sub-requesters.
+
+    By default, a service request is non-blocking, i.e., a thread is
+    held on the target server only while the service request itself
+    is executing; the thread is relinquished when the request
+    finishes executing and it passes contol to its sub-requests.
+
+    Attributes:
+        env: SimPy Envirornment.
+        name (str): Name of service requester.  Represents the type of
+            service produced by the requester.
+    """
+
+    def __init__(self, env, name):
+        self.env = env
+        self.name = name
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """ Returns a generator to create a service request and a
+            its target server.
+
+        Abstract method in base class.
+
+        The returned generator can be used to produce a SimPy Process
+        which will represent the service request.
+
+        Args:
+            reqId (any): Identifier for the service request instance.
+            inBlockingCall (bool): Indicates whether this request is
+                in the scope of a blocking call.  When this parameter
+                is true, the service request will hold a software
+                thread on the target server while the service
+                request itself and any of its sub-requests (calls
+                to other servers) are executing.  Otherwise, the
+                call is non-blocking, so a thread is held on the
+                target server only while the service request itself
+                is executing; the thread is relinquished when
+                this request finishes executing and it passes contol
+                to its sub-requests.
+            server (serversim.Service): The server targeted by the
+                request.  The server is typically determined by the
+                service requester using a load-balancer, a function
+                that takes a service type and returns a server..
+
+        Returns:
+            (generator, serversim.Service)
+        """
+        raise NotImplementedError, "'SvcRequester' is an abstract class."
+    
+    def submit(self, reqId=None, inBlockingCall=False):
+        """ Submit the request to its associated server, return the
+            simpy process corresponding to the request.
+
+        Args:
+            inBlockingCall (bool): Indicates whether this request is
+                in the scope of a blocking call.
+        """
+        debug("@@@@ " + self.name)
+        gen = self.preSubmit(reqId, inBlockingCall)[0]
+        return self.env.process(gen)
+
+
+class CoreSvcRequester(SvcRequester):
+    """Core srvice requester implementation.
+
+    Typical service requesters are instances of this class or
+    composites of such instances.  See the various service
+    request combinators in this module.
+
+    Attributes:
+        compUnitsGen (() -> Number): Random function that generates
+            the number of compute units required to execute a
+            service request instance.
+        loadBalancer ((str) -> serversim.Server): Function that
+            produces a server (possibly round-robin, random, or based
+            on server load information) when given a service request
+            type.
+        nextReqId (int): next request id.  Incremented to create a
+            unique request id for a service request if an explicit id
+            is not provided to the submit method.
+    """
+    
+    def __init__(self, env, name, compUnitsGen, loadBalancer):
+        """Initializer."""
+        SvcRequester.__init__(self, env, name)
+        self.compUnitsGen = compUnitsGen
+        self.loadBalancer = loadBalancer
+        self.nextReqId = 1
+    
+    def _submit(self, server, reqId=None, inBlockingCall=False):
+        """Generator used to submit the request to its associated server."""
+        if reqId is None:
+            reqId = self.nextReqId
+            self.nextReqId += 1
+        compUnits = self.compUnitsGen()
+        
+        # acquire a thread if not in a blocking call
+        threadReq = None
+        if not inBlockingCall:
+            threadReq = server.threads.request()
+            yield threadReq
+        
+        with server.request() as req:
+            debug('Request submitted for %s-%s to server %s at %s for %s compute units' 
+                % (self.name, reqId, server.name, self.env.now, compUnits))
+            req.processDuration = \
+                server.requestProcessDuration(compUnits)  # ad-hoc attribute
+            yield req
+        
+            debug('Starting to execute request %s-%s at server %s at %s for %s compute units'
+                % (self.name, reqId, server.name, self.env.now, compUnits))
+            yield self.env.timeout(req.processDuration)
+            debug('Completed executing request %s-%s at server %s at %s' \
+                % (self.name, reqId, server.name, self.env.now))
+       
+        # release thread is appliccable
+        if not inBlockingCall:
+            server.threads.release(threadReq)
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring"""
+        if server is None:
+            server = self.loadBalancer(self.name)
+        return (self._submit(server, reqId, inBlockingCall), server)
+
+
+class Async(SvcRequester):
+    """ Wraps a service requester to produce asynchronous service
+        requests.
+
+    An asynchronous service request completes and returns immediately
+    to the caller, while the underlying (wrapped) service request is
+    scheduled for execution on its target server.
+
+    Attributes:
+        svcRequester (serversim.SvcRequester): The underlying service
+            requester.
+    """
+    
+    def __init__(self, env, svcRequester):
+        """Initializer."""
+        name = "Async(" + svcRequester.name + ")"
+        SvcRequester.__init__(self, env, name)
+        self.svcRequester = svcRequester
+    
+    def _submit(self, reqId=None):
+        """Generator used to submit the request to its associated server."""
+        self.svcRequester.submit(reqId, False)
+        yield self.env.timeout(0)
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        if server is not None:
+            raise ValueError("server can't be set for this method in this class")
+        return (self._submit(reqId), None)
+
+
+class Block(SvcRequester):
+    """ Wraps a service requester to produce blocking service
+        requests.
+
+    A blocking service request will hold a software thread on the
+    target server until the service request itself and all of its
+    non-asynchronous sub-requests complete.
+
+    Attributes:
+        svcRequester (serversim.SvcRequester): The underlying service
+            requester.
+    """
+
+    def __init__(self, env, svcRequester):
+        """Initializer."""
+        name = "Block(" + svcRequester.name + ")"
+        SvcRequester.__init__(self, env, name)
+        self.svcRequester = svcRequester
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        if server is not None:
+            raise ValueError("server can't be set for this method in this class")
+
+        gen, server = self.svcRequester.preSubmit(None, True)
+
+        def _submit():
+            reqThread = server.threads.request()
+            yield reqThread
+            yield self.env.process(gen)
+            server.threads.release(reqThread)
+        
+        return (_submit(), server)
+
+
+class CallSeq(SvcRequester):
+    """ Combines a service requester and a list of service requesters
+        to yield a sequential composite service requester.
+
+    The composite service requester produces composite service
+    requests.  A composite service request produced by this service
+    requester consists of service request produced from the caller
+    service requester and a service request from each of the
+    service requesters in the callees list.  When the service request
+    from the caller completes, it causes each of the callee service
+    requests to be submitted in sequence, i.e., each sub-service is
+    submitted when the prveious one completes.
+
+    Attributes:
+        caller (serversim.SvcRequester): See description in class
+            docstring.
+        callees (list[serversim.SvcRequester]): See description in class
+            docstring.
+    """
+
+    def __init__(self, env, name, caller, callees):
+        """Initializer."""
+        SvcRequester.__init__(self, env, name)
+        self.caller = caller
+        self.callees = callees
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        gen, server = self.caller.preSubmit(None, inBlockingCall, server)
+        gens = [callee.preSubmit(None, False)[0] for callee in self.callees]
+
+        def _submit():
+            """Generator used to submit the request to its associated server."""
+            yield self.env.process(gen)
+            for g in gens:
+                yield self.env.process(g)
+        
+        return (_submit(), server)
+
+
+class CallPar(SvcRequester):
+    """ Combines a service requester and a list of service requesters
+        to yield a parallel composite service requester.
+
+    The composite service requester produces composite service
+    requests.  A composite service request produced by this service
+    requester consists of service request produced from the caller
+    service requester and a service request from each of the
+    service requesters in the callees list.  When the service request
+    from the caller completes, it causes all of the callee service
+    requests to be submitted immediately (in parallel).
+
+    Attributes:
+        caller (serversim.SvcRequester): See description in class
+            docstring.
+        callees (list[serversim.SvcRequester]): See description in class
+            docstring.
+    """
+
+    def __init__(self, env, name, caller, callees):
+        """Initializer."""
+        SvcRequester.__init__(self, env, name)
+        self.caller = caller
+        self.callees = callees
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        gen, server = self.caller.preSubmit(None, inBlockingCall, server)
+        gens = [callee.preSubmit(None, False)[0] for callee in self.callees]
+
+        def _submit():
+            """Generator used to submit the request to its associated server."""
+            yield self.env.process(gen)
+            yield Condition(self.env, Condition.all_events, gens)
+        
+        return (_submit(), server)
+
+
+class Cont(SvcRequester):
+    """ Combines two service requesters to yield a composite service
+    requester that represents continuation of processing on the same
+    target server.
+
+    The composite service requester produces composite service
+    requests.  A composite service request produced by this service
+    requester consists of service request produced from the caller
+    service requester and a service request from the cont service
+    requester.  When the service request from the caller completes
+    (possibly after triggering sequential or parallel sub-requests
+    executing on other servers), it causes the cont service request to
+    be submitted to the same target server as the caller request.
+
+    Attributes:
+        caller (serversim.SvcRequester): See description in class
+            docstring.
+        cont (serversim.SvcRequester): See description in class
+            docstring.
+    """
+    
+    def __init__(self, env, name, caller, cont):
+        """Initializer."""
+        SvcRequester.__init__(self, env, name)
+        self.caller = caller
+        self.cont = cont
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        gen1, server = self.caller.preSubmit(None, inBlockingCall, server)
+        gen2 = self.cont.preSubmit(None, inBlockingCall, server)[0]
+
+        def _submit():
+            """Generator used to submit the request to its associated server."""
+            yield self.env.process(gen1)
+            yield self.env.process(gen2)
+        
+        return (_submit(), server)
+</code></pre>
+  </div>
+
+  </header>
+
+  <section id="section-items">
+
+    <h2 class="section-title" id="header-functions">Functions</h2>
+      
+  <div class="item">
+    <div class="name def" id="serversim.service.debug">
+    <p>def <span class="ident">debug</span>(</p><p>msg, *args, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Log a message with severity 'DEBUG' on the root logger.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.debug', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.debug" class="source">
+    <pre><code>def debug(msg, *args, **kwargs):
+    """
+    Log a message with severity 'DEBUG' on the root logger.
+    """
+    if len(root.handlers) == 0:
+        basicConfig()
+    root.debug(msg, *args, **kwargs)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="serversim.service.Async" class="name">class <span class="ident">Async</span></p>
+      
+  
+    <div class="desc"><p>Wraps a service requester to produce asynchronous service
+    requests.</p>
+<p>An asynchronous service request completes and returns immediately
+to the caller, while the underlying (wrapped) service request is
+scheduled for execution on its target server.</p>
+<p>Attributes:
+    svcRequester (serversim.SvcRequester): The underlying service
+        requester.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Async', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Async" class="source">
+    <pre><code>class Async(SvcRequester):
+    """ Wraps a service requester to produce asynchronous service
+        requests.
+
+    An asynchronous service request completes and returns immediately
+    to the caller, while the underlying (wrapped) service request is
+    scheduled for execution on its target server.
+
+    Attributes:
+        svcRequester (serversim.SvcRequester): The underlying service
+            requester.
+    """
+    
+    def __init__(self, env, svcRequester):
+        """Initializer."""
+        name = "Async(" + svcRequester.name + ")"
+        SvcRequester.__init__(self, env, name)
+        self.svcRequester = svcRequester
+    
+    def _submit(self, reqId=None):
+        """Generator used to submit the request to its associated server."""
+        self.svcRequester.submit(reqId, False)
+        yield self.env.timeout(0)
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        if server is not None:
+            raise ValueError("server can't be set for this method in this class")
+        return (self._submit(reqId), None)
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#serversim.service.Async">Async</a></li>
+          <li><a href="#serversim.service.SvcRequester">SvcRequester</a></li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="serversim.service.Async.env" class="name">var <span class="ident">env</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.env">env</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.Async.name" class="name">var <span class="ident">name</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.name">name</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.Async.svcRequester" class="name">var <span class="ident">svcRequester</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Async.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, env, svcRequester)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.__init__">__init__</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>Initializer.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Async.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Async.__init__" class="source">
+    <pre><code>def __init__(self, env, svcRequester):
+    """Initializer."""
+    name = "Async(" + svcRequester.name + ")"
+    SvcRequester.__init__(self, env, name)
+    self.svcRequester = svcRequester
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Async.preSubmit">
+    <p>def <span class="ident">preSubmit</span>(</p><p>self, reqId=None, inBlockingCall=False, server=None)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.preSubmit">preSubmit</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>See base class docstring.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Async.preSubmit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Async.preSubmit" class="source">
+    <pre><code>def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+    """See base class docstring."""
+    if server is not None:
+        raise ValueError("server can't be set for this method in this class")
+    return (self._submit(reqId), None)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Async.submit">
+    <p>def <span class="ident">submit</span>(</p><p>self, reqId=None, inBlockingCall=False)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.submit">submit</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Submit the request to its associated server, return the
+    simpy process corresponding to the request.</p>
+<p>Args:
+    inBlockingCall (bool): Indicates whether this request is
+        in the scope of a blocking call.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Async.submit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Async.submit" class="source">
+    <pre><code>def submit(self, reqId=None, inBlockingCall=False):
+    """ Submit the request to its associated server, return the
+        simpy process corresponding to the request.
+    Args:
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.
+    """
+    debug("@@@@ " + self.name)
+    gen = self.preSubmit(reqId, inBlockingCall)[0]
+    return self.env.process(gen)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="serversim.service.Block" class="name">class <span class="ident">Block</span></p>
+      
+  
+    <div class="desc"><p>Wraps a service requester to produce blocking service
+    requests.</p>
+<p>A blocking service request will hold a software thread on the
+target server until the service request itself and all of its
+non-asynchronous sub-requests complete.</p>
+<p>Attributes:
+    svcRequester (serversim.SvcRequester): The underlying service
+        requester.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Block', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Block" class="source">
+    <pre><code>class Block(SvcRequester):
+    """ Wraps a service requester to produce blocking service
+        requests.
+
+    A blocking service request will hold a software thread on the
+    target server until the service request itself and all of its
+    non-asynchronous sub-requests complete.
+
+    Attributes:
+        svcRequester (serversim.SvcRequester): The underlying service
+            requester.
+    """
+
+    def __init__(self, env, svcRequester):
+        """Initializer."""
+        name = "Block(" + svcRequester.name + ")"
+        SvcRequester.__init__(self, env, name)
+        self.svcRequester = svcRequester
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        if server is not None:
+            raise ValueError("server can't be set for this method in this class")
+
+        gen, server = self.svcRequester.preSubmit(None, True)
+
+        def _submit():
+            reqThread = server.threads.request()
+            yield reqThread
+            yield self.env.process(gen)
+            server.threads.release(reqThread)
+        
+        return (_submit(), server)
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#serversim.service.Block">Block</a></li>
+          <li><a href="#serversim.service.SvcRequester">SvcRequester</a></li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="serversim.service.Block.env" class="name">var <span class="ident">env</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.env">env</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.Block.name" class="name">var <span class="ident">name</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.name">name</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.Block.svcRequester" class="name">var <span class="ident">svcRequester</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Block.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, env, svcRequester)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.__init__">__init__</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>Initializer.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Block.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Block.__init__" class="source">
+    <pre><code>def __init__(self, env, svcRequester):
+    """Initializer."""
+    name = "Block(" + svcRequester.name + ")"
+    SvcRequester.__init__(self, env, name)
+    self.svcRequester = svcRequester
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Block.preSubmit">
+    <p>def <span class="ident">preSubmit</span>(</p><p>self, reqId=None, inBlockingCall=False, server=None)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.preSubmit">preSubmit</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>See base class docstring.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Block.preSubmit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Block.preSubmit" class="source">
+    <pre><code>def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+    """See base class docstring."""
+    if server is not None:
+        raise ValueError("server can't be set for this method in this class")
+    gen, server = self.svcRequester.preSubmit(None, True)
+    def _submit():
+        reqThread = server.threads.request()
+        yield reqThread
+        yield self.env.process(gen)
+        server.threads.release(reqThread)
+    
+    return (_submit(), server)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Block.submit">
+    <p>def <span class="ident">submit</span>(</p><p>self, reqId=None, inBlockingCall=False)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.submit">submit</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Submit the request to its associated server, return the
+    simpy process corresponding to the request.</p>
+<p>Args:
+    inBlockingCall (bool): Indicates whether this request is
+        in the scope of a blocking call.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Block.submit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Block.submit" class="source">
+    <pre><code>def submit(self, reqId=None, inBlockingCall=False):
+    """ Submit the request to its associated server, return the
+        simpy process corresponding to the request.
+    Args:
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.
+    """
+    debug("@@@@ " + self.name)
+    gen = self.preSubmit(reqId, inBlockingCall)[0]
+    return self.env.process(gen)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="serversim.service.CallPar" class="name">class <span class="ident">CallPar</span></p>
+      
+  
+    <div class="desc"><p>Combines a service requester and a list of service requesters
+    to yield a parallel composite service requester.</p>
+<p>The composite service requester produces composite service
+requests.  A composite service request produced by this service
+requester consists of service request produced from the caller
+service requester and a service request from each of the
+service requesters in the callees list.  When the service request
+from the caller completes, it causes all of the callee service
+requests to be submitted immediately (in parallel).</p>
+<p>Attributes:
+    caller (serversim.SvcRequester): See description in class
+        docstring.
+    callees (list[serversim.SvcRequester]): See description in class
+        docstring.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CallPar', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CallPar" class="source">
+    <pre><code>class CallPar(SvcRequester):
+    """ Combines a service requester and a list of service requesters
+        to yield a parallel composite service requester.
+
+    The composite service requester produces composite service
+    requests.  A composite service request produced by this service
+    requester consists of service request produced from the caller
+    service requester and a service request from each of the
+    service requesters in the callees list.  When the service request
+    from the caller completes, it causes all of the callee service
+    requests to be submitted immediately (in parallel).
+
+    Attributes:
+        caller (serversim.SvcRequester): See description in class
+            docstring.
+        callees (list[serversim.SvcRequester]): See description in class
+            docstring.
+    """
+
+    def __init__(self, env, name, caller, callees):
+        """Initializer."""
+        SvcRequester.__init__(self, env, name)
+        self.caller = caller
+        self.callees = callees
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        gen, server = self.caller.preSubmit(None, inBlockingCall, server)
+        gens = [callee.preSubmit(None, False)[0] for callee in self.callees]
+
+        def _submit():
+            """Generator used to submit the request to its associated server."""
+            yield self.env.process(gen)
+            yield Condition(self.env, Condition.all_events, gens)
+        
+        return (_submit(), server)
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#serversim.service.CallPar">CallPar</a></li>
+          <li><a href="#serversim.service.SvcRequester">SvcRequester</a></li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="serversim.service.CallPar.callees" class="name">var <span class="ident">callees</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CallPar.caller" class="name">var <span class="ident">caller</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CallPar.env" class="name">var <span class="ident">env</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.env">env</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CallPar.name" class="name">var <span class="ident">name</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.name">name</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CallPar.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, env, name, caller, callees)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.__init__">__init__</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>Initializer.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CallPar.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CallPar.__init__" class="source">
+    <pre><code>def __init__(self, env, name, caller, callees):
+    """Initializer."""
+    SvcRequester.__init__(self, env, name)
+    self.caller = caller
+    self.callees = callees
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CallPar.preSubmit">
+    <p>def <span class="ident">preSubmit</span>(</p><p>self, reqId=None, inBlockingCall=False, server=None)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.preSubmit">preSubmit</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>See base class docstring.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CallPar.preSubmit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CallPar.preSubmit" class="source">
+    <pre><code>def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+    """See base class docstring."""
+    gen, server = self.caller.preSubmit(None, inBlockingCall, server)
+    gens = [callee.preSubmit(None, False)[0] for callee in self.callees]
+    def _submit():
+        """Generator used to submit the request to its associated server."""
+        yield self.env.process(gen)
+        yield Condition(self.env, Condition.all_events, gens)
+    
+    return (_submit(), server)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CallPar.submit">
+    <p>def <span class="ident">submit</span>(</p><p>self, reqId=None, inBlockingCall=False)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.submit">submit</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Submit the request to its associated server, return the
+    simpy process corresponding to the request.</p>
+<p>Args:
+    inBlockingCall (bool): Indicates whether this request is
+        in the scope of a blocking call.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CallPar.submit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CallPar.submit" class="source">
+    <pre><code>def submit(self, reqId=None, inBlockingCall=False):
+    """ Submit the request to its associated server, return the
+        simpy process corresponding to the request.
+    Args:
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.
+    """
+    debug("@@@@ " + self.name)
+    gen = self.preSubmit(reqId, inBlockingCall)[0]
+    return self.env.process(gen)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="serversim.service.CallSeq" class="name">class <span class="ident">CallSeq</span></p>
+      
+  
+    <div class="desc"><p>Combines a service requester and a list of service requesters
+    to yield a sequential composite service requester.</p>
+<p>The composite service requester produces composite service
+requests.  A composite service request produced by this service
+requester consists of service request produced from the caller
+service requester and a service request from each of the
+service requesters in the callees list.  When the service request
+from the caller completes, it causes each of the callee service
+requests to be submitted in sequence, i.e., each sub-service is
+submitted when the prveious one completes.</p>
+<p>Attributes:
+    caller (serversim.SvcRequester): See description in class
+        docstring.
+    callees (list[serversim.SvcRequester]): See description in class
+        docstring.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CallSeq', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CallSeq" class="source">
+    <pre><code>class CallSeq(SvcRequester):
+    """ Combines a service requester and a list of service requesters
+        to yield a sequential composite service requester.
+
+    The composite service requester produces composite service
+    requests.  A composite service request produced by this service
+    requester consists of service request produced from the caller
+    service requester and a service request from each of the
+    service requesters in the callees list.  When the service request
+    from the caller completes, it causes each of the callee service
+    requests to be submitted in sequence, i.e., each sub-service is
+    submitted when the prveious one completes.
+
+    Attributes:
+        caller (serversim.SvcRequester): See description in class
+            docstring.
+        callees (list[serversim.SvcRequester]): See description in class
+            docstring.
+    """
+
+    def __init__(self, env, name, caller, callees):
+        """Initializer."""
+        SvcRequester.__init__(self, env, name)
+        self.caller = caller
+        self.callees = callees
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        gen, server = self.caller.preSubmit(None, inBlockingCall, server)
+        gens = [callee.preSubmit(None, False)[0] for callee in self.callees]
+
+        def _submit():
+            """Generator used to submit the request to its associated server."""
+            yield self.env.process(gen)
+            for g in gens:
+                yield self.env.process(g)
+        
+        return (_submit(), server)
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#serversim.service.CallSeq">CallSeq</a></li>
+          <li><a href="#serversim.service.SvcRequester">SvcRequester</a></li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="serversim.service.CallSeq.callees" class="name">var <span class="ident">callees</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CallSeq.caller" class="name">var <span class="ident">caller</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CallSeq.env" class="name">var <span class="ident">env</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.env">env</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CallSeq.name" class="name">var <span class="ident">name</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.name">name</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CallSeq.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, env, name, caller, callees)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.__init__">__init__</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>Initializer.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CallSeq.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CallSeq.__init__" class="source">
+    <pre><code>def __init__(self, env, name, caller, callees):
+    """Initializer."""
+    SvcRequester.__init__(self, env, name)
+    self.caller = caller
+    self.callees = callees
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CallSeq.preSubmit">
+    <p>def <span class="ident">preSubmit</span>(</p><p>self, reqId=None, inBlockingCall=False, server=None)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.preSubmit">preSubmit</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>See base class docstring.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CallSeq.preSubmit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CallSeq.preSubmit" class="source">
+    <pre><code>def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+    """See base class docstring."""
+    gen, server = self.caller.preSubmit(None, inBlockingCall, server)
+    gens = [callee.preSubmit(None, False)[0] for callee in self.callees]
+    def _submit():
+        """Generator used to submit the request to its associated server."""
+        yield self.env.process(gen)
+        for g in gens:
+            yield self.env.process(g)
+    
+    return (_submit(), server)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CallSeq.submit">
+    <p>def <span class="ident">submit</span>(</p><p>self, reqId=None, inBlockingCall=False)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.submit">submit</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Submit the request to its associated server, return the
+    simpy process corresponding to the request.</p>
+<p>Args:
+    inBlockingCall (bool): Indicates whether this request is
+        in the scope of a blocking call.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CallSeq.submit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CallSeq.submit" class="source">
+    <pre><code>def submit(self, reqId=None, inBlockingCall=False):
+    """ Submit the request to its associated server, return the
+        simpy process corresponding to the request.
+    Args:
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.
+    """
+    debug("@@@@ " + self.name)
+    gen = self.preSubmit(reqId, inBlockingCall)[0]
+    return self.env.process(gen)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="serversim.service.Cont" class="name">class <span class="ident">Cont</span></p>
+      
+  
+    <div class="desc"><p>Combines two service requesters to yield a composite service
+requester that represents continuation of processing on the same
+target server.</p>
+<p>The composite service requester produces composite service
+requests.  A composite service request produced by this service
+requester consists of service request produced from the caller
+service requester and a service request from the cont service
+requester.  When the service request from the caller completes
+(possibly after triggering sequential or parallel sub-requests
+executing on other servers), it causes the cont service request to
+be submitted to the same target server as the caller request.</p>
+<p>Attributes:
+    caller (serversim.SvcRequester): See description in class
+        docstring.
+    cont (serversim.SvcRequester): See description in class
+        docstring.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Cont', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Cont" class="source">
+    <pre><code>class Cont(SvcRequester):
+    """ Combines two service requesters to yield a composite service
+    requester that represents continuation of processing on the same
+    target server.
+
+    The composite service requester produces composite service
+    requests.  A composite service request produced by this service
+    requester consists of service request produced from the caller
+    service requester and a service request from the cont service
+    requester.  When the service request from the caller completes
+    (possibly after triggering sequential or parallel sub-requests
+    executing on other servers), it causes the cont service request to
+    be submitted to the same target server as the caller request.
+
+    Attributes:
+        caller (serversim.SvcRequester): See description in class
+            docstring.
+        cont (serversim.SvcRequester): See description in class
+            docstring.
+    """
+    
+    def __init__(self, env, name, caller, cont):
+        """Initializer."""
+        SvcRequester.__init__(self, env, name)
+        self.caller = caller
+        self.cont = cont
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring."""
+        gen1, server = self.caller.preSubmit(None, inBlockingCall, server)
+        gen2 = self.cont.preSubmit(None, inBlockingCall, server)[0]
+
+        def _submit():
+            """Generator used to submit the request to its associated server."""
+            yield self.env.process(gen1)
+            yield self.env.process(gen2)
+        
+        return (_submit(), server)
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#serversim.service.Cont">Cont</a></li>
+          <li><a href="#serversim.service.SvcRequester">SvcRequester</a></li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="serversim.service.Cont.caller" class="name">var <span class="ident">caller</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.Cont.cont" class="name">var <span class="ident">cont</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.Cont.env" class="name">var <span class="ident">env</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.env">env</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.Cont.name" class="name">var <span class="ident">name</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.name">name</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Cont.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, env, name, caller, cont)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.__init__">__init__</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>Initializer.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Cont.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Cont.__init__" class="source">
+    <pre><code>def __init__(self, env, name, caller, cont):
+    """Initializer."""
+    SvcRequester.__init__(self, env, name)
+    self.caller = caller
+    self.cont = cont
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Cont.preSubmit">
+    <p>def <span class="ident">preSubmit</span>(</p><p>self, reqId=None, inBlockingCall=False, server=None)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.preSubmit">preSubmit</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>See base class docstring.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Cont.preSubmit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Cont.preSubmit" class="source">
+    <pre><code>def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+    """See base class docstring."""
+    gen1, server = self.caller.preSubmit(None, inBlockingCall, server)
+    gen2 = self.cont.preSubmit(None, inBlockingCall, server)[0]
+    def _submit():
+        """Generator used to submit the request to its associated server."""
+        yield self.env.process(gen1)
+        yield self.env.process(gen2)
+    
+    return (_submit(), server)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.Cont.submit">
+    <p>def <span class="ident">submit</span>(</p><p>self, reqId=None, inBlockingCall=False)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.submit">submit</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Submit the request to its associated server, return the
+    simpy process corresponding to the request.</p>
+<p>Args:
+    inBlockingCall (bool): Indicates whether this request is
+        in the scope of a blocking call.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.Cont.submit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.Cont.submit" class="source">
+    <pre><code>def submit(self, reqId=None, inBlockingCall=False):
+    """ Submit the request to its associated server, return the
+        simpy process corresponding to the request.
+    Args:
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.
+    """
+    debug("@@@@ " + self.name)
+    gen = self.preSubmit(reqId, inBlockingCall)[0]
+    return self.env.process(gen)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="serversim.service.CoreSvcRequester" class="name">class <span class="ident">CoreSvcRequester</span></p>
+      
+  
+    <div class="desc"><p>Core srvice requester implementation.</p>
+<p>Typical service requesters are instances of this class or
+composites of such instances.  See the various service
+request combinators in this module.</p>
+<p>Attributes:
+    compUnitsGen (() -&gt; Number): Random function that generates
+        the number of compute units required to execute a
+        service request instance.
+    loadBalancer ((str) -&gt; serversim.Server): Function that
+        produces a server (possibly round-robin, random, or based
+        on server load information) when given a service request
+        type.
+    nextReqId (int): next request id.  Incremented to create a
+        unique request id for a service request if an explicit id
+        is not provided to the submit method.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CoreSvcRequester', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CoreSvcRequester" class="source">
+    <pre><code>class CoreSvcRequester(SvcRequester):
+    """Core srvice requester implementation.
+
+    Typical service requesters are instances of this class or
+    composites of such instances.  See the various service
+    request combinators in this module.
+
+    Attributes:
+        compUnitsGen (() -> Number): Random function that generates
+            the number of compute units required to execute a
+            service request instance.
+        loadBalancer ((str) -> serversim.Server): Function that
+            produces a server (possibly round-robin, random, or based
+            on server load information) when given a service request
+            type.
+        nextReqId (int): next request id.  Incremented to create a
+            unique request id for a service request if an explicit id
+            is not provided to the submit method.
+    """
+    
+    def __init__(self, env, name, compUnitsGen, loadBalancer):
+        """Initializer."""
+        SvcRequester.__init__(self, env, name)
+        self.compUnitsGen = compUnitsGen
+        self.loadBalancer = loadBalancer
+        self.nextReqId = 1
+    
+    def _submit(self, server, reqId=None, inBlockingCall=False):
+        """Generator used to submit the request to its associated server."""
+        if reqId is None:
+            reqId = self.nextReqId
+            self.nextReqId += 1
+        compUnits = self.compUnitsGen()
+        
+        # acquire a thread if not in a blocking call
+        threadReq = None
+        if not inBlockingCall:
+            threadReq = server.threads.request()
+            yield threadReq
+        
+        with server.request() as req:
+            debug('Request submitted for %s-%s to server %s at %s for %s compute units' 
+                % (self.name, reqId, server.name, self.env.now, compUnits))
+            req.processDuration = \
+                server.requestProcessDuration(compUnits)  # ad-hoc attribute
+            yield req
+        
+            debug('Starting to execute request %s-%s at server %s at %s for %s compute units'
+                % (self.name, reqId, server.name, self.env.now, compUnits))
+            yield self.env.timeout(req.processDuration)
+            debug('Completed executing request %s-%s at server %s at %s' \
+                % (self.name, reqId, server.name, self.env.now))
+       
+        # release thread is appliccable
+        if not inBlockingCall:
+            server.threads.release(threadReq)
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """See base class docstring"""
+        if server is None:
+            server = self.loadBalancer(self.name)
+        return (self._submit(server, reqId, inBlockingCall), server)
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#serversim.service.CoreSvcRequester">CoreSvcRequester</a></li>
+          <li><a href="#serversim.service.SvcRequester">SvcRequester</a></li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="serversim.service.CoreSvcRequester.compUnitsGen" class="name">var <span class="ident">compUnitsGen</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CoreSvcRequester.env" class="name">var <span class="ident">env</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.env">env</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CoreSvcRequester.loadBalancer" class="name">var <span class="ident">loadBalancer</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CoreSvcRequester.name" class="name">var <span class="ident">name</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.name">name</a></code>
+    </p>
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.CoreSvcRequester.nextReqId" class="name">var <span class="ident">nextReqId</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CoreSvcRequester.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, env, name, compUnitsGen, loadBalancer)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.__init__">__init__</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>Initializer.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CoreSvcRequester.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CoreSvcRequester.__init__" class="source">
+    <pre><code>def __init__(self, env, name, compUnitsGen, loadBalancer):
+    """Initializer."""
+    SvcRequester.__init__(self, env, name)
+    self.compUnitsGen = compUnitsGen
+    self.loadBalancer = loadBalancer
+    self.nextReqId = 1
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CoreSvcRequester.preSubmit">
+    <p>def <span class="ident">preSubmit</span>(</p><p>self, reqId=None, inBlockingCall=False, server=None)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.preSubmit">preSubmit</a></code>
+    </p>
+
+    
+  
+    <div class="desc"><p>See base class docstring</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CoreSvcRequester.preSubmit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CoreSvcRequester.preSubmit" class="source">
+    <pre><code>def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+    """See base class docstring"""
+    if server is None:
+        server = self.loadBalancer(self.name)
+    return (self._submit(server, reqId, inBlockingCall), server)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.CoreSvcRequester.submit">
+    <p>def <span class="ident">submit</span>(</p><p>self, reqId=None, inBlockingCall=False)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#serversim.service.SvcRequester">SvcRequester</a></code>.<code><a href="#serversim.service.SvcRequester.submit">submit</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Submit the request to its associated server, return the
+    simpy process corresponding to the request.</p>
+<p>Args:
+    inBlockingCall (bool): Indicates whether this request is
+        in the scope of a blocking call.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.CoreSvcRequester.submit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.CoreSvcRequester.submit" class="source">
+    <pre><code>def submit(self, reqId=None, inBlockingCall=False):
+    """ Submit the request to its associated server, return the
+        simpy process corresponding to the request.
+    Args:
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.
+    """
+    debug("@@@@ " + self.name)
+    gen = self.preSubmit(reqId, inBlockingCall)[0]
+    return self.env.process(gen)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="serversim.service.SvcRequester" class="name">class <span class="ident">SvcRequester</span></p>
+      
+  
+    <div class="desc"><p>Base class of service requesters.</p>
+<p>A service request is a request for execution of computation units
+on one or more servers.  A service request can be a composite of
+sub-requests.  A service request is implemented as a SimPy Process.</p>
+<p>A service requester is a service request factory.
+A service requester can be a composite of sub-requesters.</p>
+<p>By default, a service request is non-blocking, i.e., a thread is
+held on the target server only while the service request itself
+is executing; the thread is relinquished when the request
+finishes executing and it passes contol to its sub-requests.</p>
+<p>Attributes:
+    env: SimPy Envirornment.
+    name (str): Name of service requester.  Represents the type of
+        service produced by the requester.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.SvcRequester', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.SvcRequester" class="source">
+    <pre><code>class SvcRequester(object):
+    """Base class of service requesters.
+
+    A service request is a request for execution of computation units
+    on one or more servers.  A service request can be a composite of
+    sub-requests.  A service request is implemented as a SimPy Process.
+
+    A service requester is a service request factory.
+    A service requester can be a composite of sub-requesters.
+
+    By default, a service request is non-blocking, i.e., a thread is
+    held on the target server only while the service request itself
+    is executing; the thread is relinquished when the request
+    finishes executing and it passes contol to its sub-requests.
+
+    Attributes:
+        env: SimPy Envirornment.
+        name (str): Name of service requester.  Represents the type of
+            service produced by the requester.
+    """
+
+    def __init__(self, env, name):
+        self.env = env
+        self.name = name
+    
+    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+        """ Returns a generator to create a service request and a
+            its target server.
+
+        Abstract method in base class.
+
+        The returned generator can be used to produce a SimPy Process
+        which will represent the service request.
+
+        Args:
+            reqId (any): Identifier for the service request instance.
+            inBlockingCall (bool): Indicates whether this request is
+                in the scope of a blocking call.  When this parameter
+                is true, the service request will hold a software
+                thread on the target server while the service
+                request itself and any of its sub-requests (calls
+                to other servers) are executing.  Otherwise, the
+                call is non-blocking, so a thread is held on the
+                target server only while the service request itself
+                is executing; the thread is relinquished when
+                this request finishes executing and it passes contol
+                to its sub-requests.
+            server (serversim.Service): The server targeted by the
+                request.  The server is typically determined by the
+                service requester using a load-balancer, a function
+                that takes a service type and returns a server..
+
+        Returns:
+            (generator, serversim.Service)
+        """
+        raise NotImplementedError, "'SvcRequester' is an abstract class."
+    
+    def submit(self, reqId=None, inBlockingCall=False):
+        """ Submit the request to its associated server, return the
+            simpy process corresponding to the request.
+
+        Args:
+            inBlockingCall (bool): Indicates whether this request is
+                in the scope of a blocking call.
+        """
+        debug("@@@@ " + self.name)
+        gen = self.preSubmit(reqId, inBlockingCall)[0]
+        return self.env.process(gen)
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#serversim.service.SvcRequester">SvcRequester</a></li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="serversim.service.SvcRequester.env" class="name">var <span class="ident">env</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="serversim.service.SvcRequester.name" class="name">var <span class="ident">name</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.SvcRequester.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, env, name)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.SvcRequester.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.SvcRequester.__init__" class="source">
+    <pre><code>def __init__(self, env, name):
+    self.env = env
+    self.name = name
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.SvcRequester.preSubmit">
+    <p>def <span class="ident">preSubmit</span>(</p><p>self, reqId=None, inBlockingCall=False, server=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a generator to create a service request and a
+    its target server.</p>
+<p>Abstract method in base class.</p>
+<p>The returned generator can be used to produce a SimPy Process
+which will represent the service request.</p>
+<p>Args:
+    reqId (any): Identifier for the service request instance.
+    inBlockingCall (bool): Indicates whether this request is
+        in the scope of a blocking call.  When this parameter
+        is true, the service request will hold a software
+        thread on the target server while the service
+        request itself and any of its sub-requests (calls
+        to other servers) are executing.  Otherwise, the
+        call is non-blocking, so a thread is held on the
+        target server only while the service request itself
+        is executing; the thread is relinquished when
+        this request finishes executing and it passes contol
+        to its sub-requests.
+    server (serversim.Service): The server targeted by the
+        request.  The server is typically determined by the
+        service requester using a load-balancer, a function
+        that takes a service type and returns a server..</p>
+<p>Returns:
+    (generator, serversim.Service)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.SvcRequester.preSubmit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.SvcRequester.preSubmit" class="source">
+    <pre><code>def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
+    """ Returns a generator to create a service request and a
+        its target server.
+    Abstract method in base class.
+    The returned generator can be used to produce a SimPy Process
+    which will represent the service request.
+    Args:
+        reqId (any): Identifier for the service request instance.
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.  When this parameter
+            is true, the service request will hold a software
+            thread on the target server while the service
+            request itself and any of its sub-requests (calls
+            to other servers) are executing.  Otherwise, the
+            call is non-blocking, so a thread is held on the
+            target server only while the service request itself
+            is executing; the thread is relinquished when
+            this request finishes executing and it passes contol
+            to its sub-requests.
+        server (serversim.Service): The server targeted by the
+            request.  The server is typically determined by the
+            service requester using a load-balancer, a function
+            that takes a service type and returns a server..
+    Returns:
+        (generator, serversim.Service)
+    """
+    raise NotImplementedError, "'SvcRequester' is an abstract class."
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="serversim.service.SvcRequester.submit">
+    <p>def <span class="ident">submit</span>(</p><p>self, reqId=None, inBlockingCall=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Submit the request to its associated server, return the
+    simpy process corresponding to the request.</p>
+<p>Args:
+    inBlockingCall (bool): Indicates whether this request is
+        in the scope of a blocking call.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-serversim.service.SvcRequester.submit', this);">Show source &equiv;</a></p>
+  <div id="source-serversim.service.SvcRequester.submit" class="source">
+    <pre><code>def submit(self, reqId=None, inBlockingCall=False):
+    """ Submit the request to its associated server, return the
+        simpy process corresponding to the request.
+    Args:
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.
+    """
+    debug("@@@@ " + self.name)
+    gen = self.preSubmit(reqId, inBlockingCall)[0]
+    return self.env.process(gen)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>
