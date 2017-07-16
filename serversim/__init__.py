@@ -4,7 +4,9 @@ performance and utilization of computer servers and services.
 Depends on SimPy 3.x.
 """
 
+from .util import probChooser
+from .measuredresource import MeasuredResource
+from .server import Server
 from .service import (
     SvcRequester, CoreSvcRequester, Async, Block, CallSeq, CallPar, Cont)
-from .server import Server
 from .usergroup import UserGroup

@@ -1,5 +1,5 @@
 """
-Simple test of SimComponents
+Simple test of serversim.
 """
 
 import random
