@@ -287,7 +287,7 @@ class CallPar(SvcRequester):
 
 
 class Cont(SvcRequester):
-    """ Combines two service requesters to yield a composit service
+    """ Combines two service requesters to yield a composite service
     requester that represents continuation of processing on the same
     target server.
 
