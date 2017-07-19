@@ -106,7 +106,7 @@ try:
                     grp._overallTally.mean()
 
                 for txn in grp._txns:
-                    print >> fi, indent*2 + txn.name + ":"
+                    print >> fi, indent*2 + txn.svcName + ":"
                     print >> fi, indent*3 + "count =", grp._tallyDict[txn].num()
                     print >> fi, indent*3 + "avg response time =", grp._tallyDict[txn].mean()
                     print >> fi, indent*3 + "std dev of response time =", \

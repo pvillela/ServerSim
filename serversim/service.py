@@ -8,6 +8,70 @@ from simpy.events import Condition
 debug = logging.debug
 
 
+class SvcRequest(object):
+    """Represents service requests to servers.
+
+    Patterned after completable futures.
+    """
+    def __init__(self, env, svcName, fgen, server, inVal, inBlockingCall):
+        """Initializer."""
+        self._env = env
+        self.svcName = svcName
+        self.fgen = fgen
+        self.server = server
+        self.inBlockingCall = inBlockingCall
+        self.inVal = inVal
+        self.outVal = None
+        self.id = id(self)
+        self.callbacks = []
+        self._isCompleted = False
+        self.timeStarted = None
+        self.timeCompleted = None
+
+    @property
+    def env(self): return self._env
+
+    @property
+    def isCompleted(self): return self._isCompleted
+
+    def submit(self):
+        """ Submit the request to its associated server, return the
+            simpy process corresponding to the request.
+
+        Args:
+            inBlockingCall (bool): Indicates whether this request is
+                in the scope of a blocking call.
+        """
+        debug("@@@@ " + self.svcName)
+        self.timeStarted = self._env.now
+        return self._env.process(self.fgen(self))
+
+    def complete(self, val):
+        """Complete the future with value val."""
+        assert not self.isCompleted, "Calling complete method on a completed future."
+        self._isCompleted = True
+        self.outVal = val
+        self.timeCompleted = self.env.now
+        for cb in self.callbacks:
+            cb(val)
+
+    #TODO: fix or remove this
+    def flatMap(self, f, svcName="flatMap"):
+        def fgen(_svcReq):
+            yield  self.submit()
+
+        res = SvcRequest(self._env, svcName, fgen, self.server, self.inVal)
+
+        def cb(val):
+            chainedReq = f(self)
+            chainedReq.callbacks.append(res.complete)
+            chainedReq.submit()
+
+        self.callbacks.append(cb)
+
+        return res
+
+
 class SvcRequester(object):
     """Base class of service requesters.
 
@@ -25,25 +89,31 @@ class SvcRequester(object):
 
     Attributes:
         env: SimPy Envirornment.
-        name (str): Name of service requester.  Represents the type of
+        svcName (str): Name of service requester.  Represents the svcName of
             service produced by the requester.
     """
 
-    def __init__(self, env, name):
+    def __init__(self, env, svcName):
         self.env = env
-        self.name = name
-    
-    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
-        """ Returns a generator to create a service request and a
-            its target server.
+        self.svcName = svcName
 
-        Abstract method in base class.
-
-        The returned generator can be used to produce a SimPy Process
-        which will represent the service request.
+    def _fgen(self, svcReq):
+        """ Returns a generator used to submit the service request to its
+            associated server.
 
         Args:
-            reqId (any): Identifier for the service request instance.
+            svcReq (serversim.SvcRequest): A service request produced by
+                this factory.
+        """
+        raise NotImplementedError, "'SvcRequester' is an abstract class."
+
+    def makeSvcRequest(self, inVal=None, inBlockingCall=False):
+        """ Produces a SvcRequest object.
+
+        Default implementation, can be overridden.
+
+        Args:
+            inVal (any): input value of produced service request.
             inBlockingCall (bool): Indicates whether this request is
                 in the scope of a blocking call.  When this parameter
                 is true, the service request will hold a software
@@ -55,27 +125,12 @@ class SvcRequester(object):
                 is executing; the thread is relinquished when
                 this request finishes executing and it passes contol
                 to its sub-requests.
-            server (serversim.Service): The server targeted by the
-                request.  The server is typically determined by the
-                service requester using a load-balancer, a function
-                that takes a service type and returns a server..
 
         Returns:
-            (generator, serversim.Service)
+            (serversim.SvcRequest)
         """
-        raise NotImplementedError, "'SvcRequester' is an abstract class."
-    
-    def submit(self, reqId=None, inBlockingCall=False):
-        """ Submit the request to its associated server, return the
-            simpy process corresponding to the request.
-
-        Args:
-            inBlockingCall (bool): Indicates whether this request is
-                in the scope of a blocking call.
-        """
-        debug("@@@@ " + self.name)
-        gen = self.preSubmit(reqId, inBlockingCall)[0]
-        return self.env.process(gen)
+        return SvcRequest(self.env, self.svcName, self._fgen, None, inVal,
+                          inBlockingCall)
 
 
 class CoreSvcRequester(SvcRequester):
@@ -92,24 +147,28 @@ class CoreSvcRequester(SvcRequester):
         loadBalancer ((str) -> serversim.Server): Function that
             produces a server (possibly round-robin, random, or based
             on server load information) when given a service request
-            type.
-        nextReqId (int): next request id.  Incremented to create a
-            unique request id for a service request if an explicit id
-            is not provided to the submit method.
+            svcName.
     """
     
-    def __init__(self, env, name, compUnitsGen, loadBalancer):
+    def __init__(self, env, svcName, compUnitsGen, loadBalancer, f=None):
         """Initializer."""
-        SvcRequester.__init__(self, env, name)
+        SvcRequester.__init__(self, env, svcName)
         self.compUnitsGen = compUnitsGen
         self.loadBalancer = loadBalancer
-        self.nextReqId = 1
-    
-    def _submit(self, server, reqId=None, inBlockingCall=False):
-        """Generator used to submit the request to its associated server."""
-        if reqId is None:
-            reqId = self.nextReqId
-            self.nextReqId += 1
+        if f is None:
+            f = lambda x: None
+        self.f = f
+
+    def _fgen(self, svcReq):
+        """
+        Returns a generator used to submit the service request to its
+        associated server.
+        """
+        server = svcReq.server
+        inBlockingCall = svcReq.inBlockingCall
+        reqId = svcReq.id
+        inVal = svcReq.inVal
+
         compUnits = self.compUnitsGen()
         
         # acquire a thread if not in a blocking call
@@ -119,27 +178,32 @@ class CoreSvcRequester(SvcRequester):
             yield threadReq
         
         with server.request() as req:
-            debug('Request submitted for %s-%s to server %s at %s for %s compute units' 
-                % (self.name, reqId, server.name, self.env.now, compUnits))
+            debug('Request for %s-%s to server %s at %s for %s compute units'
+                  % (self.svcName, reqId, server.name, self.env.now, compUnits))
             req.processDuration = \
                 server.requestProcessDuration(compUnits)  # ad-hoc attribute
             yield req
         
             debug('Starting to execute request %s-%s at server %s at %s for %s compute units'
-                % (self.name, reqId, server.name, self.env.now, compUnits))
+                  % (self.svcName, reqId, server.name, self.env.now, compUnits))
             yield self.env.timeout(req.processDuration)
             debug('Completed executing request %s-%s at server %s at %s' \
-                % (self.name, reqId, server.name, self.env.now))
-       
+                  % (self.svcName, reqId, server.name, self.env.now))
+
+        svcReq.complete(self.f(inVal))
+
         # release thread is appliccable
         if not inBlockingCall:
             server.threads.release(threadReq)
     
-    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
-        """See base class docstring"""
-        if server is None:
-            server = self.loadBalancer(self.name)
-        return (self._submit(server, reqId, inBlockingCall), server)
+    def makeSvcRequest(self, inVal=None, inBlockingCall=False):
+        """Overrides default implementation in base class.
+
+        See base class docstring
+        """
+        server = self.loadBalancer(self.svcName)
+        return SvcRequest(self.env, self.svcName, self._fgen, server, inVal,
+                          inBlockingCall)
 
 
 class Async(SvcRequester):
@@ -157,20 +221,15 @@ class Async(SvcRequester):
     
     def __init__(self, env, svcRequester):
         """Initializer."""
-        name = "Async(" + svcRequester.name + ")"
-        SvcRequester.__init__(self, env, name)
+        svcName = "Async(" + svcRequester.svcName + ")"
+        SvcRequester.__init__(self, env, svcName)
         self.svcRequester = svcRequester
-    
-    def _submit(self, reqId=None):
-        """Generator used to submit the request to its associated server."""
-        self.svcRequester.submit(reqId, False)
+
+    def _fgen(self, svcReq):
+        enclosedSvcReq = self.svcRequester.makeSvcRequest(svcReq.inVal, False)
+        enclosedSvcReq.submit()
+        svcReq.complete(None)
         yield self.env.timeout(0)
-    
-    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
-        """See base class docstring."""
-        if server is not None:
-            raise ValueError("server can't be set for this method in this class")
-        return (self._submit(reqId), None)
 
 
 class Block(SvcRequester):
@@ -188,24 +247,20 @@ class Block(SvcRequester):
 
     def __init__(self, env, svcRequester):
         """Initializer."""
-        name = "Block(" + svcRequester.name + ")"
-        SvcRequester.__init__(self, env, name)
+        svcName = "Block(" + svcRequester.svcName + ")"
+        SvcRequester.__init__(self, env, svcName)
         self.svcRequester = svcRequester
-    
-    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
-        """See base class docstring."""
-        if server is not None:
-            raise ValueError("server can't be set for this method in this class")
 
-        gen, server = self.svcRequester.preSubmit(None, True)
-
-        def _submit():
-            reqThread = server.threads.request()
-            yield reqThread
-            yield self.env.process(gen)
-            server.threads.release(reqThread)
-        
-        return (_submit(), server)
+    def _fgen(self, svcReq):
+        enclosedSvcReq = self.svcRequester.makeSvcRequest(svcReq.inVal, True)
+        reqThread = None
+        if not svcReq.inBlockingCall:
+            enclosedSvcReq.server.threads.request()
+        yield reqThread
+        yield enclosedSvcReq.submit()
+        if not svcReq.inBlockingCall:
+            enclosedSvcReq.server.threads.release(reqThread)
+        svcReq.complete(enclosedSvcReq.outVal)
 
 
 class CallSeq(SvcRequester):
@@ -228,24 +283,28 @@ class CallSeq(SvcRequester):
             docstring.
     """
 
-    def __init__(self, env, name, caller, callees):
+    def __init__(self, env, svcName, caller, callees):
         """Initializer."""
-        SvcRequester.__init__(self, env, name)
+        SvcRequester.__init__(self, env, svcName)
         self.caller = caller
         self.callees = callees
-    
-    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
-        """See base class docstring."""
-        gen, server = self.caller.preSubmit(None, inBlockingCall, server)
-        gens = [callee.preSubmit(None, False)[0] for callee in self.callees]
 
-        def _submit():
-            """Generator used to submit the request to its associated server."""
-            yield self.env.process(gen)
-            for g in gens:
-                yield self.env.process(g)
-        
-        return (_submit(), server)
+    def _fgen(self, svcReq):
+        """Generator used to submit the request to its associated server."""
+        callerSvcReq = self.caller.makeSvcRequest(svcReq.inVal,
+                                                  svcReq.inBlockingCall)
+        yield callerSvcReq.submit()
+
+        val = callerSvcReq.outVal
+        for callee in self.callees:
+            # The inBlockingCall argument is False because the callees are
+            # separate service requests not a continuation of svcReq on
+            # the same server
+            calleeSvcReq = callee.makeSvcRequest(val, False)
+            yield calleeSvcReq.submit()
+            val = calleeSvcReq.outVal
+
+        svcReq.complete(val)
 
 
 class CallPar(SvcRequester):
@@ -267,23 +326,34 @@ class CallPar(SvcRequester):
             docstring.
     """
 
-    def __init__(self, env, name, caller, callees):
+    def __init__(self, env, svcName, caller, callees, f=None):
         """Initializer."""
-        SvcRequester.__init__(self, env, name)
+        SvcRequester.__init__(self, env, svcName)
         self.caller = caller
         self.callees = callees
-    
-    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
-        """See base class docstring."""
-        gen, server = self.caller.preSubmit(None, inBlockingCall, server)
-        gens = [callee.preSubmit(None, False)[0] for callee in self.callees]
+        if f is None:
+            f = lambda x: x
+        self.f = f
 
-        def _submit():
-            """Generator used to submit the request to its associated server."""
-            yield self.env.process(gen)
-            yield Condition(self.env, Condition.all_events, gens)
-        
-        return (_submit(), server)
+    def _fgen(self, svcReq):
+        """Generator used to submit the request to its associated server."""
+        callerSvcReq = self.caller.makeSvcRequest(svcReq.inVal,
+                                                  svcReq.inBlockingCall)
+        yield callerSvcReq.submit()
+
+        val = callerSvcReq.outVal
+
+        # The inBlockingCall argument is False because the callees are
+        # separate service requests not a continuation of svcReq on
+        # the same server
+        calleeSvcReqs = [callee.makeSvcRequest(val, False) for callee in
+                         self.callees]
+
+        calleeProcs = [sr.submit() for sr in calleeSvcReqs]
+        yield Condition(self.env, Condition.all_events, calleeProcs)
+
+        calleeOutVals = [sr.outVal for sr in calleeSvcReqs]
+        svcReq.complete(self.f(calleeOutVals))
 
 
 class Cont(SvcRequester):
@@ -307,20 +377,19 @@ class Cont(SvcRequester):
             docstring.
     """
     
-    def __init__(self, env, name, caller, cont):
+    def __init__(self, env, svcName, caller, cont):
         """Initializer."""
-        SvcRequester.__init__(self, env, name)
+        SvcRequester.__init__(self, env, svcName)
         self.caller = caller
         self.cont = cont
     
-    def preSubmit(self, reqId=None, inBlockingCall=False, server=None):
-        """See base class docstring."""
-        gen1, server = self.caller.preSubmit(None, inBlockingCall, server)
-        gen2 = self.cont.preSubmit(None, inBlockingCall, server)[0]
+    def _fgen(self, svcReq):
+        """Generator used to submit the request to its associated server."""
+        callerSvcReq = self.caller.makeSvcRequest(svcReq.inVal,
+                                                  svcReq.inBlockingCall)
+        yield callerSvcReq.submit()
 
-        def _submit():
-            """Generator used to submit the request to its associated server."""
-            yield self.env.process(gen1)
-            yield self.env.process(gen2)
-        
-        return (_submit(), server)
+        contSvcReq = self.cont.makeSvcRequest(callerSvcReq.outVal,
+                                              svcReq.inBlockingCall)
+        contSvcReq.server = callerSvcReq.server
+        yield contSvcReq.submit()

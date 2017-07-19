@@ -68,7 +68,7 @@ class UserGroup(object):
             yield self.env.timeout(thinkTime)
             startTime = self.env.now
             svcReqFactory = self._pickSvcRequestFactory()
-            yield svcReqFactory.submit()
+            yield svcReqFactory.makeSvcRequest().submit()
             responseTime = self.env.now - startTime
             self._overallTally.add(responseTime)
             self._tallyDict[svcReqFactory].add(responseTime)
