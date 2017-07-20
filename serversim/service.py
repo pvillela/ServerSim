@@ -1,5 +1,5 @@
 """
-Classes representing computing services that are executed in servers.
+Classes representing computing services that are executed on servers.
 """
 
 import logging
@@ -60,7 +60,9 @@ class SvcRequest(object):
         def fgen(_svcReq):
             yield  self.submit()
 
-        res = SvcRequest(self._env, svcName, fgen, self.server, self.inVal)
+            # def __init__(self, env, svcName, fgen, server, inVal, inBlockingCall):
+
+        res = SvcRequest(self._env, svcName, fgen, None, self.inVal, False)
 
         def cb(val):
             chainedReq = f(self)
@@ -255,8 +257,8 @@ class Block(SvcRequester):
         enclosedSvcReq = self.svcRequester.makeSvcRequest(svcReq.inVal, True)
         reqThread = None
         if not svcReq.inBlockingCall:
-            enclosedSvcReq.server.threads.request()
-        yield reqThread
+            reqThread = enclosedSvcReq.server.threads.request()
+            yield reqThread
         yield enclosedSvcReq.submit()
         if not svcReq.inBlockingCall:
             enclosedSvcReq.server.threads.release(reqThread)
