@@ -79,6 +79,7 @@ class SvcRequest(object):
 
 
 def _blockingHelper(enclosedSvcReq, svcReq):
+    enclosedSvcReq.inBlockingCall = True
     reqThread = None
     if not svcReq.inBlockingCall:
         reqThread = enclosedSvcReq.server.threads.request()
