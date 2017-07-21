@@ -53,7 +53,7 @@ try:
             txn_2_3 = CoreSvcRequester(env, "txn_2_3", cug(16, 8), dbLdBal)
             txn_2_3a = Async(env, txn_2_3)
             txn_2_0 = CoreSvcRequester(env, "txn_2_0", cug(3, 1.5), appLdBal)
-            txn_2_1 = CallSeq(env, "txn_2_1", txn_2_0, [txn_2_3a, txn_2_2])
+            txn_2_1 = Seq(env, "txn_2_1", [txn_2_0, txn_2_3a, txn_2_2])
 
             weightedTxns = [(txn_1, 3),
                             (txn_2_1, 1)

@@ -55,23 +55,38 @@ class SvcRequest(object):
         for cb in self.callbacks:
             cb(val)
 
-    #TODO: fix or remove this
+    def blocking(self):
+        """ Creates a service request with blocking behavior based
+            on this service request.
+
+            Note: this method also mutates this object.
+        """
+        def fgen(svcReq):
+            _blockingHelper(self, svcReq)
+
+        svcName = "Blkg(" + self.svcName + ")"
+        return SvcRequest(self.env, svcName, fgen, self.server, self.inVal,
+                          False)
+
     def flatMap(self, f, svcName="flatMap"):
-        def fgen(_svcReq):
+        def fgen(svcReq):
             yield  self.submit()
+            newReq = f(self)
+            yield  newReq.submit()
+            svcReq.complete(newReq.outVal)
 
-            # def __init__(self, env, svcName, fgen, server, inVal, inBlockingCall):
+        return SvcRequest(self._env, svcName, fgen, None, self.inVal, False)
 
-        res = SvcRequest(self._env, svcName, fgen, None, self.inVal, False)
 
-        def cb(val):
-            chainedReq = f(self)
-            chainedReq.callbacks.append(res.complete)
-            chainedReq.submit()
-
-        self.callbacks.append(cb)
-
-        return res
+def _blockingHelper(enclosedSvcReq, svcReq):
+    reqThread = None
+    if not svcReq.inBlockingCall:
+        reqThread = enclosedSvcReq.server.threads.request()
+        yield reqThread
+    yield enclosedSvcReq.submit()
+    if not svcReq.inBlockingCall:
+        enclosedSvcReq.server.threads.release(reqThread)
+    svcReq.complete(enclosedSvcReq.outVal)
 
 
 class SvcRequester(object):
@@ -213,7 +228,7 @@ class Async(SvcRequester):
         requests.
 
     An asynchronous service request completes and returns immediately
-    to the caller, while the underlying (wrapped) service request is
+    to the headRequester, while the underlying (wrapped) service request is
     scheduled for execution on its target server.
 
     Attributes:
@@ -234,7 +249,7 @@ class Async(SvcRequester):
         yield self.env.timeout(0)
 
 
-class Block(SvcRequester):
+class Blkg(SvcRequester):
     """ Wraps a service requester to produce blocking service
         requests.
 
@@ -249,112 +264,96 @@ class Block(SvcRequester):
 
     def __init__(self, env, svcRequester):
         """Initializer."""
-        svcName = "Block(" + svcRequester.svcName + ")"
+        svcName = "Blkg(" + svcRequester.svcName + ")"
         SvcRequester.__init__(self, env, svcName)
         self.svcRequester = svcRequester
 
     def _fgen(self, svcReq):
         enclosedSvcReq = self.svcRequester.makeSvcRequest(svcReq.inVal, True)
-        reqThread = None
-        if not svcReq.inBlockingCall:
-            reqThread = enclosedSvcReq.server.threads.request()
-            yield reqThread
-        yield enclosedSvcReq.submit()
-        if not svcReq.inBlockingCall:
-            enclosedSvcReq.server.threads.release(reqThread)
-        svcReq.complete(enclosedSvcReq.outVal)
+        _blockingHelper(enclosedSvcReq, svcReq)
 
 
-class CallSeq(SvcRequester):
-    """ Combines a service requester and a list of service requesters
-        to yield a sequential composite service requester.
+class Seq(SvcRequester):
+    """ Combines a non-empty list of service requesters to yield a
+        sequential composite service requester.
 
-    The composite service requester produces composite service
+    This composite service requester produces composite service
     requests.  A composite service request produced by this service
-    requester consists of service request produced from the caller
-    service requester and a service request from each of the
-    service requesters in the callees list.  When the service request
-    from the caller completes, it causes each of the callee service
-    requests to be submitted in sequence, i.e., each sub-service is
-    submitted when the prveious one completes.
+    requester consists of a service request from each of the
+    provided service requesters.  Each of the service requests is
+    submitted in sequence, i.e., each service request is
+    submitted when the previous one completes.
 
     Attributes:
-        caller (serversim.SvcRequester): See description in class
-            docstring.
-        callees (list[serversim.SvcRequester]): See description in class
+        svcRequesters (list[serversim.SvcRequester]): See class
             docstring.
     """
 
-    def __init__(self, env, svcName, caller, callees):
+    def __init__(self, env, svcName, svcRequesters):
         """Initializer."""
+        assert len(svcRequesters) > 0, "List of service requesters " \
+            "must be non-empty"
         SvcRequester.__init__(self, env, svcName)
-        self.caller = caller
-        self.callees = callees
+        headRequester = svcRequesters[0]
+        tailRequesters = svcRequesters[1:]
+        self.headRequester = headRequester
+        self.tailRequesters = tailRequesters
 
     def _fgen(self, svcReq):
         """Generator used to submit the request to its associated server."""
-        callerSvcReq = self.caller.makeSvcRequest(svcReq.inVal,
-                                                  svcReq.inBlockingCall)
-        yield callerSvcReq.submit()
+        headSvcReq = self.headRequester.makeSvcRequest(svcReq.inVal,
+                                                         svcReq.inBlockingCall)
+        yield headSvcReq.submit()
 
-        val = callerSvcReq.outVal
-        for callee in self.callees:
-            # The inBlockingCall argument is False because the callees are
-            # separate service requests not a continuation of svcReq on
-            # the same server
-            calleeSvcReq = callee.makeSvcRequest(val, False)
-            yield calleeSvcReq.submit()
-            val = calleeSvcReq.outVal
+        val = headSvcReq.outVal
+        for requester in self.tailRequesters:
+            # The inBlockingCall argument is False because the requests
+            # produced by tailRequesters are separate service requests,
+            # not continuations of previous requests on the same server.
+            request = requester.makeSvcRequest(val, False)
+            yield request.submit()
+            val = request.outVal
 
         svcReq.complete(val)
 
 
-class CallPar(SvcRequester):
-    """ Combines a service requester and a list of service requesters
-        to yield a parallel composite service requester.
+class Par(SvcRequester):
+    """ Combines a non-empty list of service requesters to yield a
+        parallel composite service requester.
 
-    The composite service requester produces composite service
+    This composite service requester produces composite service
     requests.  A composite service request produced by this service
-    requester consists of service request produced from the caller
-    service requester and a service request from each of the
-    service requesters in the callees list.  When the service request
-    from the caller completes, it causes all of the callee service
-    requests to be submitted immediately (in parallel).
+    requester consists of a service request from each of the
+    provided service requesters.  All of the service requests are
+    submitted concurrently.
 
     Attributes:
-        caller (serversim.SvcRequester): See description in class
-            docstring.
-        callees (list[serversim.SvcRequester]): See description in class
+        svcRequesters (list[serversim.SvcRequester]): See class
             docstring.
     """
 
-    def __init__(self, env, svcName, caller, callees, f=None):
+    def __init__(self, env, svcName, svcRequesters, f=None):
         """Initializer."""
+        assert len(svcRequesters) > 0, "List of service requesters " \
+                                       "must be non-empty"
         SvcRequester.__init__(self, env, svcName)
-        self.caller = caller
-        self.callees = callees
+        self.svcRequesters = svcRequesters
         if f is None:
             f = lambda x: x
         self.f = f
 
     def _fgen(self, svcReq):
         """Generator used to submit the request to its associated server."""
-        callerSvcReq = self.caller.makeSvcRequest(svcReq.inVal,
-                                                  svcReq.inBlockingCall)
-        yield callerSvcReq.submit()
-
-        val = callerSvcReq.outVal
-
-        # The inBlockingCall argument is False because the callees are
+        # The inBlockingCall argument is False because the svcRequesters are
         # separate service requests not a continuation of svcReq on
         # the same server
-        calleeSvcReqs = [callee.makeSvcRequest(val, False) for callee in
-                         self.callees]
+        svcReqs = [requester.makeSvcRequest(svcReq.inVal, False)
+                   for requester in self.svcRequesters]
 
-        calleeProcs = [sr.submit() for sr in calleeSvcReqs]
-        yield Condition(self.env, Condition.all_events, calleeProcs)
+        procs = [sr.submit() for sr in svcReqs]
+        yield Condition(self.env, Condition.all_events, procs)
 
-        calleeOutVals = [sr.outVal for sr in calleeSvcReqs]
+        calleeOutVals = [sr.outVal for sr in svcReqs]
         svcReq.complete(self.f(calleeOutVals))
 
 
@@ -365,12 +364,12 @@ class Cont(SvcRequester):
 
     The composite service requester produces composite service
     requests.  A composite service request produced by this service
-    requester consists of service request produced from the caller
+    requester consists of service request produced from the headRequester
     service requester and a service request from the cont service
-    requester.  When the service request from the caller completes
+    requester.  When the service request from the headRequester completes
     (possibly after triggering sequential or parallel sub-requests
     executing on other servers), it causes the cont service request to
-    be submitted to the same target server as the caller request.
+    be submitted to the same target server as the headRequester request.
 
     Attributes:
         caller (serversim.SvcRequester): See description in class
