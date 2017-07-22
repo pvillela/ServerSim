@@ -25,8 +25,7 @@ class SvcRequest(object):
         self.id = id(self)
         self.callbacks = []
         self._isCompleted = False
-        self.timeStarted = None
-        self.timeCompleted = None
+        self.timeLog = dict()
 
     @property
     def env(self): return self._env
@@ -43,7 +42,7 @@ class SvcRequest(object):
                 in the scope of a blocking call.
         """
         debug("@@@@ " + self.svcName)
-        self.timeStarted = self._env.now
+        self.timeLog["submitted"] = self._env.now
         return self._env.process(self.fgen(self))
 
     def complete(self, val):
@@ -51,7 +50,7 @@ class SvcRequest(object):
         assert not self.isCompleted, "Calling complete method on a completed future."
         self._isCompleted = True
         self.outVal = val
-        self.timeCompleted = self.env.now
+        self.timeLog["completed"] = self.env.now
         for cb in self.callbacks:
             cb(val)
 
@@ -83,10 +82,13 @@ def _blockingHelper(enclosedSvcReq, svcReq):
     reqThread = None
     if not svcReq.inBlockingCall:
         reqThread = enclosedSvcReq.server.threads.request()
+        svcReq.timeLog["sw_thread_requested"] = svcReq._env.now
         yield reqThread
+        svcReq.timeLog["sw_thread_acquired"] = svcReq._env.now
     yield enclosedSvcReq.submit()
     if not svcReq.inBlockingCall:
         enclosedSvcReq.server.threads.release(reqThread)
+        svcReq.timeLog["sw_thread_released"] = svcReq._env.now
     svcReq.complete(enclosedSvcReq.outVal)
 
 
@@ -107,13 +109,16 @@ class SvcRequester(object):
 
     Attributes:
         env: SimPy Envirornment.
-        svcName (str): Name of service requester.  Represents the svcName of
-            service produced by the requester.
+        svcName (str): Name of service requester.  Represents the
+            svcName of service produced by the requester.
+        log (list[serversim.SvcRequest]): List that accumulates service
+            requests produced by this factory.
     """
 
-    def __init__(self, env, svcName):
+    def __init__(self, env, svcName, log=None):
         self.env = env
         self.svcName = svcName
+        self.log = log
 
     def _fgen(self, svcReq):
         """ Returns a generator used to submit the service request to its
@@ -147,8 +152,11 @@ class SvcRequester(object):
         Returns:
             (serversim.SvcRequest)
         """
-        return SvcRequest(self.env, self.svcName, self._fgen, None, inVal,
-                          inBlockingCall)
+        res = SvcRequest(self.env, self.svcName, self._fgen, None, inVal,
+                         inBlockingCall)
+        if self.log is not None:
+            self.log.append(res)
+        return res
 
 
 class CoreSvcRequester(SvcRequester):
@@ -192,19 +200,24 @@ class CoreSvcRequester(SvcRequester):
         # acquire a thread if not in a blocking call
         threadReq = None
         if not inBlockingCall:
+            svcReq.timeLog["sw_thread_requested"] = svcReq._env.now
             threadReq = server.threads.request()
             yield threadReq
-        
+            svcReq.timeLog["sw_thread_acquired"] = svcReq._env.now
+
         with server.request() as req:
             debug('Request for %s-%s to server %s at %s for %s compute units'
                   % (self.svcName, reqId, server.name, self.env.now, compUnits))
             req.processDuration = \
                 server.requestProcessDuration(compUnits)  # ad-hoc attribute
+            svcReq.timeLog["hw_thread_requested"] = svcReq._env.now
             yield req
-        
+            svcReq.timeLog["hw_thread_acquired"] = svcReq._env.now
+
             debug('Starting to execute request %s-%s at server %s at %s for %s compute units'
                   % (self.svcName, reqId, server.name, self.env.now, compUnits))
             yield self.env.timeout(req.processDuration)
+            svcReq.timeLog["hw_thread_released"] = svcReq._env.now
             debug('Completed executing request %s-%s at server %s at %s' \
                   % (self.svcName, reqId, server.name, self.env.now))
 
@@ -220,8 +233,9 @@ class CoreSvcRequester(SvcRequester):
         See base class docstring
         """
         server = self.loadBalancer(self.svcName)
-        return SvcRequest(self.env, self.svcName, self._fgen, server, inVal,
-                          inBlockingCall)
+        res = super(CoreSvcRequester, self).makeSvcRequest(inVal, inBlockingCall)
+        res.server = server
+        return res
 
 
 class Async(SvcRequester):
