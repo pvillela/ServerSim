@@ -61,7 +61,8 @@ class SvcRequest(object):
 
     def complete(self, val):
         """Complete the future with value val."""
-        assert not self.isCompleted, "Calling complete method on a completed future."
+        assert not self.isCompleted, "Calling complete method on a completed " \
+                                     "request."
         self._isCompleted = True
         self.outVal = val
         self.timeLog["completed"] = self.env.now
