@@ -302,9 +302,12 @@ class Seq(SvcRequester):
     Attributes:
         svcRequesters (list[serversim.SvcRequester]): See class
             docstring.
+        cont (bool): If true, the sequence executes as continuations
+            of the first request, all on the same server.  Otherwise,
+            each request can execute on a different server.
     """
 
-    def __init__(self, env, svcName, svcRequesters):
+    def __init__(self, env, svcName, svcRequesters, cont=False):
         """Initializer."""
         assert len(svcRequesters) > 0, "List of service requesters " \
             "must be non-empty"
@@ -313,19 +316,25 @@ class Seq(SvcRequester):
         tailRequesters = svcRequesters[1:]
         self.headRequester = headRequester
         self.tailRequesters = tailRequesters
+        self.cont = cont
 
     def _fgen(self, svcReq):
         """Generator used to submit the request to its associated server."""
         headSvcReq = self.headRequester.makeSvcRequest(svcReq.inVal,
-                                                         svcReq.inBlockingCall)
+                                                       svcReq.inBlockingCall)
         yield headSvcReq.submit()
 
         val = headSvcReq.outVal
+
+        # Below, the inBlockingCall argument is False when the requests
+        # produced by tailRequesters are separate service requests,
+        # not continuations of previous requests on the same server.
+        othersInBlockingCall = svcReq.inBlockingCall if self.cont else False
+
         for requester in self.tailRequesters:
-            # The inBlockingCall argument is False because the requests
-            # produced by tailRequesters are separate service requests,
-            # not continuations of previous requests on the same server.
-            request = requester.makeSvcRequest(val, False)
+            request = requester.makeSvcRequest(val, othersInBlockingCall)
+            if self.cont:
+                request.server = svcReq.server
             yield request.submit()
             val = request.outVal
 
@@ -342,12 +351,18 @@ class Par(SvcRequester):
     provided service requesters.  All of the service requests are
     submitted concurrently.
 
+    When the attribute cont is True, this represents multi-threaded
+    execution of requests on the same server.  Otherwise, each
+    service request can execute on a different server.
+
     Attributes:
         svcRequesters (list[serversim.SvcRequester]): See class
             docstring.
+        cont (bool): If true, all the requests executes on the same server.
+            Otherwise, each request can execute on a different server.
     """
 
-    def __init__(self, env, svcName, svcRequesters, f=None):
+    def __init__(self, env, svcName, svcRequesters, f=None, cont=False):
         """Initializer."""
         assert len(svcRequesters) > 0, "List of service requesters " \
                                        "must be non-empty"
@@ -356,56 +371,23 @@ class Par(SvcRequester):
         if f is None:
             f = lambda x: x
         self.f = f
+        self.cont = cont
 
     def _fgen(self, svcReq):
         """Generator used to submit the request to its associated server."""
-        # The inBlockingCall argument is False because the svcRequesters are
-        # separate service requests not a continuation of svcReq on
-        # the same server
-        svcReqs = [requester.makeSvcRequest(svcReq.inVal, False)
-                   for requester in self.svcRequesters]
 
+        # Below, the inBlockingCall argument is False when the requests
+        # run on separate servers.
+        inBlockingCall = svcReq.inBlockingCall if self.cont else False
+
+        svcReqs = [requester.makeSvcRequest(svcReq.inVal, inBlockingCall)
+                   for requester in self.svcRequesters]
+        if self.cont:
+            for req in svcReqs:
+                req.server = svcReq.server
         procs = [sr.submit() for sr in svcReqs]
+
         yield Condition(self.env, Condition.all_events, procs)
 
-        calleeOutVals = [sr.outVal for sr in svcReqs]
-        svcReq.complete(self.f(calleeOutVals))
-
-
-class Cont(SvcRequester):
-    """ Combines two service requesters to yield a composite service
-    requester that represents continuation of processing on the same
-    target server.
-
-    The composite service requester produces composite service
-    requests.  A composite service request produced by this service
-    requester consists of service request produced from the headRequester
-    service requester and a service request from the cont service
-    requester.  When the service request from the headRequester completes
-    (possibly after triggering sequential or parallel sub-requests
-    executing on other servers), it causes the cont service request to
-    be submitted to the same target server as the headRequester request.
-
-    Attributes:
-        caller (serversim.SvcRequester): See description in class
-            docstring.
-        cont (serversim.SvcRequester): See description in class
-            docstring.
-    """
-    
-    def __init__(self, env, svcName, caller, cont):
-        """Initializer."""
-        SvcRequester.__init__(self, env, svcName)
-        self.caller = caller
-        self.cont = cont
-    
-    def _fgen(self, svcReq):
-        """Generator used to submit the request to its associated server."""
-        callerSvcReq = self.caller.makeSvcRequest(svcReq.inVal,
-                                                  svcReq.inBlockingCall)
-        yield callerSvcReq.submit()
-
-        contSvcReq = self.cont.makeSvcRequest(callerSvcReq.outVal,
-                                              svcReq.inBlockingCall)
-        contSvcReq.server = callerSvcReq.server
-        yield contSvcReq.submit()
+        outValls = [sr.outVal for sr in svcReqs]
+        svcReq.complete(self.f(outValls))
