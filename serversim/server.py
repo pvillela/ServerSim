@@ -31,33 +31,38 @@ class Server(MeasuredResource):
         self.speed = speed  # aggregate server speed across all hardware threads
         self.name = name
     
-    def requestProcessDuration(self, compUnits):
-        """The time required to process a request of compUnits compute units."""
+    def processDuration(self, compUnits):
+        """
+        The time required to process a request of compUnits compute units.
+        """
         return compUnits / (self.speed / self.maxConcurrency)
     
     avgProcessTime = MeasuredResource.avgUseTime
-    """Returns the average processing time per completed request."""
+    """Returns the average processing time per processed request."""
     
     @property
     def avgThreadQueueTime(self):
-        """The average thread queuing time per thread completion."""
+        """The average thread queuing time per software thread release."""
         return self.threads.avgQueueTime
 
     @property
     def avgThreadUseTime(self):
-        """The average thread use time per thread completion."""
+        """The average thread use time per software thread release."""
         return self.threads.avgUseTime
 
     @property
     def avgThreadServiceTime(self):
-        """The average thread service (wait + use) time per thread completion."""
+        """ The average thread service (wait + use) time per  software
+            thread release.
+        """
         return self.threads.avgServiceTime
 
     @property
     def avgThreadQueueLength(self):
-        """The time-average length of the queue of requests to be granted a thread,
+        """ The time-average length of the queue of requests to be
+            granted a software thread,
 
-        For completed thread requests, using Little's formula.
+        Based on number of thread releases, using Little's formula.
         """
         return self.threads.avgQueueLength
 

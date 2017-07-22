@@ -136,21 +136,23 @@ class CoreSvcRequester(SvcRequester):
     request combinators in this module.
 
     Attributes:
-        compUnitsGen (() -> Number): Random function that generates
-            the number of compute units required to execute a
+        compUnitsGen (() -> Number): A (possibly randodm) function that
+            generates the number of compute units required to execute a
             service request instance.
-        loadBalancer ((str) -> serversim.Server): Function that
+        fServer ((str) -> serversim.Server): Function that
             produces a server (possibly round-robin, random, or based
             on server load information) when given a service request
-            svcName.
+            name.  Models a load-balancer.
+        f ((any) -> any): A function that is applied to a service
+            request's inVal to produce its outVal.
     """
     
-    def __init__(self, env, svcName, compUnitsGen, loadBalancer, f=None,
+    def __init__(self, env, svcName, compUnitsGen, fServer, f=None,
                  log=None):
         """Initializer."""
         SvcRequester.__init__(self, env, svcName, log)
         self.compUnitsGen = compUnitsGen
-        self.loadBalancer = loadBalancer
+        self.fServer = fServer
         if f is None:
             f = lambda x: None
         self.f = f
@@ -179,7 +181,7 @@ class CoreSvcRequester(SvcRequester):
             debug('Request for %s-%s to server %s at %s for %s compute units'
                   % (self.svcName, reqId, server.name, self.env.now, compUnits))
             req.processDuration = \
-                server.requestProcessDuration(compUnits)  # ad-hoc attribute
+                server.processDuration(compUnits)  # ad-hoc attribute
             svcReq.timeLog["hw_thread_requested"] = svcReq._env.now
             yield req
             svcReq.timeLog["hw_thread_acquired"] = svcReq._env.now
@@ -202,7 +204,7 @@ class CoreSvcRequester(SvcRequester):
 
         See base class docstring
         """
-        server = self.loadBalancer(self.svcName)
+        server = self.fServer(self.svcName)
         res = super(CoreSvcRequester, self).makeSvcRequest(inVal, inBlockingCall)
         res.server = server
         return res

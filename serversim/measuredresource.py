@@ -11,7 +11,8 @@ class MeasuredResource(simpy.Resource):
     Attributes:
         env: SimPy Environment.
         capacity: The resource's capacity.
-        completions: Number of requests that completed utilization of this resource.
+        releases: Number of requests that finished utilization of
+            this resource.
         cumQueueTime: Cumulative queuing time for all requests.
         cumServiceTime: Cumulative end-to-end time for all requests.
     """
@@ -20,7 +21,7 @@ class MeasuredResource(simpy.Resource):
         """ Initializer."""
         simpy.Resource.__init__(self, env, capacity)
         self.env = env
-        self.completions = 0
+        self.releases = 0
         self.cumQueueTime = 0
         self.cumServiceTime = 0
     
@@ -39,28 +40,28 @@ class MeasuredResource(simpy.Resource):
     
     def release(self, req):
         """Overrides parent class method to support metrics."""
-        self.completions += 1
+        self.releases += 1
         self.cumServiceTime += self.env.now - req.submissionTime
         return simpy.Resource.release(self, req)
         
     @property
     def throughput(self):
         """Returns the throughput of this resource up until now."""
-        return self.completions * 1.0 / self.env.now
+        return self.releases * 1.0 / self.env.now
     
     @property
     def avgQueueTime(self):
-        """Returns the average queuing time per completion."""
-        return self.cumQueueTime / self.completions
+        """Returns the average queuing time per release."""
+        return self.cumQueueTime / self.releases
     
     @property
     def avgServiceTime(self):
-        """Returns the average service time per completion."""
-        return self.cumServiceTime / self.completions
+        """Returns the average service time per release."""
+        return self.cumServiceTime / self.releases
     
     @property
     def avgUseTime(self):
-        """Returns the average use time per completion."""
+        """Returns the average use time per release."""
         return self.avgServiceTime - self.avgQueueTime
 
     @property
@@ -68,7 +69,7 @@ class MeasuredResource(simpy.Resource):
         """Average queue length.
 
         Returns the time-average length of queue of requests waiting to
-        be granted by this resource, for completed requests, using Little's
+        be granted by this resource, per resource releases, using Little's
         formula.
         """
         return self.throughput * self.avgQueueTime
