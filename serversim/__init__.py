@@ -8,5 +8,5 @@ from .util import probChooser
 from .measuredresource import MeasuredResource
 from .server import Server
 from .service import (
-    SvcRequester, CoreSvcRequester, Async, Blkg, Seq, Par)
+    SvcRequester, CoreSvcRequester, Async, Blkg, Seq, Par, Fmap)
 from .usergroup import UserGroup

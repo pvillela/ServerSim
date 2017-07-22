@@ -11,9 +11,23 @@ debug = logging.debug
 class SvcRequest(object):
     """Represents service requests to servers.
 
-    Patterned after completable futures.
+    Inspired by completable futures.
+
+    Attributes:
+        inBlockingCall (bool): Indicates whether this request is
+            in the scope of a blocking call.  When this parameter
+            is true, the service request will hold a software
+            thread on the target server while the service
+            request itself and any of its sub-requests (calls
+            to other servers) are executing.  Otherwise, the
+            call is non-blocking, so a thread is held on the
+            target server only while the service request itself
+            is executing; the thread is relinquished when
+            this request finishes executing and it passes contol
+            to its sub-requests.
+
     """
-    def __init__(self, env, svcName, fgen, server, inVal, inBlockingCall):
+    def __init__(self, env, svcName, fgen, server, inVal, inBlockingCall=False):
         """Initializer."""
         self._env = env
         self.svcName = svcName
@@ -54,43 +68,6 @@ class SvcRequest(object):
         for cb in self.callbacks:
             cb(val)
 
-    def blocking(self):
-        """ Creates a service request with blocking behavior based
-            on this service request.
-
-            Note: this method also mutates this object.
-        """
-        def fgen(svcReq):
-            _blockingHelper(self, svcReq)
-
-        svcName = "Blkg(" + self.svcName + ")"
-        return SvcRequest(self.env, svcName, fgen, self.server, self.inVal,
-                          False)
-
-    def flatMap(self, f, svcName="flatMap"):
-        def fgen(svcReq):
-            yield  self.submit()
-            newReq = f(self)
-            yield  newReq.submit()
-            svcReq.complete(newReq.outVal)
-
-        return SvcRequest(self._env, svcName, fgen, None, self.inVal, False)
-
-
-def _blockingHelper(enclosedSvcReq, svcReq):
-    enclosedSvcReq.inBlockingCall = True
-    reqThread = None
-    if not svcReq.inBlockingCall:
-        reqThread = enclosedSvcReq.server.threads.request()
-        svcReq.timeLog["sw_thread_requested"] = svcReq._env.now
-        yield reqThread
-        svcReq.timeLog["sw_thread_acquired"] = svcReq._env.now
-    yield enclosedSvcReq.submit()
-    if not svcReq.inBlockingCall:
-        enclosedSvcReq.server.threads.release(reqThread)
-        svcReq.timeLog["sw_thread_released"] = svcReq._env.now
-    svcReq.complete(enclosedSvcReq.outVal)
-
 
 class SvcRequester(object):
     """Base class of service requesters.
@@ -130,6 +107,10 @@ class SvcRequester(object):
         """
         raise NotImplementedError, "'SvcRequester' is an abstract class."
 
+    def _addToLog(self, svcReq):
+        if self.log is not None:
+            self.log.append(svcReq)
+
     def makeSvcRequest(self, inVal=None, inBlockingCall=False):
         """ Produces a SvcRequest object.
 
@@ -137,25 +118,13 @@ class SvcRequester(object):
 
         Args:
             inVal (any): input value of produced service request.
-            inBlockingCall (bool): Indicates whether this request is
-                in the scope of a blocking call.  When this parameter
-                is true, the service request will hold a software
-                thread on the target server while the service
-                request itself and any of its sub-requests (calls
-                to other servers) are executing.  Otherwise, the
-                call is non-blocking, so a thread is held on the
-                target server only while the service request itself
-                is executing; the thread is relinquished when
-                this request finishes executing and it passes contol
-                to its sub-requests.
 
         Returns:
             (serversim.SvcRequest)
         """
         res = SvcRequest(self.env, self.svcName, self._fgen, None, inVal,
                          inBlockingCall)
-        if self.log is not None:
-            self.log.append(res)
+        self._addToLog(res)
         return res
 
 
@@ -176,9 +145,10 @@ class CoreSvcRequester(SvcRequester):
             svcName.
     """
     
-    def __init__(self, env, svcName, compUnitsGen, loadBalancer, f=None):
+    def __init__(self, env, svcName, compUnitsGen, loadBalancer, f=None,
+                 log=None):
         """Initializer."""
-        SvcRequester.__init__(self, env, svcName)
+        SvcRequester.__init__(self, env, svcName, log)
         self.compUnitsGen = compUnitsGen
         self.loadBalancer = loadBalancer
         if f is None:
@@ -251,10 +221,10 @@ class Async(SvcRequester):
             requester.
     """
     
-    def __init__(self, env, svcRequester):
+    def __init__(self, env, svcRequester, log=None):
         """Initializer."""
         svcName = "Async(" + svcRequester.svcName + ")"
-        SvcRequester.__init__(self, env, svcName)
+        SvcRequester.__init__(self, env, svcName, log)
         self.svcRequester = svcRequester
 
     def _fgen(self, svcReq):
@@ -277,15 +247,25 @@ class Blkg(SvcRequester):
             requester.
     """
 
-    def __init__(self, env, svcRequester):
+    def __init__(self, env, svcRequester, log=None):
         """Initializer."""
         svcName = "Blkg(" + svcRequester.svcName + ")"
-        SvcRequester.__init__(self, env, svcName)
+        SvcRequester.__init__(self, env, svcName, log)
         self.svcRequester = svcRequester
 
     def _fgen(self, svcReq):
         enclosedSvcReq = self.svcRequester.makeSvcRequest(svcReq.inVal, True)
-        _blockingHelper(enclosedSvcReq, svcReq)
+        reqThread = None
+        if not svcReq.inBlockingCall:
+            reqThread = enclosedSvcReq.server.threads.request()
+            svcReq.timeLog["sw_thread_requested"] = svcReq._env.now
+            yield reqThread
+            svcReq.timeLog["sw_thread_acquired"] = svcReq._env.now
+        yield enclosedSvcReq.submit()
+        if not svcReq.inBlockingCall:
+            enclosedSvcReq.server.threads.release(reqThread)
+            svcReq.timeLog["sw_thread_released"] = svcReq._env.now
+        svcReq.complete(enclosedSvcReq.outVal)
 
 
 class Seq(SvcRequester):
@@ -307,11 +287,11 @@ class Seq(SvcRequester):
             each request can execute on a different server.
     """
 
-    def __init__(self, env, svcName, svcRequesters, cont=False):
+    def __init__(self, env, svcName, svcRequesters, cont=False, log=None):
         """Initializer."""
         assert len(svcRequesters) > 0, "List of service requesters " \
             "must be non-empty"
-        SvcRequester.__init__(self, env, svcName)
+        SvcRequester.__init__(self, env, svcName, log)
         headRequester = svcRequesters[0]
         tailRequesters = svcRequesters[1:]
         self.headRequester = headRequester
@@ -362,11 +342,12 @@ class Par(SvcRequester):
             Otherwise, each request can execute on a different server.
     """
 
-    def __init__(self, env, svcName, svcRequesters, f=None, cont=False):
+    def __init__(self, env, svcName, svcRequesters, f=None, cont=False,
+                 log=None):
         """Initializer."""
         assert len(svcRequesters) > 0, "List of service requesters " \
                                        "must be non-empty"
-        SvcRequester.__init__(self, env, svcName)
+        SvcRequester.__init__(self, env, svcName, log)
         self.svcRequesters = svcRequesters
         if f is None:
             f = lambda x: x
@@ -383,11 +364,31 @@ class Par(SvcRequester):
         svcReqs = [requester.makeSvcRequest(svcReq.inVal, inBlockingCall)
                    for requester in self.svcRequesters]
         if self.cont:
-            for req in svcReqs:
-                req.server = svcReq.server
-        procs = [sr.submit() for sr in svcReqs]
+            for req in svcReqs[1:]:
+                req.server = svcReqs[0].server
+        procs = [req.submit() for req in svcReqs]
 
         yield Condition(self.env, Condition.all_events, procs)
 
-        outValls = [sr.outVal for sr in svcReqs]
+        outValls = [req.outVal for req in svcReqs]
         svcReq.complete(self.f(outValls))
+
+
+class Fmap(SvcRequester):
+    def __init__(self, env, svcName, baseRequester, fRequester, cont=False,
+                 log=None):
+        SvcRequester.__init__(self, env, svcName, log)
+        self.baseRequester = baseRequester
+        self.fRequester = fRequester
+        self.cont = cont
+
+    def _fgen(self, svcReq):
+        baseReq = self.baseRequester.makeSvcRequest(svcReq.inVal,
+                                                    svcReq.inBlockingCall)
+        yield  baseReq.submit()
+        newReq = self.fRequester(baseReq.outVal)
+        if self.cont:
+            newReq.server = svcReq.server
+            newReq.inBlockingCall = svcReq.inBlockingCall
+        yield  newReq.submit()
+        svcReq.complete(newReq.outVal)
