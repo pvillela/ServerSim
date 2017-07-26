@@ -50,7 +50,7 @@ class UserGroup(object):
             quantiles = [0.5, 0.95, 0.99]
         self.quantiles = quantiles
 
-        self._pickSvcRequestFactory = probChooser(weightedTxns)
+        self._pickSvcRequestFactory = probChooser(*weightedTxns)
         
         # create Tally objects for response times: overall and by svcRequest
         self._tallyDict = {}  # map from svcRequest to tally

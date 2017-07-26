@@ -39,7 +39,8 @@ class SvcRequest(object):
         self.id = id(self)
         self.callbacks = []
         self._isCompleted = False
-        self.timeLog = dict()
+        self.timeLog = list()
+        self.timeDict = dict()
 
     @property
     def env(self): return self._env
@@ -50,13 +51,9 @@ class SvcRequest(object):
     def submit(self):
         """ Submit the request to its associated server, return the
             simpy process corresponding to the request.
-
-        Args:
-            inBlockingCall (bool): Indicates whether this request is
-                in the scope of a blocking call.
         """
         debug("@@@@ " + self.svcName)
-        self.timeLog["submitted"] = self._env.now
+        self._logTime("submitted")
         return self._env.process(self.fgen(self))
 
     def complete(self, val):
@@ -65,9 +62,26 @@ class SvcRequest(object):
                                      "request."
         self._isCompleted = True
         self.outVal = val
-        self.timeLog["completed"] = self.env.now
+        self._logTime("completed")
         for cb in self.callbacks:
             cb(val)
+
+    def _logTime(self, label):
+        now = self._env.now
+        self.timeLog.append((label, now))
+        self.timeDict[label] = now
+
+    @property
+    def processTime(self):
+        return self.timeDict["hw_thread_released"] - self.timeDict["hw_thread_acquired"]
+
+    @property
+    def hwQueueTime(self):
+        return self.timeDict["hw_thread_acquired"] - self.timeDict["hw_thread_requested"]
+
+    @property
+    def serviceTime(self):
+        return self.timeDict["completed"] - self.timeDict["submitted"]
 
 
 class SvcRequester(object):
@@ -148,8 +162,8 @@ class CoreSvcRequester(SvcRequester):
             request's inVal to produce its outVal.
     """
     
-    def __init__(self, env, svcName, compUnitsGen, fServer, f=None,
-                 log=None):
+    def __init__(self, env, svcName, compUnitsGen, fServer, log=None,
+                 f=None):
         """Initializer."""
         SvcRequester.__init__(self, env, svcName, log)
         self.compUnitsGen = compUnitsGen
@@ -169,28 +183,29 @@ class CoreSvcRequester(SvcRequester):
         inVal = svcReq.inVal
 
         compUnits = self.compUnitsGen()
+        svcReq.compUnits = compUnits  # ad-hoc attribute
         
         # acquire a thread if not in a blocking call
         threadReq = None
         if not inBlockingCall:
-            svcReq.timeLog["sw_thread_requested"] = svcReq._env.now
-            threadReq = server.threads.request()
+            svcReq._logTime("sw_thread_requested")
+            threadReq = server.threads.request(svcReq)
             yield threadReq
-            svcReq.timeLog["sw_thread_acquired"] = svcReq._env.now
+            svcReq._logTime("sw_thread_acquired")
 
-        with server.request() as req:
+        with server.request(svcReq) as req:
             debug('Request for %s-%s to server %s at %s for %s compute units'
                   % (self.svcName, reqId, server.name, self.env.now, compUnits))
             req.processDuration = \
                 server.processDuration(compUnits)  # ad-hoc attribute
-            svcReq.timeLog["hw_thread_requested"] = svcReq._env.now
+            svcReq._logTime("hw_thread_requested")
             yield req
-            svcReq.timeLog["hw_thread_acquired"] = svcReq._env.now
+            svcReq._logTime("hw_thread_acquired")
 
             debug('Starting to execute request %s-%s at server %s at %s for %s compute units'
                   % (self.svcName, reqId, server.name, self.env.now, compUnits))
             yield self.env.timeout(req.processDuration)
-            svcReq.timeLog["hw_thread_released"] = svcReq._env.now
+            svcReq._logTime("hw_thread_released")
             debug('Completed executing request %s-%s at server %s at %s' \
                   % (self.svcName, reqId, server.name, self.env.now))
 
@@ -199,7 +214,8 @@ class CoreSvcRequester(SvcRequester):
         # release thread is appliccable
         if not inBlockingCall:
             server.threads.release(threadReq)
-    
+            svcReq._logTime("sw_thread_released")
+
     def makeSvcRequest(self, inVal=None, inBlockingCall=False):
         """Overrides default implementation in base class.
 
@@ -260,14 +276,14 @@ class Blkg(SvcRequester):
         enclosedSvcReq = self.svcRequester.makeSvcRequest(svcReq.inVal, True)
         reqThread = None
         if not svcReq.inBlockingCall:
-            reqThread = enclosedSvcReq.server.threads.request()
-            svcReq.timeLog["sw_thread_requested"] = svcReq._env.now
+            reqThread = enclosedSvcReq.server.threads.request(svcReq)
+            svcReq._logTime("sw_thread_requested")
             yield reqThread
-            svcReq.timeLog["sw_thread_acquired"] = svcReq._env.now
+            svcReq._logTime("sw_thread_acquired")
         yield enclosedSvcReq.submit()
         if not svcReq.inBlockingCall:
             enclosedSvcReq.server.threads.release(reqThread)
-            svcReq.timeLog["sw_thread_released"] = svcReq._env.now
+            svcReq._logTime("sw_thread_released")
         svcReq.complete(enclosedSvcReq.outVal)
 
 
@@ -343,6 +359,10 @@ class Par(SvcRequester):
             docstring.
         cont (bool): If true, all the requests executes on the same server.
             Otherwise, each request can execute on a different server.
+            When cont is True, the server is the container service
+            request's server if not None, otherwise the server is
+            picked from the first service request in the list of
+            generated service requests.
     """
 
     def __init__(self, env, svcName, svcRequesters, f=None, cont=False,
@@ -367,8 +387,9 @@ class Par(SvcRequester):
         svcReqs = [requester.makeSvcRequest(svcReq.inVal, inBlockingCall)
                    for requester in self.svcRequesters]
         if self.cont:
+            server = svcReq.server if not None else svcReqs[0].server
             for req in svcReqs[1:]:
-                req.server = svcReqs[0].server
+                req.server = server
         procs = [req.submit() for req in svcReqs]
 
         yield Condition(self.env, Condition.all_events, procs)

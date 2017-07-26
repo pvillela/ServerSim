@@ -24,8 +24,9 @@ class MeasuredResource(simpy.Resource):
         self.releases = 0
         self.cumQueueTime = 0
         self.cumServiceTime = 0
+        self.svcReqLog = list()
     
-    def request(self):
+    def request(self, svcReq=None):
         """Overrides parent class method to support metrics."""
 
         submissionTime = self.env.now
@@ -35,6 +36,8 @@ class MeasuredResource(simpy.Resource):
         
         req = simpy.Resource.request(self)
         req.submissionTime = submissionTime  # ad-hoc attribute
+        if svcReq is not None:
+            self.svcReqLog.append(svcReq)
         req.callbacks.append(cb)
         return req
     
@@ -52,12 +55,12 @@ class MeasuredResource(simpy.Resource):
     @property
     def avgQueueTime(self):
         """Returns the average queuing time per release."""
-        return self.cumQueueTime / self.releases
+        return self.cumQueueTime / self.releases if self.releases != 0 else 0
     
     @property
     def avgServiceTime(self):
         """Returns the average service time per release."""
-        return self.cumServiceTime / self.releases
+        return self.cumServiceTime / self.releases if self.releases != 0 else 0
     
     @property
     def avgUseTime(self):

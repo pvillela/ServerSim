@@ -5,11 +5,12 @@ Utilities to support service simulation framework.
 from random import random
 
 
-def probChooser(weightedItems):
+def probChooser(*weightedItems):
     """
-    Returns a function that randomly chooses an item from the keys of a dictionary
-    with a probability proportional to the values (weights) associated with the keys.  
-    The weights do not need to add up to 1.
+    Returns a function that randomly chooses an item from a list of
+    item-value pairs,  with a probability proportional to the values
+    (weights) associated with the items. The weights do not need to
+    add up to 1.
 
     Args:
         weightedItems (list[(any, number)]): item-weight associations to be picked from.
