@@ -42,6 +42,9 @@ class SvcRequest(object):
         self.timeLog = list()
         self.timeDict = dict()
 
+    # def __repr__(self):
+    #     return type(self).__name__ + repr(self.__dict__)
+
     @property
     def env(self): return self._env
 
@@ -112,6 +115,9 @@ class SvcRequester(object):
         self.svcName = svcName
         self.log = log
 
+    def __repr__(self):
+        return type(self).__name__ + repr(self.__dict__)
+
     def _fgen(self, svcReq):
         """ Returns a generator used to submit the service request to its
             associated server.
@@ -120,7 +126,7 @@ class SvcRequester(object):
             svcReq (serversim.SvcRequest): A service request produced by
                 this factory.
         """
-        raise NotImplementedError, "'SvcRequester' is an abstract class."
+        raise NotImplementedError("'SvcRequester' is an abstract class.")
 
     def _addToLog(self, svcReq):
         if self.log is not None:
@@ -189,31 +195,32 @@ class CoreSvcRequester(SvcRequester):
         threadReq = None
         if not inBlockingCall:
             svcReq._logTime("sw_thread_requested")
-            threadReq = server.threads.request(svcReq)
+            threadReq = server.threadRequest(svcReq)
             yield threadReq
             svcReq._logTime("sw_thread_acquired")
 
-        with server.request(svcReq) as req:
-            debug('Request for %s-%s to server %s at %s for %s compute units'
-                  % (self.svcName, reqId, server.name, self.env.now, compUnits))
-            req.processDuration = \
-                server.processDuration(compUnits)  # ad-hoc attribute
-            svcReq._logTime("hw_thread_requested")
-            yield req
-            svcReq._logTime("hw_thread_acquired")
+        hwReq = server.hwRequest(svcReq)
+        debug('Request for %s-%s to server %s at %s for %s compute units'
+              % (self.svcName, reqId, server.name, self.env.now, compUnits))
+        hwReq.processDuration = \
+            server.processDuration(compUnits)  # ad-hoc attribute
+        svcReq._logTime("hw_thread_requested")
+        yield hwReq
+        svcReq._logTime("hw_thread_acquired")
 
-            debug('Starting to execute request %s-%s at server %s at %s for %s compute units'
-                  % (self.svcName, reqId, server.name, self.env.now, compUnits))
-            yield self.env.timeout(req.processDuration)
-            svcReq._logTime("hw_thread_released")
-            debug('Completed executing request %s-%s at server %s at %s' \
-                  % (self.svcName, reqId, server.name, self.env.now))
+        debug('Starting to execute request %s-%s at server %s at %s for %s compute units'
+              % (self.svcName, reqId, server.name, self.env.now, compUnits))
+        yield self.env.timeout(hwReq.processDuration)
+        server.hwRelease(hwReq)
+        svcReq._logTime("hw_thread_released")
+        debug('Completed executing request %s-%s at server %s at %s' \
+              % (self.svcName, reqId, server.name, self.env.now))
 
         svcReq.complete(self.f(inVal))
 
         # release thread is appliccable
         if not inBlockingCall:
-            server.threads.release(threadReq)
+            server.threadRelease(threadReq)
             svcReq._logTime("sw_thread_released")
 
     def makeSvcRequest(self, inVal=None, inBlockingCall=False):

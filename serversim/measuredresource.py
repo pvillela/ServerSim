@@ -25,7 +25,10 @@ class MeasuredResource(simpy.Resource):
         self.cumQueueTime = 0
         self.cumServiceTime = 0
         self.svcReqLog = list()
-    
+
+    # def __repr__(self):
+    #     return type(self).__name__ + repr(self.__dict__)
+
     def request(self, svcReq=None):
         """Overrides parent class method to support metrics."""
 
@@ -40,7 +43,7 @@ class MeasuredResource(simpy.Resource):
             self.svcReqLog.append(svcReq)
         req.callbacks.append(cb)
         return req
-    
+
     def release(self, req):
         """Overrides parent class method to support metrics."""
         self.releases += 1
@@ -50,7 +53,7 @@ class MeasuredResource(simpy.Resource):
     @property
     def throughput(self):
         """Returns the throughput of this resource up until now."""
-        return self.releases * 1.0 / self.env.now
+        return self.releases / self.env.now
     
     @property
     def avgQueueTime(self):

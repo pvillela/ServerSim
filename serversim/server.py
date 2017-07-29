@@ -5,7 +5,7 @@ Classes representing computer servers.
 from . import MeasuredResource
 
 
-class Server(MeasuredResource):
+class Server(object):
     """
     Represents a server.  
     
@@ -14,48 +14,97 @@ class Server(MeasuredResource):
     
     Attributes:
         env: SimPy Environment
-        maxConcurrency: The maximum of hardware threads for the server.
+        maxConcurrency: The maximum of _hardware threads for the server.
         numThreads: The maximum number of software threads for the server.
-        threads: Simpy Resource representing the server's software threads.
-        speed: Aggregate server speed across all hardware threads.
+        _threads: Simpy Resource representing the server's software threads.
+        speed: Aggregate server speed across all _hardware threads.
         name: The server's name.
     """
     
     def __init__(self, env, maxConcurrency, numThreads, speed, name):
         """Initializer."""
-        MeasuredResource.__init__(self, env, maxConcurrency)
         self.env = env
         self.maxConcurrency = maxConcurrency
         self.numThreads = numThreads
-        self.threads = MeasuredResource(env, numThreads)
-        self.speed = speed  # aggregate server speed across all hardware threads
+        self.speed = speed  # aggregate server speed across all _hardware _threads
         self.name = name
-    
+        self._hardware = MeasuredResource(env, maxConcurrency)
+        self._threads = MeasuredResource(env, numThreads)
+
     def processDuration(self, compUnits):
         """
         The time required to process a request of compUnits compute units.
         """
         return compUnits / (self.speed / self.maxConcurrency)
-    
-    avgProcessTime = MeasuredResource.avgUseTime
-    """Returns the average processing time per processed request."""
-    
+
+    def hwRequest(self, svcReq=None):
+        return self._hardware.request(svcReq)
+
+    def hwRelease(self, req):
+        return self._hardware.release(req)
+
+    def threadRequest(self, svcReq=None):
+        return self._threads.request(svcReq)
+
+    def threadRelease(self, req):
+        return self._threads.release(req)
+
+    @property
+    def svcReqLog(self):
+        return self._hardware.svcReqLog
+
+    @property
+    def threadReqLog(self):
+        return self._threads.svcReqLog
+
+    @property
+    def throughput(self):
+        """Returns the throughput of this resource up until now."""
+        return self._hardware.throughput
+
+    @property
+    def avgHwQueueTime(self):
+        """Returns the average queuing time per release."""
+        return self._hardware.avgQueueTime
+
+    @property
+    def avgProcessTime(self):
+        """Returns the average processing time per release."""
+        return self._hardware.avgUseTime
+
+    @property
+    def avgHwQueueLength(self):
+        """Average _hardware queue length.
+
+        Returns the time-average length of queue of requests waiting to
+        be granted by this resource, per resource releases, using Little's
+        formula.
+        """
+        return self._hardware.avgQueueLength
+
+    @property
+    def utilization(self):
+        """Return the fraction of capacity used."""
+        return self._hardware.utilization
+
     @property
     def avgThreadQueueTime(self):
         """The average thread queuing time per software thread release."""
-        return self.threads.avgQueueTime
+        return self._threads.avgQueueTime
 
     @property
     def avgThreadUseTime(self):
         """The average thread use time per software thread release."""
-        return self.threads.avgUseTime
+        return self._threads.avgUseTime
 
     @property
-    def avgThreadServiceTime(self):
+    def avgServiceTime(self):
         """ The average thread service (wait + use) time per  software
             thread release.
+
+            Shadows the property from base class.
         """
-        return self.threads.avgServiceTime
+        return self._threads.avgServiceTime
 
     @property
     def avgThreadQueueLength(self):
@@ -64,9 +113,9 @@ class Server(MeasuredResource):
 
         Based on number of thread releases, using Little's formula.
         """
-        return self.threads.avgQueueLength
+        return self._threads.avgQueueLength
 
     @property
     def threadUtilization(self):
         """The fraction of thread capacity used."""
-        return self.threads.utilization
+        return self._threads.utilization
