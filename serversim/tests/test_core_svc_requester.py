@@ -8,14 +8,20 @@ import random
 
 import simpy
 import pytest
-from hamcrest import assert_that, close_to, greater_than, less_than, equal_to
+from hamcrest import assert_that, close_to #, greater_than, less_than, equal_to
 from hypothesis import given
 from hypothesis.strategies import data, choices, lists, integers
 
-from helper import fi, dump_servers, dump_svc_reqs, servers_strat, svc_rqrs_strat
+from helper import fi, dump_servers, dump_svc_reqs, servers_svc_rqrs_st
 
+
+####################
+# Module globals
 
 _testCount = 0
+
+# end module globals
+####################
 
 
 @given(data())
@@ -44,42 +50,32 @@ def t_core_svc_requester(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump, data):
     draw = data.draw
     choice = draw(choices())
 
-    nServers = draw(integers(1, maxServers))
-    nSvcRqrs = draw(integers(1, maxSvcRqrs))
-    nSvcReqs = draw(integers(1, maxSvcReqs))
-
-    def ffServer(serverLst):
-        def fServer(_svcReqName):
-            return choice(serverLst)
-        return fServer
-
     env = simpy.Environment()
     svcReqLog = list()
 
+    serverLst, svcRqrLst = draw(
+        servers_svc_rqrs_st(env, maxServers, maxSvcRqrs, {0:svcReqLog}))
+    nServers = len(serverLst)
+    nSvcRqrs = len(svcRqrLst)
+    nSvcReqs = draw(integers(1, maxSvcReqs))
+
     _testCount = _testCount + 1
-    testCount = _testCount
 
-    print("\n\n@@@@@@@@ Start test :", testCount, ", nServers:", nServers, ", nSvcRqrs:", nSvcRqrs, file=fi)
-    serverLst = draw(lists(servers_strat(env), nServers, None, nServers))
-    # print("Drew serverLst", file=fi)
-    # print(">>> " + str(serverLst), file=fi)
-
-    svcRqrLst = draw(lists(svc_rqrs_strat(env, serverLst, ffServer, {0:svcReqLog}), nSvcRqrs, None, nSvcRqrs))
-    # print("Drew svcRqrLst", file=fi)
-    # print(">>> " + str(svcRqrLst), file=fi)
+    print("\n\n@@@@@@@@ Start test :", _testCount, ", nServers:", nServers,
+          ", nSvcRqrs:", nSvcRqrs, "nSvcReqs:", nSvcReqs, file=fi)
 
     for i in range(nSvcReqs):
         # svcRqr = choice(svcRqrLst)  # this is expensive, replaced below
-        j = random.randint(0, len(svcRqrLst)-1)
+        j = random.randint(0, len(svcRqrLst) - 1)
         svcRqr = svcRqrLst[j]
-        # svcRqr = svcRqrLst[i % len(svcRqrLst)]
         svcReq = svcRqr.makeSvcRequest(None)
         # print(">>> submitting", svcRqr.svcName, file=fi)
         svcReq.submit()
 
     simTime = 1000000000
-    print("\n\n***** Start Simulation (%s, %s, %s)-%s *****" % (nServers, nSvcRqrs, dump, testCount), file=fi)
-    print("Simulation: simTime = %s" %  simTime, file=fi)
+    print("\n\n***** Start Simulation (%s, %s, %s)-%s *****" % (
+        nServers, nSvcRqrs, dump, _testCount), file=fi)
+    print("Simulation: simTime = %s" % simTime, file=fi)
     env.run(until=simTime)
 
     delta = 0.0001
@@ -92,7 +88,8 @@ def t_core_svc_requester(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump, data):
     for svcReq in svcReqLog:
         server = svcReq.server
         assert_that(svcReq.processTime,
-                    close_to(svcReq.compUnits / (server.speed / server.maxConcurrency), delta))
+                    close_to(svcReq.compUnits / (
+                    server.speed / server.maxConcurrency), delta))
 
     if dump: dump_servers(serverLst)
 
@@ -109,14 +106,21 @@ def t_core_svc_requester(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump, data):
     #         The server's average service time is the average of the service
     #             time over all core service requests processed on the server.
     for server in serverLst:
-        print(">>>", server.name, "hwThreads=", server.maxConcurrency, "_threads=", server.numThreads, "speed=", server.speed, file=fi)
+        print(">>>", server.name, "hwThreads=", server.maxConcurrency,
+              "_threads=", server.numThreads, "speed=", server.speed, file=fi)
         svcReqLog = server.svcReqLog
         nSvcReqs = len(svcReqLog)
         print("nSvcReqs", nSvcReqs, file=fi)
         if nSvcReqs != 0:
-            print("svcReq processTimes", [(svcReq.svcName, svcReq.processTime) for svcReq in svcReqLog], file=fi)
-            print("svcReq hwQueueTimes", [(svcReq.svcName, svcReq.hwQueueTime) for svcReq in svcReqLog], file=fi)
-            print("svcReq serviceTimes", [(svcReq.svcName, svcReq.serviceTime) for svcReq in svcReqLog], file=fi)
+            print("svcReq processTimes",
+                  [(svcReq.svcName, svcReq.processTime) for svcReq in
+                   svcReqLog], file=fi)
+            print("svcReq hwQueueTimes",
+                  [(svcReq.svcName, svcReq.hwQueueTime) for svcReq in
+                   svcReqLog], file=fi)
+            print("svcReq serviceTimes",
+                  [(svcReq.svcName, svcReq.serviceTime) for svcReq in
+                   svcReqLog], file=fi)
             avgSvcReqProcessTime = \
                 sum([svcReq.processTime for svcReq in svcReqLog]) / nSvcReqs
             avgSvcReqHwQueueTime = \
@@ -127,11 +131,15 @@ def t_core_svc_requester(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump, data):
             print(avgSvcReqProcessTime, server.avgProcessTime, file=fi)
             print(avgSvcReqHwQueueTime, server.avgHwQueueTime, file=fi)
             print(avgSvcReqServiceTime, server.avgServiceTime, file=fi)
-            assert_that(avgSvcReqProcessTime, close_to(server.avgProcessTime, delta))
-            assert_that(avgSvcReqHwQueueTime, close_to(server.avgHwQueueTime, delta))
-            assert_that(avgSvcReqServiceTime, close_to(server.avgServiceTime, delta))
+            assert_that(avgSvcReqProcessTime,
+                        close_to(server.avgProcessTime, delta))
+            assert_that(avgSvcReqHwQueueTime,
+                        close_to(server.avgHwQueueTime, delta))
+            assert_that(avgSvcReqServiceTime,
+                        close_to(server.avgServiceTime, delta))
 
-    print("@@@@@@@@ End test: " + str(testCount) + " ended: " + str(env.now), file=fi)
+    print("@@@@@@@@ End test: " + str(_testCount) + " ended: " + str(env.now),
+          file=fi)
 
 
 @pytest.mark.parametrize(

@@ -3,7 +3,7 @@ Test helpers.
 """
 
 import pytest
-from hypothesis.strategies import composite, integers, floats
+from hypothesis.strategies import composite, integers, floats, lists, choices
 
 from serversim import *
 
@@ -89,7 +89,7 @@ def dump_servers(serverLst):
         print(indent * 2 + "utilization = %s" % server.utilization)
 
 
-def servers_strat(env):
+def server_st(env):
     @composite
     def servers_strat0(draw, env, seq):
         hwThreads = draw(integers(_minHwThreads, _maxHwThreads))
@@ -103,7 +103,7 @@ def servers_strat(env):
     return servers_strat0(env, seq)
 
 
-def svc_rqrs_strat(env, serverLst, ffServer, svcReqLogDict):
+def svc_rqr_st(env, serverLst, ffServer, svcReqLogDict):
     @composite
     def svc_rqrs_strat0(draw, env, serverLst, ffServer, svcReqLogDict, seq):
         compUnits = draw(floats(_minCompUnits, _maxCompUnits))
@@ -114,3 +114,23 @@ def svc_rqrs_strat(env, serverLst, ffServer, svcReqLogDict):
 
     seq = {0:0}
     return svc_rqrs_strat0(env, serverLst, ffServer, svcReqLogDict, seq)
+
+
+@composite
+def servers_svc_rqrs_st(draw, env, maxServers, maxSvcRqrs, svcReqLogDict):
+
+    svcReqLog = svcReqLogDict[0]
+
+    choice = draw(choices())
+    nServers = draw(integers(1, maxServers))
+    nSvcRqrs = draw(integers(1, maxSvcRqrs))
+
+    def ffServer(serverLst):
+        def fServer(_svcReqName):
+            return choice(serverLst)
+        return fServer
+
+    serverLst = draw(lists(server_st(env), nServers, None, nServers))
+    svcRqrLst = draw(lists(svc_rqr_st(env, serverLst, ffServer, {0:svcReqLog}), nSvcRqrs, None, nSvcRqrs))
+
+    return (serverLst, svcRqrLst)
