@@ -9,7 +9,7 @@ settings.register_profile("pv", settings(
     timeout = -1,
     database_file = None,
     derandomize = True,
-    max_examples = 50,  # default = 200
+    max_examples = 100,  # default = 200
     # verbosity = Verbosity.verbose  # useless
 ))
 
