@@ -63,7 +63,7 @@ def t_core_svc_requester(i, nServers, nSvcRqrs, dump):
             assert_that(avgSvcReqServiceTime, close_to(server.avgServiceTime, delta))
 
 
-@pytest.mark.parametrize("i", range(20))
+@pytest.mark.parametrize("i", range(5))
 @pytest.mark.parametrize(
     "nServers, nSvcRqrs, dump", [
         (1, 1, True),
@@ -75,7 +75,7 @@ def test_core_svc_requester1(i, nServers, nSvcRqrs, dump):
     t_core_svc_requester(i, nServers, nSvcRqrs, dump)
 
 
-@pytest.mark.parametrize("i", range(10))
+@pytest.mark.parametrize("i", range(5))
 @pytest.mark.parametrize(
     "nServers, nSvcRqrs, dump", [
         # (1, 1, True),
