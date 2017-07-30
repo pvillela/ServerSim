@@ -1,45 +1,55 @@
 """
-Observational tests for CoreSvcRequester
+Tests for CoreSvcRequester
 """
 
 from __future__ import print_function
 
-import logging
+import random
 
 import simpy
 import pytest
 from hamcrest import assert_that, close_to, greater_than, less_than, equal_to
-from hypothesis import given, example, settings, Verbosity
+from hypothesis import given
 from hypothesis.strategies import data, choices, lists, integers
 
-# from serversim import *
 from helper import fi, dump_servers, dump_svc_reqs, servers_strat, svc_rqrs_strat
 
 
 _testCount = 0
 
-# @pytest.mark.parametrize(
-#     "nServers, nSvcRqrs, dump", [
-#         (1, 1, True),
-#         # (5, 20, False),
-#         # (5, 100, False)
-#     ]
-# )
+
 @given(data())
-# def test_core_svc_requester(data):
-# def t_core_svc_requester(fi, nServers, nSvcRqrs, dump, data):
-def t_core_svc_requester(fi, maxServers, maxSvcRqrs, dump, data):
+def t_core_svc_requester(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump, data):
+    """
+    Scenario: A core service request's process time on a server
+        The process time is request.compUnits / (server.speed /
+            server.maxConcurrency).
+
+    Scenario: Server average time stats
+        Server stats are aggregates of service request stats for all core
+            service requests that have completed processing on the server:
+
+            The server's average processing time is the average of the
+                processing time over all core service requests processed
+                on the server.
+            The server's average (hardware thread) queue time is the average
+                of the (hardware thread) queue time over all core service
+                requests processed on the server.
+            The server's average service time is the average of the service
+                time over all core service requests processed on the server.
+    """
 
     global _testCount
 
     draw = data.draw
+    choice = draw(choices())
 
     nServers = draw(integers(1, maxServers))
     nSvcRqrs = draw(integers(1, maxSvcRqrs))
+    nSvcReqs = draw(integers(1, maxSvcReqs))
 
     def ffServer(serverLst):
         def fServer(_svcReqName):
-            choice = draw(choices())
             return choice(serverLst)
         return fServer
 
@@ -51,16 +61,20 @@ def t_core_svc_requester(fi, maxServers, maxSvcRqrs, dump, data):
 
     print("\n\n@@@@@@@@ Start test :", testCount, ", nServers:", nServers, ", nSvcRqrs:", nSvcRqrs, file=fi)
     serverLst = draw(lists(servers_strat(env), nServers, None, nServers))
-    print("Drew serverLst")
+    # print("Drew serverLst", file=fi)
     # print(">>> " + str(serverLst), file=fi)
 
     svcRqrLst = draw(lists(svc_rqrs_strat(env, serverLst, ffServer, {0:svcReqLog}), nSvcRqrs, None, nSvcRqrs))
-    print("Drew svcRqrLst")
+    # print("Drew svcRqrLst", file=fi)
     # print(">>> " + str(svcRqrLst), file=fi)
 
-    for svcRqr in svcRqrLst:
-        # print(">>> submitting " + str(svcRqr), file=fi)
+    for i in range(nSvcReqs):
+        # svcRqr = choice(svcRqrLst)  # this is expensive, replaced below
+        j = random.randint(0, len(svcRqrLst)-1)
+        svcRqr = svcRqrLst[j]
+        # svcRqr = svcRqrLst[i % len(svcRqrLst)]
         svcReq = svcRqr.makeSvcRequest(None)
+        # print(">>> submitting", svcRqr.svcName, file=fi)
         svcReq.submit()
 
     simTime = 1000000000
@@ -72,6 +86,9 @@ def t_core_svc_requester(fi, maxServers, maxSvcRqrs, dump, data):
 
     if dump: dump_svc_reqs(svcReqLog)
 
+    # Scenario: A core service request's process time on a server
+    #     The process time is request.compUnits / (server.speed /
+    #         server.maxConcurrency).
     for svcReq in svcReqLog:
         server = svcReq.server
         assert_that(svcReq.processTime,
@@ -79,12 +96,23 @@ def t_core_svc_requester(fi, maxServers, maxSvcRqrs, dump, data):
 
     if dump: dump_servers(serverLst)
 
+    # Scenario: Server average time stats
+    #     Server stats are aggregates of service request stats for all core
+    #         service requests that have completed processing on the server:
+    #
+    #         The server's average processing time is the average of the
+    #             processing time over all core service requests processed
+    #             on the server.
+    #         The server's average (hardware thread) queue time is the average
+    #             of the (hardware thread) queue time over all core service
+    #             requests processed on the server.
+    #         The server's average service time is the average of the service
+    #             time over all core service requests processed on the server.
     for server in serverLst:
         print(">>>", server.name, "hwThreads=", server.maxConcurrency, "_threads=", server.numThreads, "speed=", server.speed, file=fi)
         svcReqLog = server.svcReqLog
         nSvcReqs = len(svcReqLog)
         print("nSvcReqs", nSvcReqs, file=fi)
-        # assert_that(nSvcReqs, greater_than(0))
         if nSvcReqs != 0:
             print("svcReq processTimes", [(svcReq.svcName, svcReq.processTime) for svcReq in svcReqLog], file=fi)
             print("svcReq hwQueueTimes", [(svcReq.svcName, svcReq.hwQueueTime) for svcReq in svcReqLog], file=fi)
@@ -106,29 +134,12 @@ def t_core_svc_requester(fi, maxServers, maxSvcRqrs, dump, data):
     print("@@@@@@@@ End test: " + str(testCount) + " ended: " + str(env.now), file=fi)
 
 
-# @pytest.mark.parametrize(
-#     "nServers, nSvcRqrs, dump", [
-#         # (1, 1, False),
-#         # (5, 20, True),
-#         (5, 100, False)
-#     ]
-# )
-# def test_core_svc_requester1(fi, nServers, nSvcRqrs, dump):
-#     t_core_svc_requester(fi, nServers, nSvcRqrs, dump)
-
-
 @pytest.mark.parametrize(
-    "maxServers, maxSvcRqrs, dump", [
-        # (1, 1, False),
-        # (5, 20, True),
-        (10, 2000, False)
+    "maxServers, maxSvcRqrs, maxSvcReqs, dump", [
+        # (1, 1, 100, False),
+        # (5, 20, 100, True),
+        (10, 20, 2000, False)
     ]
 )
-def test_core_svc_requester1(fi, maxServers, maxSvcRqrs, dump):
-    t_core_svc_requester(fi, maxServers, maxSvcRqrs, dump)
-
-
-# @given(nServers=integers(5, 5), nSvcRqrs=integers(100, 100))
-# @pytest.mark.parametrize("dump", [False])
-# def test_core_svc_requester2(fi, nServers, nSvcRqrs, dump):
-#     t_core_svc_requester(fi, nServers, nSvcRqrs, dump)
+def test_core_svc_requester1(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
+    t_core_svc_requester(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump)

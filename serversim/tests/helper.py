@@ -2,25 +2,10 @@
 Test helpers.
 """
 
-import random
-import sys
-import logging
-
 import pytest
-from hypothesis import settings
 from hypothesis.strategies import composite, integers, floats
 
 from serversim import *
-
-
-settings.register_profile("pv", settings(
-    timeout = -1,
-    database_file = None,
-    derandomize = True,
-    # verbosity = Verbosity.verbose  # useless
-))
-
-settings.load_profile("pv")
 
 
 ########################
@@ -36,28 +21,8 @@ _maxSpeed = 100
 _minCompUnits = 1
 _maxCompUnits = 100
 
-# _seed = 12345
-
-# indent = " " * 4
-
 # end Parameters
 ########################
-
-
-# random.seed(_seed)
-
-
-# @pytest.fixture(scope="module")
-# def fi():
-#     fi = open("simout.txt", "w")
-#     # fi = sys.stdout
-#     logging.basicConfig(level=logging.INFO,
-#                         format='%(levelname)-4s %(message)s',
-#                         stream=fi)
-#     yield fi
-#     if not fi == sys.stdout:
-#         fi.close()
-#     print("\n*** Done ***")
 
 
 @pytest.fixture(scope="module")
@@ -145,7 +110,7 @@ def svc_rqrs_strat(env, serverLst, ffServer, svcReqLogDict):
         fServer = ffServer(serverLst)
         seq[0] += 1
         svcReqLog = svcReqLogDict[0]
-        return CoreSvcRequester(env, "Txn_" + str(seq[0]), cug(compUnits, 0), fServer, svcReqLog)
+        return CoreSvcRequester(env, "Txn_" + str(seq[0]), cug(compUnits, compUnits/2), fServer, svcReqLog)
 
     seq = {0:0}
     return svc_rqrs_strat0(env, serverLst, ffServer, svcReqLogDict, seq)

@@ -9,7 +9,6 @@ import random
 import logging
 import atexit
 
-
 import const
 from .util import probChooser
 from .measuredresource import MeasuredResource

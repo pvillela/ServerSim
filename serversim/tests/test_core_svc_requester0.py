@@ -1,5 +1,5 @@
 """
-Observational tests for CoreSvcRequester
+Manual random tests for CoreSvcRequester
 """
 
 import random
