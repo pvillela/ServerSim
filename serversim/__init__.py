@@ -18,7 +18,7 @@ from .service import (
 from .usergroup import UserGroup
 
 
-_seed = 12345
+# _seed = 12345
 indent = " " * 4
 
 const.logfile = open("simout.txt", "w")
@@ -31,7 +31,7 @@ def _closeLogfile():
 atexit.register(_closeLogfile)
 
 
-random.seed(_seed)
+# random.seed(_seed)
 
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)-4s %(message)s',

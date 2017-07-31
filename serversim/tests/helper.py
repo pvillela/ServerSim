@@ -114,8 +114,7 @@ class CustomGenerationStrategies(object):
                  ffServer=defaultFfServer,
                  maxServers=10,
                  maxSvcRqrs=20,
-                 svcReqLog=None,
-                 testCount=0):
+                 svcReqLog=None):
         self.minHwThreads = minHwThreads
         self.maxHwThreads = maxHwThreads
         self.minSwThreadsFactor = minSwThreadsFactor
@@ -130,7 +129,6 @@ class CustomGenerationStrategies(object):
         if svcReqLog is None:
             svcReqLog = list()
         self.svcReqLog = svcReqLog
-        self.testCount = testCount
 
 
     def server(self, env):
