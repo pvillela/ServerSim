@@ -1,8 +1,8 @@
 """
-Utilities to support service simulation framework.
+Utilities for random generation and choice of values.
 """
 
-from random import random
+import random
 
 
 def probChooser(*weightedItems):
@@ -32,9 +32,50 @@ def probChooser(*weightedItems):
     cumFreqs[len(freqs)-1] = 1.0  # eliminate possible rounding error
     
     def ret():
-        randomNum = random()
+        randomNum = random.random()
         for i in range(0, len(weightedItems)):
             if cumFreqs[i] > randomNum:  # Random.random() is in [0.0, 1.0)
                 return items[i]
     
+    return ret
+
+
+def rand_int(min_val, max_val):
+    return random.randint(min_val, max_val)
+
+
+def gen_int(min_val, max_val):
+    def ret():
+        return random.randint(min_val, max_val)
+    return ret
+
+
+def rand_float(min_val, max_val):
+    return random.uniform(min_val, max_val)
+
+
+def gen_float(min_val, max_val):
+    def ret():
+        return random.uniform(min_val, max_val)
+    return ret
+
+
+def rand_choice(lst):
+    return random.choice(lst)
+
+
+def gen_choice(lst):
+    def ret():
+        return random.choice(lst)
+    return ret
+
+
+def rand_list(g, minLen, maxLen):
+    size = random.randint(minLen, maxLen)
+    return [g() for _i in range(size)]
+
+
+def gen_list(g, minLen, maxLen):
+    def ret():
+        return rand_list(g, minLen, maxLen)
     return ret

@@ -12,7 +12,8 @@ from hamcrest import assert_that, close_to #, greater_than, less_than, equal_to
 from hypothesis import given
 from hypothesis.strategies import data, choices, lists, integers
 
-from helper import fi, dump_servers, dump_svc_reqs, CustomGenerationStrategies
+from testhelper import fi, dump_servers, dump_svc_reqs
+from hyphelper import ServersimHypStrategies
 
 
 @pytest.mark.parametrize(
@@ -24,7 +25,7 @@ from helper import fi, dump_servers, dump_svc_reqs, CustomGenerationStrategies
 )
 def test_core_svc_requester1(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
 
-    cgs = CustomGenerationStrategies(
+    sst = ServersimHypStrategies(
         maxServers=maxServers,
         maxSvcRqrs=maxSvcRqrs,
     )
@@ -56,9 +57,9 @@ def test_core_svc_requester1(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
         env = simpy.Environment()
         testCountCell[0] += 1
         testCount = testCountCell[0]
-        serverLst, svcRqrLst = draw(cgs.servers_svc_rqrs(env))
+        serverLst, svcRqrLst = draw(sst.servers_svc_rqrs(env))
         nSvcReqs = draw(integers(1, maxSvcReqs))
-        svcReqLog = cgs.svcReqLog
+        svcReqLog = sst.svcReqLog
         nServers = len(serverLst)
         nSvcRqrs = len(svcRqrLst)
 
