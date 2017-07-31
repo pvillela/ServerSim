@@ -4,6 +4,8 @@ Utilities for random generation and choice of values.
 
 import random
 
+from .util import curried_nullary
+
 
 def probChooser(*weightedItems):
     """
@@ -40,42 +42,20 @@ def probChooser(*weightedItems):
     return ret
 
 
-def rand_int(min_val, max_val):
-    return random.randint(min_val, max_val)
+rand_int = random.randint
 
+gen_int = curried_nullary(rand_int)
 
-def gen_int(min_val, max_val):
-    def ret():
-        return random.randint(min_val, max_val)
-    return ret
+rand_float = random.uniform
 
+gen_float = curried_nullary(rand_float)
 
-def rand_float(min_val, max_val):
-    return random.uniform(min_val, max_val)
+rand_choice = random.choice
 
-
-def gen_float(min_val, max_val):
-    def ret():
-        return random.uniform(min_val, max_val)
-    return ret
-
-
-def rand_choice(lst):
-    return random.choice(lst)
-
-
-def gen_choice(lst):
-    def ret():
-        return random.choice(lst)
-    return ret
-
+gen_choice = curried_nullary(rand_choice)
 
 def rand_list(g, minLen, maxLen):
     size = random.randint(minLen, maxLen)
     return [g() for _i in range(size)]
 
-
-def gen_list(g, minLen, maxLen):
-    def ret():
-        return rand_list(g, minLen, maxLen)
-    return ret
+gen_list = curried_nullary(rand_list)

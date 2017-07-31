@@ -3,6 +3,7 @@ Helpers for tests with random generators.
 """
 
 import random
+from functools import wraps
 
 from serversim import Server, CoreSvcRequester
 from serversim.randutil import probChooser, rand_int, gen_int, rand_float, \
@@ -18,6 +19,17 @@ N_EXAMPLES = 100
 
 # end global
 ###################
+
+
+def repeat(n=N_EXAMPLES):
+    """Decorator to repeat execution of a function taking 1 parameter"""
+    def repeat_decorator(func):
+        @wraps(func)
+        def func_wrapper():
+            for i in range(1, n+1):
+                func(i)
+        return func_wrapper
+    return repeat_decorator
 
 
 def cug(mid, delta):

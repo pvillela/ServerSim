@@ -13,7 +13,7 @@ from hamcrest import assert_that, close_to #, greater_than, less_than, equal_to
 from serversim.randutil import probChooser, rand_int, gen_int, rand_float, \
     gen_float, rand_choice, gen_choice, rand_list, gen_list
 from testhelper import fi, dump_servers, dump_svc_reqs
-from randhelper import ServersimRandom, N_EXAMPLES
+from randhelper import ServersimRandom, N_EXAMPLES, repeat
 
 
 @pytest.mark.parametrize(
@@ -30,7 +30,7 @@ def test_core_svc_requester1(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
         maxSvcRqrs=maxSvcRqrs,
     )
 
-
+    @repeat()
     def t_core_svc_requester(test_count):
         """
         Scenario: A core service request's process time on a server
@@ -138,5 +138,4 @@ def test_core_svc_requester1(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
         print("@@@@@@@@ End test: " + str(test_count) + " ended: " + str(env.now),
               file=fi)
 
-    for test_count in range(1, N_EXAMPLES+1):
-        t_core_svc_requester(test_count)
+    t_core_svc_requester()
