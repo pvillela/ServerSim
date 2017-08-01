@@ -16,6 +16,9 @@ from testhelper import fi, dump_servers, dump_svc_reqs
 from hyphelper import ServersimHypStrategies
 
 
+pytestmark = pytest.mark.skip("Disable Hypothesis tests.")
+
+
 @pytest.mark.parametrize(
     "maxServers, maxSvcRqrs, maxSvcReqs, dump", [
         # (1, 1, 100, False),
@@ -23,7 +26,7 @@ from hyphelper import ServersimHypStrategies
         (10, 20, 1000, False)
     ]
 )
-def test_core_svc_requester1(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
+def test_core_svc_requester_hy(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
 
     sst = ServersimHypStrategies(
         maxServers=maxServers,

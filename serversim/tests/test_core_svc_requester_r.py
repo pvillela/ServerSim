@@ -23,7 +23,7 @@ from randhelper import ServersimRandom, N_EXAMPLES, repeat
         (10, 20, 1000, False)
     ]
 )
-def test_core_svc_requester1(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
+def test_core_svc_requester_r(fi, maxServers, maxSvcRqrs, maxSvcReqs, dump):
 
     sr = ServersimRandom(
         maxServers=maxServers,
