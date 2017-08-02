@@ -4,773 +4,1690 @@
 @@@@@@@@@ Start comparative simulations @@@@@@@@@@
 
 
-***** Start Simulation ( 2 / 1 / 0 9 / 0 9 ) *****
-Simulation: nUsers = 700 ; simTime = 500
+***** Start Simulation -- 2 , 1 , [ 0 , 10 ) , [ 0 , 10 ) *****
+Simulation: nUsers = 700 ; simTime = 200
 << ServerExample >>
 
 
-simtime = 500
+simtime = 200
 
 Servers:
     Server: AppServer_0
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.829910888788
-        avgHwQueueTime = 0.204039507195
-        avgThreadQueueTime = 0.0146208371928
-        avgServiceTime = 1.04857123318
-        avgHwQueueLength = 2.07385755113
-        avgThreadQueueLength = 0.148606189227
-        hwQueueLength = 0
-        hwInProcessCount = 7
+        avgProcessTime = 0.83001441825
+        avgHwQueueTime = 0.179722596395
+        avgThreadQueueTime = 0.00173110789706
+        avgServiceTime = 1.01091530689
+        avgHwQueueLength = 1.82688019236
+        avgThreadQueueLength = 0.0175967117736
+        hwQueueLength = 3
+        hwInProcessCount = 10
         threadQueueLength = 0
-        threadInUseCount = 7
-        utilization = 0.843521427364
-        throughput = 10.164
+        threadInUseCount = 13
+        utilization = 0.843709656151
+        throughput = 10.165
     Server: AppServer_1
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.833416306216
-        avgHwQueueTime = 0.162762858998
-        avgThreadQueueTime = 0.00790812427256
-        avgServiceTime = 1.00408728949
-        avgHwQueueLength = 1.62014149846
-        avgThreadQueueLength = 0.0787174690091
-        hwQueueLength = 0
-        hwInProcessCount = 5
+        avgProcessTime = 0.843875618748
+        avgHwQueueTime = 0.188026112507
+        avgThreadQueueTime = 0.0135581977169
+        avgServiceTime = 1.04545992897
+        avgHwQueueLength = 1.84735655538
+        avgThreadQueueLength = 0.133209292568
+        hwQueueLength = 1
+        hwInProcessCount = 10
         threadQueueLength = 0
-        threadInUseCount = 5
-        utilization = 0.829582591208
-        throughput = 9.954
+        threadInUseCount = 11
+        utilization = 0.829107795419
+        throughput = 9.825
     Server: AppServer_2
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.825317396105
-        avgHwQueueTime = 0.138339504177
-        avgThreadQueueTime = 0.00155606408741
-        avgServiceTime = 0.965212964369
-        avgHwQueueLength = 1.38920530094
-        avgThreadQueueLength = 0.0156259955657
-        hwQueueLength = 0
-        hwInProcessCount = 9
-        threadQueueLength = 0
-        threadInUseCount = 9
-        utilization = 0.828783729169
-        throughput = 10.042
-    Server: AppServer_3
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.830141190931
-        avgHwQueueTime = 0.150186015812
-        avgThreadQueueTime = 0.0104815614126
-        avgServiceTime = 0.990808768155
-        avgHwQueueLength = 1.50095904202
-        avgThreadQueueLength = 0.104752724758
-        hwQueueLength = 0
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.829643106216
-        throughput = 9.994
-    Server: AppServer_4
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.832530959642
-        avgHwQueueTime = 0.128848755323
-        avgThreadQueueTime = 0.00105138078189
-        avgServiceTime = 0.962395875321
-        avgHwQueueLength = 1.26709865984
-        avgThreadQueueLength = 0.0103392786091
-        hwQueueLength = 5
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 15
-        utilization = 0.818710945712
-        throughput = 9.834
-    Server: AppServer_5
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.833327013739
-        avgHwQueueTime = 0.139718910559
-        avgThreadQueueTime = 0.000589010882594
-        avgServiceTime = 0.973634935181
-        avgHwQueueLength = 1.38237890107
-        avgThreadQueueLength = 0.00582767367239
-        hwQueueLength = 0
-        hwInProcessCount = 7
-        threadQueueLength = 0
-        threadInUseCount = 7
-        utilization = 0.824493747393
-        throughput = 9.894
-    Server: AppServer_6
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.833590991867
-        avgHwQueueTime = 0.122111197554
-        avgThreadQueueTime = 0.000551557964561
-        avgServiceTime = 0.956253747386
-        avgHwQueueLength = 1.19351484489
-        avgThreadQueueLength = 0.00539092754561
+        avgProcessTime = 0.830371675989
+        avgHwQueueTime = 0.124230673971
+        avgThreadQueueTime = 0.00109565468848
+        avgServiceTime = 0.955698004649
+        avgHwQueueLength = 1.207522151
+        avgThreadQueueLength = 0.010649763572
         hwQueueLength = 0
         hwInProcessCount = 5
         threadQueueLength = 0
         threadInUseCount = 5
-        utilization = 0.814751835451
-        throughput = 9.774
-    Server: AppServer_7
+        utilization = 0.807121269061
+        throughput = 9.72
+    Server: AppServer_3
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.822679863878
-        avgHwQueueTime = 0.174629105089
-        avgThreadQueueTime = 0.0157739721538
-        avgServiceTime = 1.01308294112
-        avgHwQueueLength = 1.72708184933
-        avgThreadQueueLength = 0.156004584601
-        hwQueueLength = 0
-        hwInProcessCount = 9
-        threadQueueLength = 0
-        threadInUseCount = 9
-        utilization = 0.813630385375
-        throughput = 9.89
-    Server: AppServer_8
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.832489181689
-        avgHwQueueTime = 0.16068629078
-        avgThreadQueueTime = 0.00594820797669
-        avgServiceTime = 0.999123680446
-        avgHwQueueLength = 1.61939643848
-        avgThreadQueueLength = 0.0599460399891
+        avgProcessTime = 0.835445546813
+        avgHwQueueTime = 0.155283984015
+        avgThreadQueueTime = 0.0200871937448
+        avgServiceTime = 1.01081672457
+        avgHwQueueLength = 1.57147391823
+        avgThreadQueueLength = 0.203282400697
         hwQueueLength = 0
         hwInProcessCount = 6
         threadQueueLength = 0
         threadInUseCount = 6
-        utilization = 0.838982597306
-        throughput = 10.078
-    Server: AppServer_9
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.812978520256
-        avgHwQueueTime = 0.103714632228
-        avgThreadQueueTime = 0.00115930229327
-        avgServiceTime = 0.917852454777
-        avgHwQueueLength = 1.03548688817
-        avgThreadQueueLength = 0.011574474096
-        hwQueueLength = 0
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.811677754623
-        throughput = 9.984
-    Group: UserTypeX
-        numUsers = 700
-        minThinkTime = 2.0
-        maxThinkTime = 10.0
-        respondedRequestCount = 49804
-        unrespondedRequestCount = 83
-        avgResponseTime = 0.983287900288
-        stdDevResponseTime = 0.567960376327
-        throughput = 99.608
-        svc_1:
-            respondedRequestCount = 33152
-            unrespondedRequestCount = 64
-            avgResponseTime = 1.148877998
-            stdDevResponseTime = 0.579040734821
-            throughput = 66.304
-        svc_2:
-            respondedRequestCount = 16652
-            unrespondedRequestCount = 19
-            avgResponseTime = 0.653619216694
-            stdDevResponseTime = 0.366079407495
-            throughput = 33.304
-
-*** Done ***
-
-
-***** Start Simulation ( 2 / 1 / 0 7 / 8 9 ) *****
-Simulation: nUsers = 700 ; simTime = 500
-<< ServerExample >>
-
-
-simtime = 500
-
-Servers:
-    Server: AppServer_0
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 1.00876064141
-        avgHwQueueTime = 0.178525918537
-        avgThreadQueueTime = 0.00127319590749
-        avgServiceTime = 1.18855975585
-        avgHwQueueLength = 1.5178273594
-        avgThreadQueueLength = 0.0108247116055
-        hwQueueLength = 2
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 12
-        utilization = 0.857648297326
-        throughput = 8.502
-    Server: AppServer_1
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 1.00267963399
-        avgHwQueueTime = 0.198834640537
-        avgThreadQueueTime = 0.00607876259256
-        avgServiceTime = 1.20759303712
-        avgHwQueueLength = 1.69685482234
-        avgThreadQueueLength = 0.0518761599649
-        hwQueueLength = 0
-        hwInProcessCount = 7
-        threadQueueLength = 0
-        threadInUseCount = 7
-        utilization = 0.855686799645
-        throughput = 8.534
-    Server: AppServer_2
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.987804674477
-        avgHwQueueTime = 0.150916653926
-        avgThreadQueueTime = 0.00299932562868
-        avgServiceTime = 1.14172065403
-        avgHwQueueLength = 1.25532472736
-        avgThreadQueueLength = 0.0249483905794
-        hwQueueLength = 0
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.82165592823
-        throughput = 8.318
-    Server: AppServer_3
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 1.00906324018
-        avgHwQueueTime = 0.240953562962
-        avgThreadQueueTime = 0.0374715987032
-        avgServiceTime = 1.28748840185
-        avgHwQueueLength = 2.01292606498
-        avgThreadQueueLength = 0.313037735567
-        hwQueueLength = 0
-        hwInProcessCount = 9
-        threadQueueLength = 0
-        threadInUseCount = 9
-        utilization = 0.84297143085
-        throughput = 8.354
+        utilization = 0.845470893375
+        throughput = 10.12
     Server: AppServer_4
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.990990117343
-        avgHwQueueTime = 0.164808052156
-        avgThreadQueueTime = 0.00441847796652
-        avgServiceTime = 1.16021664747
-        avgHwQueueLength = 1.36494028796
-        avgThreadQueueLength = 0.0365938345187
-        hwQueueLength = 0
+        avgProcessTime = 0.828147366498
+        avgHwQueueTime = 0.112860214817
+        avgThreadQueueTime = 0.00103085012807
+        avgServiceTime = 0.942038431443
+        avgHwQueueLength = 1.10941591165
+        avgThreadQueueLength = 0.0101332567589
+        hwQueueLength = 1
         hwInProcessCount = 10
         threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.820738015183
-        throughput = 8.282
+        threadInUseCount = 11
+        utilization = 0.814068861267
+        throughput = 9.83
     Server: AppServer_5
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.994752041601
-        avgHwQueueTime = 0.125737976714
-        avgThreadQueueTime = 0.00622058578813
-        avgServiceTime = 1.1267106041
-        avgHwQueueLength = 1.00338905418
-        avgThreadQueueLength = 0.0496402745893
+        avgProcessTime = 0.837678376014
+        avgHwQueueTime = 0.122313582275
+        avgThreadQueueTime = 0.000195160755034
+        avgServiceTime = 0.960187119044
+        avgHwQueueLength = 1.21090446452
+        avgThreadQueueLength = 0.00193209147484
         hwQueueLength = 0
-        hwInProcessCount = 10
+        hwInProcessCount = 4
         threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.793812129198
-        throughput = 7.98
+        threadInUseCount = 4
+        utilization = 0.829301592254
+        throughput = 9.9
     Server: AppServer_6
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 1.00066444816
-        avgHwQueueTime = 0.181682347193
-        avgThreadQueueTime = 0.00377964817546
-        avgServiceTime = 1.18612644352
-        avgHwQueueLength = 1.5341257397
-        avgThreadQueueLength = 0.0319153491936
-        hwQueueLength = 2
+        avgProcessTime = 0.82769089875
+        avgHwQueueTime = 0.117773991665
+        avgThreadQueueTime = 0.000364286773088
+        avgServiceTime = 0.945829177188
+        avgHwQueueLength = 1.14652980886
+        avgThreadQueueLength = 0.00354633173601
+        hwQueueLength = 0
         hwInProcessCount = 10
         threadQueueLength = 0
-        threadInUseCount = 12
-        utilization = 0.844961060023
-        throughput = 8.444
+        threadInUseCount = 10
+        utilization = 0.805757089934
+        throughput = 9.735
     Server: AppServer_7
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 1.00005687697
-        avgHwQueueTime = 0.157449071127
-        avgThreadQueueTime = 0.00140993410394
-        avgServiceTime = 1.1589158822
-        avgHwQueueLength = 1.29926973494
-        avgThreadQueueLength = 0.0116347762257
+        avgProcessTime = 0.831200821237
+        avgHwQueueTime = 0.198803708294
+        avgThreadQueueTime = 0.0314836438225
+        avgServiceTime = 1.06123277198
+        avgHwQueueLength = 1.89857541421
+        avgThreadQueueLength = 0.300668798505
+        hwQueueLength = 10
+        hwInProcessCount = 10
+        threadQueueLength = 4
+        threadInUseCount = 20
+        utilization = 0.793796784282
+        throughput = 9.55
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.825547431697
+        avgHwQueueTime = 0.150420805547
+        avgThreadQueueTime = 0.00507654401219
+        avgServiceTime = 0.981044781257
+        avgHwQueueLength = 1.52827538436
+        avgThreadQueueLength = 0.0515776871639
         hwQueueLength = 0
         hwInProcessCount = 5
         threadQueueLength = 0
         threadInUseCount = 5
-        utilization = 0.825246934878
-        throughput = 8.252
-    Server: AppServer_8
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.497009873619
-        avgHwQueueTime = 0.0848056981386
-        avgThreadQueueTime = 0.00511142936165
-        avgServiceTime = 0.586927001119
-        avgHwQueueLength = 1.39674984834
-        avgThreadQueueLength = 0.0841852415864
-        hwQueueLength = 0
-        hwInProcessCount = 6
-        threadQueueLength = 0
-        threadInUseCount = 6
-        utilization = 0.81857526185
-        throughput = 16.47
+        utilization = 0.838756190605
+        throughput = 10.16
     Server: AppServer_9
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.49893816856
-        avgHwQueueTime = 0.078460302695
-        avgThreadQueueTime = 0.00220225493713
-        avgServiceTime = 0.579596341481
-        avgHwQueueLength = 1.29428115326
-        avgThreadQueueLength = 0.0363283974428
-        hwQueueLength = 10
+        avgProcessTime = 0.821404446741
+        avgHwQueueTime = 0.0787455425038
+        avgThreadQueueTime = 0.000139992455471
+        avgServiceTime = 0.9002899817
+        avgHwQueueLength = 0.766587856274
+        avgThreadQueueLength = 0.00136282655401
+        hwQueueLength = 0
         hwInProcessCount = 10
         threadQueueLength = 0
-        threadInUseCount = 20
-        utilization = 0.823048402857
-        throughput = 16.496
+        threadInUseCount = 10
+        utilization = 0.799637228902
+        throughput = 9.735
     Group: UserTypeX
         numUsers = 700
         minThinkTime = 2.0
         maxThinkTime = 10.0
-        respondedRequestCount = 49816
-        unrespondedRequestCount = 101
-        avgResponseTime = 0.984322747048
-        stdDevResponseTime = 0.596724043562
-        throughput = 99.632
+        respondedRequestCount = 19748
+        unrespondedRequestCount = 99
+        avgResponseTime = 0.981433015758
+        stdDevResponseTime = 0.57127783622
+        throughput = 98.74
         svc_1:
-            respondedRequestCount = 33333
-            unrespondedRequestCount = 75
-            avgResponseTime = 1.18264685111
-            stdDevResponseTime = 0.606604275081
-            throughput = 66.666
+            respondedRequestCount = 13158
+            unrespondedRequestCount = 70
+            avgResponseTime = 1.14879919294
+            stdDevResponseTime = 0.582460529142
+            throughput = 65.79
         svc_2:
-            respondedRequestCount = 16483
-            unrespondedRequestCount = 26
-            avgResponseTime = 0.583258780486
-            stdDevResponseTime = 0.302737290931
-            throughput = 32.966
+            respondedRequestCount = 6590
+            unrespondedRequestCount = 29
+            avgResponseTime = 0.647259395223
+            stdDevResponseTime = 0.364716885673
+            throughput = 32.95
 
 *** Done ***
 
 
-***** Start Simulation ( 5 / 1 / 0 9 / 0 9 ) *****
-Simulation: nUsers = 700 ; simTime = 500
+***** Start Simulation -- 2 , 1 , [ 0 , 8 ) , [ 8 , 10 ) *****
+Simulation: nUsers = 700 ; simTime = 200
 << ServerExample >>
 
 
-simtime = 500
+simtime = 200
 
 Servers:
     Server: AppServer_0
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.911173593309
-        avgHwQueueTime = 0.213499080396
-        avgThreadQueueTime = 0.00567490975594
-        avgServiceTime = 1.13034758346
-        avgHwQueueLength = 2.03635422881
-        avgThreadQueueLength = 0.0541272892522
-        hwQueueLength = 3
+        avgProcessTime = 0.997335777593
+        avgHwQueueTime = 0.14061851301
+        avgThreadQueueTime = 0.000812756599357
+        avgServiceTime = 1.1387670472
+        avgHwQueueLength = 1.17275839851
+        avgThreadQueueLength = 0.00677839003863
+        hwQueueLength = 1
         hwInProcessCount = 10
         threadQueueLength = 0
-        threadInUseCount = 13
-        utilization = 0.869077373298
-        throughput = 9.538
+        threadInUseCount = 11
+        utilization = 0.831778038513
+        throughput = 8.34
     Server: AppServer_1
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.913520966816
-        avgHwQueueTime = 0.277783780333
-        avgThreadQueueTime = 0.0290823949056
-        avgServiceTime = 1.22038714205
-        avgHwQueueLength = 2.70116947996
-        avgThreadQueueLength = 0.282797208062
-        hwQueueLength = 2
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 12
-        utilization = 0.888307788132
-        throughput = 9.724
-    Server: AppServer_2
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.911555264639
-        avgHwQueueTime = 0.213224063446
-        avgThreadQueueTime = 0.018587652293
-        avgServiceTime = 1.14334338338
-        avgHwQueueLength = 2.0060119889
-        avgThreadQueueLength = 0.174872632773
-        hwQueueLength = 3
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 13
-        utilization = 0.857591192972
-        throughput = 9.408
-    Server: AppServer_3
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.91143392799
-        avgHwQueueTime = 0.31817368962
-        avgThreadQueueTime = 0.0181439232195
-        avgServiceTime = 1.24775154083
-        avgHwQueueLength = 3.12382928469
-        avgThreadQueueLength = 0.178137038169
+        avgProcessTime = 0.992907131785
+        avgHwQueueTime = 0.247356128136
+        avgThreadQueueTime = 0.0123351340683
+        avgServiceTime = 1.25259839399
+        avgHwQueueLength = 2.13839372774
+        avgThreadQueueLength = 0.10663723402
         hwQueueLength = 0
         hwInProcessCount = 7
         threadQueueLength = 0
         threadInUseCount = 7
-        utilization = 0.8948458305
-        throughput = 9.818
-    Server: AppServer_4
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.909426835706
-        avgHwQueueTime = 0.312201002873
-        avgThreadQueueTime = 0.0622464084209
-        avgServiceTime = 1.283874247
-        avgHwQueueLength = 3.07955069234
-        avgThreadQueueLength = 0.613998572663
-        hwQueueLength = 3
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 13
-        utilization = 0.89705863074
-        throughput = 9.864
-    Server: AppServer_5
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.917554978153
-        avgHwQueueTime = 0.263382260207
-        avgThreadQueueTime = 0.0221863192681
-        avgServiceTime = 1.20186605463
-        avgHwQueueLength = 2.50845264621
-        avgThreadQueueLength = 0.21130250471
-        hwQueueLength = 10
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 20
-        utilization = 0.873879361193
-        throughput = 9.524
-    Server: AppServer_6
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.91462841126
-        avgHwQueueTime = 0.251812170142
-        avgThreadQueueTime = 0.0233442017402
-        avgServiceTime = 1.18978478314
-        avgHwQueueLength = 2.41588596034
-        avgThreadQueueLength = 0.223964271496
-        hwQueueLength = 0
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.877494497762
-        throughput = 9.594
-    Server: AppServer_7
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.917583278825
-        avgHwQueueTime = 0.325910639527
-        avgThreadQueueTime = 0.101635057115
-        avgServiceTime = 1.34512897547
-        avgHwQueueLength = 3.1587259183
-        avgThreadQueueLength = 0.985046973554
-        hwQueueLength = 1
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 11
-        utilization = 0.889321713837
-        throughput = 9.692
-    Server: AppServer_8
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.921612520921
-        avgHwQueueTime = 0.278628868115
-        avgThreadQueueTime = 0.0395023166836
-        avgServiceTime = 1.23974370572
-        avgHwQueueLength = 2.65589037087
-        avgThreadQueueLength = 0.376536082628
-        hwQueueLength = 1
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 11
-        utilization = 0.878481054942
-        throughput = 9.532
-    Server: AppServer_9
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.918006100878
-        avgHwQueueTime = 0.299683975723
-        avgThreadQueueTime = 0.057968926229
-        avgServiceTime = 1.27565900283
-        avgHwQueueLength = 2.91172950813
-        avgThreadQueueLength = 0.563226087241
-        hwQueueLength = 0
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.891934727613
-        throughput = 9.716
-    Group: UserTypeX
-        numUsers = 700
-        minThinkTime = 2.0
-        maxThinkTime = 10.0
-        respondedRequestCount = 48205
-        unrespondedRequestCount = 120
-        avgResponseTime = 1.22839261477
-        stdDevResponseTime = 0.673235331251
-        throughput = 96.41
-        svc_1:
-            respondedRequestCount = 40189
-            unrespondedRequestCount = 107
-            avgResponseTime = 1.31072463586
-            stdDevResponseTime = 0.67304394933
-            throughput = 80.378
-        svc_2:
-            respondedRequestCount = 8016
-            unrespondedRequestCount = 13
-            avgResponseTime = 0.815612974605
-            stdDevResponseTime = 0.5001967103
-            throughput = 16.032
-
-*** Done ***
-
-
-***** Start Simulation ( 5 / 1 / 0 7 / 8 9 ) *****
-Simulation: nUsers = 700 ; simTime = 500
-<< ServerExample >>
-
-
-simtime = 500
-
-Servers:
-    Server: AppServer_0
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.993555302749
-        avgHwQueueTime = 0.599828375041
-        avgThreadQueueTime = 0.337592093473
-        avgServiceTime = 1.93042981541
-        avgHwQueueLength = 5.74515617614
-        avgThreadQueueLength = 3.23345707129
-        hwQueueLength = 10
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 20
-        utilization = 0.951627268973
-        throughput = 9.578
-    Server: AppServer_1
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 1.00025803191
-        avgHwQueueTime = 0.615754634091
-        avgThreadQueueTime = 0.436045952668
-        avgServiceTime = 2.05205861867
-        avgHwQueueLength = 5.80410318094
-        avgThreadQueueLength = 4.11016914985
-        hwQueueLength = 5
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 15
-        utilization = 0.942843220877
-        throughput = 9.426
+        utilization = 0.858368215428
+        throughput = 8.645
     Server: AppServer_2
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.996767793621
-        avgHwQueueTime = 0.574491460055
-        avgThreadQueueTime = 0.588579419033
-        avgServiceTime = 2.15066925219
-        avgHwQueueLength = 5.35540939063
-        avgThreadQueueLength = 5.48673734423
-        hwQueueLength = 10
+        avgProcessTime = 0.998655647237
+        avgHwQueueTime = 0.195840943194
+        avgThreadQueueTime = 0.00682571153292
+        avgServiceTime = 1.20132230196
+        avgHwQueueLength = 1.6186253955
+        avgThreadQueueLength = 0.0564145058196
+        hwQueueLength = 6
         hwInProcessCount = 10
-        threadQueueLength = 29
-        threadInUseCount = 20
-        utilization = 0.929186937213
-        throughput = 9.322
+        threadQueueLength = 0
+        threadInUseCount = 16
+        utilization = 0.825388892441
+        throughput = 8.265
     Server: AppServer_3
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 1.00153316568
-        avgHwQueueTime = 0.538194702398
-        avgThreadQueueTime = 0.217223775776
-        avgServiceTime = 1.75695164385
-        avgHwQueueLength = 5.06656492837
-        avgThreadQueueLength = 2.04494462516
-        hwQueueLength = 0
-        hwInProcessCount = 9
-        threadQueueLength = 0
-        threadInUseCount = 9
-        utilization = 0.942843322172
-        throughput = 9.414
-    Server: AppServer_4
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.994579161043
-        avgHwQueueTime = 0.567315196815
-        avgThreadQueueTime = 0.353723997215
-        avgServiceTime = 1.91561835507
-        avgHwQueueLength = 5.3259550677
-        avgThreadQueueLength = 3.32076088586
-        hwQueueLength = 0
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.933710916387
-        throughput = 9.388
-    Server: AppServer_5
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.994537990253
-        avgHwQueueTime = 0.450812740017
-        avgThreadQueueTime = 0.124477118241
-        avgServiceTime = 1.56982784851
-        avgHwQueueLength = 4.15559183748
-        avgThreadQueueLength = 1.14743007594
-        hwQueueLength = 0
-        hwInProcessCount = 10
-        threadQueueLength = 0
-        threadInUseCount = 10
-        utilization = 0.916765119416
-        throughput = 9.218
-    Server: AppServer_6
-        maxConcurrency = 10
-        numThreads = 20
-        speed = 20
-        avgProcessTime = 0.997609613748
-        avgHwQueueTime = 0.523486187266
-        avgThreadQueueTime = 0.456499197254
-        avgServiceTime = 1.97759499827
-        avgHwQueueLength = 4.89878374044
-        avgThreadQueueLength = 4.2719194879
+        avgProcessTime = 0.993018076321
+        avgHwQueueTime = 0.180063822913
+        avgThreadQueueTime = 0.0113335777836
+        avgServiceTime = 1.18441547702
+        avgHwQueueLength = 1.4837259008
+        avgThreadQueueLength = 0.0933886809369
         hwQueueLength = 1
         hwInProcessCount = 10
         threadQueueLength = 0
         threadInUseCount = 11
-        utilization = 0.933563076546
-        throughput = 9.358
-    Server: AppServer_7
+        utilization = 0.818246894888
+        throughput = 8.24
+    Server: AppServer_4
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.990059463895
-        avgHwQueueTime = 0.655808895291
-        avgThreadQueueTime = 0.48321701274
-        avgServiceTime = 2.12226057786
-        avgHwQueueLength = 6.22100318073
-        avgThreadQueueLength = 4.58379658285
-        hwQueueLength = 10
-        hwInProcessCount = 10
-        threadQueueLength = 19
-        threadInUseCount = 20
-        utilization = 0.939170407451
-        throughput = 9.486
-    Server: AppServer_8
+        avgProcessTime = 0.979123170854
+        avgHwQueueTime = 0.169949559569
+        avgThreadQueueTime = 0.00248248966351
+        avgServiceTime = 1.15155522009
+        avgHwQueueLength = 1.38423916269
+        avgThreadQueueLength = 0.0202198783093
+        hwQueueLength = 0
+        hwInProcessCount = 4
+        threadQueueLength = 0
+        threadInUseCount = 4
+        utilization = 0.79749582266
+        throughput = 8.145
+    Server: AppServer_5
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.500237528899
-        avgHwQueueTime = 0.000724015465558
+        avgProcessTime = 0.999652694011
+        avgHwQueueTime = 0.0749544201331
         avgThreadQueueTime = 0.0
-        avgServiceTime = 0.500961544364
-        avgHwQueueLength = 0.00548803722893
+        avgServiceTime = 1.07460711414
+        avgHwQueueLength = 0.579022895528
         avgThreadQueueLength = 0.0
         hwQueueLength = 0
+        hwInProcessCount = 5
+        threadQueueLength = 0
+        threadInUseCount = 5
+        utilization = 0.772231706124
+        throughput = 7.725
+    Server: AppServer_6
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.01124578121
+        avgHwQueueTime = 0.242802883023
+        avgThreadQueueTime = 0.00790904921989
+        avgServiceTime = 1.26195771345
+        avgHwQueueLength = 2.06503852011
+        avgThreadQueueLength = 0.0672664636151
+        hwQueueLength = 0
+        hwInProcessCount = 8
+        threadQueueLength = 0
+        threadInUseCount = 8
+        utilization = 0.860064536919
+        throughput = 8.505
+    Server: AppServer_7
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.0011068747
+        avgHwQueueTime = 0.145707257834
+        avgThreadQueueTime = 3.94476718931e-05
+        avgServiceTime = 1.1468535802
+        avgHwQueueLength = 1.20208487713
+        avgThreadQueueLength = 0.000325443293118
+        hwQueueLength = 0
         hwInProcessCount = 9
         threadQueueLength = 0
         threadInUseCount = 9
-        utilization = 0.379180046905
-        throughput = 7.58
+        utilization = 0.825913171626
+        throughput = 8.25
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.492140735218
+        avgHwQueueTime = 0.101678407994
+        avgThreadQueueTime = 0.00800397858713
+        avgServiceTime = 0.601823121799
+        avgHwQueueLength = 1.65024056175
+        avgThreadQueueLength = 0.129904572469
+        hwQueueLength = 1
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 11
+        utilization = 0.798744413259
+        throughput = 16.23
     Server: AppServer_9
         maxConcurrency = 10
         numThreads = 20
         speed = 20
-        avgProcessTime = 0.499569864168
-        avgHwQueueTime = 0.000735185858591
+        avgProcessTime = 0.496426087867
+        avgHwQueueTime = 0.0703372128123
+        avgThreadQueueTime = 0.00123624237148
+        avgServiceTime = 0.567999543051
+        avgHwQueueLength = 1.15634377863
+        avgThreadQueueLength = 0.0203238245871
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.816124488454
+        throughput = 16.44
+    Group: UserTypeX
+        numUsers = 700
+        minThinkTime = 2.0
+        maxThinkTime = 10.0
+        respondedRequestCount = 19757
+        unrespondedRequestCount = 91
+        avgResponseTime = 0.981882816365
+        stdDevResponseTime = 0.592182009451
+        throughput = 98.785
+        svc_1:
+            respondedRequestCount = 13223
+            unrespondedRequestCount = 71
+            avgResponseTime = 1.1780956252
+            stdDevResponseTime = 0.600250482074
+            throughput = 66.115
+        svc_2:
+            respondedRequestCount = 6534
+            unrespondedRequestCount = 20
+            avgResponseTime = 0.584802624872
+            stdDevResponseTime = 0.309257649047
+            throughput = 32.67
+
+*** Done ***
+
+
+***** Start Simulation -- 5 , 1 , [ 0 , 10 ) , [ 0 , 10 ) *****
+Simulation: nUsers = 700 ; simTime = 200
+<< ServerExample >>
+
+
+simtime = 200
+
+Servers:
+    Server: AppServer_0
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.906425107754
+        avgHwQueueTime = 0.203519623115
+        avgThreadQueueTime = 0.00177433935403
+        avgServiceTime = 1.11171907022
+        avgHwQueueLength = 1.94870039133
+        avgThreadQueueLength = 0.0169892993148
+        hwQueueLength = 0
+        hwInProcessCount = 6
+        threadQueueLength = 0
+        threadInUseCount = 6
+        utilization = 0.867902040675
+        throughput = 9.575
+    Server: AppServer_1
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.92304522342
+        avgHwQueueTime = 0.321229818115
+        avgThreadQueueTime = 0.0432841117452
+        avgServiceTime = 1.28755915328
+        avgHwQueueLength = 3.12235383208
+        avgThreadQueueLength = 0.420721566164
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.897199957164
+        throughput = 9.72
+    Server: AppServer_2
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.906654836655
+        avgHwQueueTime = 0.199019544411
+        avgThreadQueueTime = 0.0258522033184
+        avgServiceTime = 1.13152658439
+        avgHwQueueLength = 1.83794549264
+        avgThreadQueueLength = 0.238745097646
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.837295741651
+        throughput = 9.235
+    Server: AppServer_3
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.90537321514
+        avgHwQueueTime = 0.265605853367
+        avgThreadQueueTime = 0.0154472555379
+        avgServiceTime = 1.18642632405
+        avgHwQueueLength = 2.57372071913
+        avgThreadQueueLength = 0.149683906162
+        hwQueueLength = 1
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 11
+        utilization = 0.87730664547
+        throughput = 9.69
+    Server: AppServer_4
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.909392277266
+        avgHwQueueTime = 0.409323841533
+        avgThreadQueueTime = 0.100891082249
+        avgServiceTime = 1.41960720105
+        avgHwQueueLength = 4.15463699156
+        avgThreadQueueLength = 1.02404448483
+        hwQueueLength = 3
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 13
+        utilization = 0.923033161425
+        throughput = 10.15
+    Server: AppServer_5
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.921477346522
+        avgHwQueueTime = 0.222860965235
+        avgThreadQueueTime = 0.00283824654854
+        avgServiceTime = 1.14717655831
+        avgHwQueueLength = 2.08486432977
+        avgThreadQueueLength = 0.0265517964616
+        hwQueueLength = 1
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 11
+        utilization = 0.862042057671
+        throughput = 9.355
+    Server: AppServer_6
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.901480247085
+        avgHwQueueTime = 0.198482976106
+        avgThreadQueueTime = 0.00266966089052
+        avgServiceTime = 1.10263288408
+        avgHwQueueLength = 1.86177031587
+        avgThreadQueueLength = 0.0250414191531
+        hwQueueLength = 0
+        hwInProcessCount = 8
+        threadQueueLength = 0
+        threadInUseCount = 8
+        utilization = 0.845588471765
+        throughput = 9.38
+    Server: AppServer_7
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.908566203881
+        avgHwQueueTime = 0.252730229712
+        avgThreadQueueTime = 0.0643030924709
+        avgServiceTime = 1.22559952606
+        avgHwQueueLength = 2.38071876389
+        avgThreadQueueLength = 0.605735131076
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.855869364056
+        throughput = 9.42
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.913844566326
+        avgHwQueueTime = 0.357853555799
+        avgThreadQueueTime = 0.0664677525869
+        avgServiceTime = 1.33816587471
+        avgHwQueueLength = 3.46044388458
+        avgThreadQueueLength = 0.642743167516
+        hwQueueLength = 1
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 11
+        utilization = 0.883687695637
+        throughput = 9.67
+    Server: AppServer_9
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.920825082745
+        avgHwQueueTime = 0.282898349503
+        avgThreadQueueTime = 0.0323796133279
+        avgServiceTime = 1.23610304558
+        avgHwQueueLength = 2.6762183863
+        avgThreadQueueLength = 0.306311142082
+        hwQueueLength = 4
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 14
+        utilization = 0.871100528276
+        throughput = 9.46
+    Group: UserTypeX
+        numUsers = 700
+        minThinkTime = 2.0
+        maxThinkTime = 10.0
+        respondedRequestCount = 19131
+        unrespondedRequestCount = 97
+        avgResponseTime = 1.22072235383
+        stdDevResponseTime = 0.666939139254
+        throughput = 95.655
+        svc_1:
+            respondedRequestCount = 15917
+            unrespondedRequestCount = 92
+            avgResponseTime = 1.30465841116
+            stdDevResponseTime = 0.666506031348
+            throughput = 79.585
+        svc_2:
+            respondedRequestCount = 3214
+            unrespondedRequestCount = 5
+            avgResponseTime = 0.805037778664
+            stdDevResponseTime = 0.489957010655
+            throughput = 16.07
+
+*** Done ***
+
+
+***** Start Simulation -- 5 , 1 , [ 0 , 8 ) , [ 8 , 10 ) *****
+Simulation: nUsers = 700 ; simTime = 200
+<< ServerExample >>
+
+
+simtime = 200
+
+Servers:
+    Server: AppServer_0
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.994748060646
+        avgHwQueueTime = 0.695961381475
+        avgThreadQueueTime = 0.510649638434
+        avgServiceTime = 2.20135908056
+        avgHwQueueLength = 6.66035042072
+        avgThreadQueueLength = 4.88691703981
+        hwQueueLength = 0
+        hwInProcessCount = 8
+        threadQueueLength = 0
+        threadInUseCount = 8
+        utilization = 0.951973894038
+        throughput = 9.57
+    Server: AppServer_1
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.01304724437
+        avgHwQueueTime = 0.728646139564
+        avgThreadQueueTime = 0.628883834023
+        avgServiceTime = 2.37057721796
+        avgHwQueueLength = 6.88570601888
+        avgThreadQueueLength = 5.94295223152
+        hwQueueLength = 0
+        hwInProcessCount = 6
+        threadQueueLength = 0
+        threadInUseCount = 6
+        utilization = 0.95732964593
+        throughput = 9.45
+    Server: AppServer_2
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.985102829974
+        avgHwQueueTime = 0.628754768122
+        avgThreadQueueTime = 0.382815758164
+        avgServiceTime = 1.99667335626
+        avgHwQueueLength = 5.96373897563
+        avgThreadQueueLength = 3.63100746619
+        hwQueueLength = 1
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 11
+        utilization = 0.934370034231
+        throughput = 9.485
+    Server: AppServer_3
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.999003669658
+        avgHwQueueTime = 0.70228386336
+        avgThreadQueueTime = 0.284949470465
+        avgServiceTime = 1.98623700348
+        avgHwQueueLength = 6.74894792689
+        avgThreadQueueLength = 2.73836441117
+        hwQueueLength = 6
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 16
+        utilization = 0.960042526541
+        throughput = 9.61
+    Server: AppServer_4
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.997990215181
+        avgHwQueueTime = 0.444726228644
+        avgThreadQueueTime = 0.205989986825
+        avgServiceTime = 1.64870643065
+        avgHwQueueLength = 4.04033778723
+        avgThreadQueueLength = 1.87141903031
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.906674110492
+        throughput = 9.085
+    Server: AppServer_5
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.982886660677
+        avgHwQueueTime = 0.345911185921
+        avgThreadQueueTime = 0.0204634378987
+        avgServiceTime = 1.348680352
+        avgHwQueueLength = 3.14606223595
+        avgThreadQueueLength = 0.186114967688
+        hwQueueLength = 10
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 20
+        utilization = 0.893935417886
+        throughput = 9.095
+    Server: AppServer_6
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.988337849957
+        avgHwQueueTime = 0.411728722056
+        avgThreadQueueTime = 0.216594091593
+        avgServiceTime = 1.59710930136
+        avgHwQueueLength = 3.77349373764
+        avgThreadQueueLength = 1.98508484945
+        hwQueueLength = 10
+        hwInProcessCount = 10
+        threadQueueLength = 22
+        threadInUseCount = 20
+        utilization = 0.905811639486
+        throughput = 9.165
+    Server: AppServer_7
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.990023955045
+        avgHwQueueTime = 0.643560563373
+        avgThreadQueueTime = 0.350656853374
+        avgServiceTime = 1.98404667494
+        avgHwQueueLength = 6.10417194359
+        avgThreadQueueLength = 3.32598025426
+        hwQueueLength = 8
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 18
+        utilization = 0.93903772136
+        throughput = 9.485
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.50146982849
+        avgHwQueueTime = 0.000124051620606
         avgThreadQueueTime = 0.0
-        avgServiceTime = 0.500305050026
-        avgHwQueueLength = 0.00570504226266
+        avgServiceTime = 0.501593880111
+        avgHwQueueLength = 0.000924804831618
         avgThreadQueueLength = 0.0
         hwQueueLength = 0
         hwInProcessCount = 4
         threadQueueLength = 0
         threadInUseCount = 4
-        utilization = 0.387666214594
-        throughput = 7.76
+        utilization = 0.373845757139
+        throughput = 7.455
+    Server: AppServer_9
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.504858169905
+        avgHwQueueTime = 0.00157430338374
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.506432473288
+        avgHwQueueLength = 0.0122795663932
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 1
+        threadQueueLength = 0
+        threadInUseCount = 1
+        utilization = 0.393789372526
+        throughput = 7.8
     Group: UserTypeX
         numUsers = 700
         minThinkTime = 2.0
         maxThinkTime = 10.0
-        respondedRequestCount = 45265
-        unrespondedRequestCount = 176
-        avgResponseTime = 1.69218043312
-        stdDevResponseTime = 1.17860153597
-        throughput = 90.53
+        respondedRequestCount = 18040
+        unrespondedRequestCount = 133
+        avgResponseTime = 1.66170328546
+        stdDevResponseTime = 1.10499091361
+        throughput = 90.2
         svc_1:
-            respondedRequestCount = 37595
-            unrespondedRequestCount = 163
-            avgResponseTime = 1.93527648512
-            stdDevResponseTime = 1.14448694868
-            throughput = 75.19
+            respondedRequestCount = 14989
+            unrespondedRequestCount = 128
+            avgResponseTime = 1.89733912444
+            stdDevResponseTime = 1.06186781046
+            throughput = 74.945
         svc_2:
-            respondedRequestCount = 7670
-            unrespondedRequestCount = 13
-            avgResponseTime = 0.500629445534
-            stdDevResponseTime = 0.260959623742
-            throughput = 15.34
+            respondedRequestCount = 3051
+            unrespondedRequestCount = 5
+            avgResponseTime = 0.504067890388
+            stdDevResponseTime = 0.259148417029
+            throughput = 15.255
+
+*** Done ***
+
+
+***** Start Simulation -- 1 , 1 , [ 0 , 10 ) , [ 0 , 10 ) *****
+Simulation: nUsers = 700 ; simTime = 200
+<< ServerExample >>
+
+
+simtime = 200
+
+Servers:
+    Server: AppServer_0
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.744525807046
+        avgHwQueueTime = 0.041970293056
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.786496100102
+        avgHwQueueLength = 0.419912782025
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 1
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 11
+        utilization = 0.74489806995
+        throughput = 10.005
+    Server: AppServer_1
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.749012094491
+        avgHwQueueTime = 0.0761105509658
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.825122645457
+        avgHwQueueLength = 0.778991489135
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.766613878712
+        throughput = 10.235
+    Server: AppServer_2
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.74635361242
+        avgHwQueueTime = 0.0577836110434
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.804137223464
+        avgHwQueueLength = 0.57321342155
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.740382783521
+        throughput = 9.92
+    Server: AppServer_3
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.767902725936
+        avgHwQueueTime = 0.112051811126
+        avgThreadQueueTime = 0.00356139084077
+        avgServiceTime = 0.883515927903
+        avgHwQueueLength = 1.1642183176
+        avgThreadQueueLength = 0.0370028508356
+        hwQueueLength = 2
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 12
+        utilization = 0.797850932247
+        throughput = 10.39
+    Server: AppServer_4
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.74646733345
+        avgHwQueueTime = 0.0822078181624
+        avgThreadQueueTime = 6.01975816403e-05
+        avgServiceTime = 0.828735349195
+        avgHwQueueLength = 0.86030481707
+        avgThreadQueueLength = 0.000629967691866
+        hwQueueLength = 0
+        hwInProcessCount = 6
+        threadQueueLength = 0
+        threadInUseCount = 6
+        utilization = 0.781178064456
+        throughput = 10.465
+    Server: AppServer_5
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.747373692681
+        avgHwQueueTime = 0.0644115499938
+        avgThreadQueueTime = 0.00037598112614
+        avgServiceTime = 0.812161223801
+        avgHwQueueLength = 0.631555247689
+        avgThreadQueueLength = 0.0036864949418
+        hwQueueLength = 0
+        hwInProcessCount = 8
+        threadQueueLength = 0
+        threadInUseCount = 8
+        utilization = 0.732799905673
+        throughput = 9.805
+    Server: AppServer_6
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.729020138991
+        avgHwQueueTime = 0.0408100996975
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.769830238688
+        avgHwQueueLength = 0.409529350464
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 6
+        threadQueueLength = 0
+        threadInUseCount = 6
+        utilization = 0.731571709477
+        throughput = 10.035
+    Server: AppServer_7
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.764154058208
+        avgHwQueueTime = 0.0699182803275
+        avgThreadQueueTime = 0.000138895835167
+        avgServiceTime = 0.83421123437
+        avgHwQueueLength = 0.68519914721
+        avgThreadQueueLength = 0.00136117918463
+        hwQueueLength = 3
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 13
+        utilization = 0.748870977043
+        throughput = 9.8
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.751556524507
+        avgHwQueueTime = 0.0881139265885
+        avgThreadQueueTime = 0.000835012654925
+        avgServiceTime = 0.840505463751
+        avgHwQueueLength = 0.913300849089
+        avgThreadQueueLength = 0.0086549061683
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.778988337652
+        throughput = 10.365
+    Server: AppServer_9
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.738540527455
+        avgHwQueueTime = 0.0751479595978
+        avgThreadQueueTime = 0.00168030745824
+        avgServiceTime = 0.815368794511
+        avgHwQueueLength = 0.759370131736
+        avgThreadQueueLength = 0.0169795068655
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.746295202993
+        throughput = 10.105
+    Group: UserTypeX
+        numUsers = 700
+        minThinkTime = 2.0
+        maxThinkTime = 10.0
+        respondedRequestCount = 20225
+        unrespondedRequestCount = 88
+        avgResponseTime = 0.820355095936
+        stdDevResponseTime = 0.506043389678
+        throughput = 101.125
+        svc_1:
+            respondedRequestCount = 10182
+            unrespondedRequestCount = 57
+            avgResponseTime = 1.07035258906
+            stdDevResponseTime = 0.543176000175
+            throughput = 50.91
+        svc_2:
+            respondedRequestCount = 10043
+            unrespondedRequestCount = 31
+            avgResponseTime = 0.566897516034
+            stdDevResponseTime = 0.298309678288
+            throughput = 50.215
+
+*** Done ***
+
+
+***** Start Simulation -- 1 , 1 , [ 0 , 8 ) , [ 8 , 10 ) *****
+Simulation: nUsers = 700 ; simTime = 200
+<< ServerExample >>
+
+
+simtime = 200
+
+Servers:
+    Server: AppServer_0
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.00726047298
+        avgHwQueueTime = 0.00313374587507
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.01039421885
+        avgHwQueueLength = 0.0156843981047
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 8
+        threadQueueLength = 0
+        threadInUseCount = 8
+        utilization = 0.504133866726
+        throughput = 5.005
+    Server: AppServer_1
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.00884682919
+        avgHwQueueTime = 0.0075776868289
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.01642451602
+        avgHwQueueLength = 0.0382294300518
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 4
+        threadQueueLength = 0
+        threadInUseCount = 4
+        utilization = 0.508963225326
+        throughput = 5.045
+    Server: AppServer_2
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.0157456624
+        avgHwQueueTime = 0.0160235478155
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.03176921021
+        avgHwQueueLength = 0.0846043324659
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.536313709746
+        throughput = 5.28
+    Server: AppServer_3
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.973257276845
+        avgHwQueueTime = 0.00636685412432
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.979624130969
+        avgHwQueueLength = 0.0336806583176
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 6
+        threadQueueLength = 0
+        threadInUseCount = 6
+        utilization = 0.514853099451
+        throughput = 5.29
+    Server: AppServer_4
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.01256168897
+        avgHwQueueTime = 0.00393069611613
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.01649238509
+        avgHwQueueLength = 0.0193783318525
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 4
+        threadQueueLength = 0
+        threadInUseCount = 4
+        utilization = 0.499192912662
+        throughput = 4.93
+    Server: AppServer_5
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.997178206205
+        avgHwQueueTime = 0.0127671990658
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.00994540527
+        avgHwQueueLength = 0.0611548835254
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 5
+        threadQueueLength = 0
+        threadInUseCount = 5
+        utilization = 0.477648360772
+        throughput = 4.79
+    Server: AppServer_6
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.983437579635
+        avgHwQueueTime = 0.00834532079449
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.99178290043
+        avgHwQueueLength = 0.0435625745472
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 3
+        threadQueueLength = 0
+        threadInUseCount = 3
+        utilization = 0.51335441657
+        throughput = 5.22
+    Server: AppServer_7
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.995803054289
+        avgHwQueueTime = 0.00701827827626
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.00282133256
+        avgHwQueueLength = 0.0323542628535
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 2
+        threadQueueLength = 0
+        threadInUseCount = 2
+        utilization = 0.459065208027
+        throughput = 4.61
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.497795490557
+        avgHwQueueTime = 0.495584953974
+        avgThreadQueueTime = 4.3303973385
+        avgServiceTime = 5.28324624991
+        avgHwQueueLength = 9.81258208869
+        avgThreadQueueLength = 85.7418673023
+        hwQueueLength = 10
+        hwInProcessCount = 10
+        threadQueueLength = 135
+        threadInUseCount = 20
+        utilization = 0.985635071303
+        throughput = 19.8
+    Server: AppServer_9
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.496145029318
+        avgHwQueueTime = 0.464858002263
+        avgThreadQueueTime = 2.2272185487
+        avgServiceTime = 3.18820303838
+        avgHwQueueLength = 9.19953986478
+        avgThreadQueueLength = 44.0766550787
+        hwQueueLength = 10
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 20
+        utilization = 0.98187101302
+        throughput = 19.79
+    Group: UserTypeX
+        numUsers = 700
+        minThinkTime = 2.0
+        maxThinkTime = 10.0
+        respondedRequestCount = 15952
+        unrespondedRequestCount = 214
+        avgResponseTime = 2.60991362515
+        stdDevResponseTime = 2.21198554226
+        throughput = 79.76
+        svc_1:
+            respondedRequestCount = 8034
+            unrespondedRequestCount = 39
+            avgResponseTime = 1.00731632722
+            stdDevResponseTime = 0.526439378794
+            throughput = 40.17
+        svc_2:
+            respondedRequestCount = 7918
+            unrespondedRequestCount = 175
+            avgResponseTime = 4.23598923662
+            stdDevResponseTime = 2.07993754254
+            throughput = 39.59
+
+*** Done ***
+
+
+***** Start Simulation -- 1 , 1 , [ 0 , 9 ) , [ 0 , 9 ) *****
+Simulation: nUsers = 700 ; simTime = 200
+<< ServerExample >>
+
+
+simtime = 200
+
+Servers:
+    Server: AppServer_0
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.741237252802
+        avgHwQueueTime = 0.142869806404
+        avgThreadQueueTime = 0.00479912749792
+        avgServiceTime = 0.888906186704
+        avgHwQueueLength = 1.61585751043
+        avgThreadQueueLength = 0.0542781320015
+        hwQueueLength = 1
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 11
+        utilization = 0.838339332919
+        throughput = 11.31
+    Server: AppServer_1
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.751487310333
+        avgHwQueueTime = 0.19568163317
+        avgThreadQueueTime = 0.0277505427929
+        avgServiceTime = 0.974793969228
+        avgHwQueueLength = 2.16521727103
+        avgThreadQueueLength = 0.307059756004
+        hwQueueLength = 9
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 19
+        utilization = 0.831520708883
+        throughput = 11.065
+    Server: AppServer_2
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.745650885477
+        avgHwQueueTime = 0.146908445916
+        avgThreadQueueTime = 0.00587341068318
+        avgServiceTime = 0.898432742077
+        avgHwQueueLength = 1.65418910102
+        avgThreadQueueLength = 0.0661346042926
+        hwQueueLength = 7
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 17
+        utilization = 0.839602897048
+        throughput = 11.26
+    Server: AppServer_3
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.744263448996
+        avgHwQueueTime = 0.182447551711
+        avgThreadQueueTime = 0.017660772029
+        avgServiceTime = 0.944371772736
+        avgHwQueueLength = 2.02881677503
+        avgThreadQueueLength = 0.196387784963
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.827620955284
+        throughput = 11.12
+    Server: AppServer_4
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.762910729724
+        avgHwQueueTime = 0.207359698422
+        avgThreadQueueTime = 0.0171053845625
+        avgServiceTime = 0.987375812708
+        avgHwQueueLength = 2.32242862233
+        avgThreadQueueLength = 0.1915803071
+        hwQueueLength = 0
+        hwInProcessCount = 4
+        threadQueueLength = 0
+        threadInUseCount = 4
+        utilization = 0.85446001729
+        throughput = 11.2
+    Server: AppServer_5
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.733116458477
+        avgHwQueueTime = 0.125341785849
+        avgThreadQueueTime = 0.00664445722718
+        avgServiceTime = 0.865102701553
+        avgHwQueueLength = 1.36121179432
+        avgThreadQueueLength = 0.0721588054872
+        hwQueueLength = 2
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 12
+        utilization = 0.796164473907
+        throughput = 10.86
+    Server: AppServer_6
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.755038197602
+        avgHwQueueTime = 0.169622147277
+        avgThreadQueueTime = 0.018663886328
+        avgServiceTime = 0.943324231207
+        avgHwQueueLength = 1.8251343047
+        avgThreadQueueLength = 0.20082341689
+        hwQueueLength = 0
+        hwInProcessCount = 5
+        threadQueueLength = 0
+        threadInUseCount = 5
+        utilization = 0.81242110062
+        throughput = 10.76
+    Server: AppServer_7
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.742238976514
+        avgHwQueueTime = 0.142719178333
+        avgThreadQueueTime = 0.00448802716437
+        avgServiceTime = 0.887183989433
+        avgHwQueueLength = 1.59060524253
+        avgThreadQueueLength = 0.0500190627469
+        hwQueueLength = 10
+        hwInProcessCount = 10
+        threadQueueLength = 2
+        threadInUseCount = 20
+        utilization = 0.827225339325
+        throughput = 11.145
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.74144472538
+        avgHwQueueTime = 0.150783590166
+        avgThreadQueueTime = 0.00122492513871
+        avgServiceTime = 0.893453240685
+        avgHwQueueLength = 1.7249642715
+        avgThreadQueueLength = 0.0140131435868
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.848212765835
+        throughput = 11.44
+    Group: UserTypeX
+        numUsers = 700
+        minThinkTime = 2.0
+        maxThinkTime = 10.0
+        respondedRequestCount = 20032
+        unrespondedRequestCount = 108
+        avgResponseTime = 0.920227184848
+        stdDevResponseTime = 0.556386613978
+        throughput = 100.16
+        svc_1:
+            respondedRequestCount = 10001
+            unrespondedRequestCount = 62
+            avgResponseTime = 1.17330924019
+            stdDevResponseTime = 0.591340974109
+            throughput = 50.005
+        svc_2:
+            respondedRequestCount = 10031
+            unrespondedRequestCount = 46
+            avgResponseTime = 0.667902029287
+            stdDevResponseTime = 0.376907377728
+            throughput = 50.155
+
+*** Done ***
+
+
+***** Start Simulation -- 1 , 1 , [ 0 , 7 ) , [ 7 , 9 ) *****
+Simulation: nUsers = 700 ; simTime = 200
+<< ServerExample >>
+
+
+simtime = 200
+
+Servers:
+    Server: AppServer_0
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.981256379872
+        avgHwQueueTime = 0.0127460173814
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.994002397253
+        avgHwQueueLength = 0.0746916618548
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 6
+        threadQueueLength = 0
+        threadInUseCount = 6
+        utilization = 0.575016238605
+        throughput = 5.86
+    Server: AppServer_1
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.971332641063
+        avgHwQueueTime = 0.0155431412917
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.986875782355
+        avgHwQueueLength = 0.0915491022084
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 5
+        threadQueueLength = 0
+        threadInUseCount = 5
+        utilization = 0.572114925586
+        throughput = 5.89
+    Server: AppServer_2
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.00778617756
+        avgHwQueueTime = 0.0124515025376
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.0202376801
+        avgHwQueueLength = 0.0724054872563
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 3
+        threadQueueLength = 0
+        threadInUseCount = 3
+        utilization = 0.586027662251
+        throughput = 5.815
+    Server: AppServer_3
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.989271917889
+        avgHwQueueTime = 0.0154222748925
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.00469419278
+        avgHwQueueLength = 0.0889865261295
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.570809896622
+        throughput = 5.77
+    Server: AppServer_4
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.989051427815
+        avgHwQueueTime = 0.0400407804199
+        avgThreadQueueTime = 0.000114099704195
+        avgServiceTime = 1.02920630794
+        avgHwQueueLength = 0.225229389862
+        avgThreadQueueLength = 0.000641810836097
+        hwQueueLength = 0
+        hwInProcessCount = 6
+        threadQueueLength = 0
+        threadInUseCount = 6
+        utilization = 0.556341428146
+        throughput = 5.625
+    Server: AppServer_5
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.988467563288
+        avgHwQueueTime = 0.0293323749989
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 1.01779993829
+        avgHwQueueLength = 0.168367832493
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 8
+        threadQueueLength = 0
+        threadInUseCount = 8
+        utilization = 0.567380381327
+        throughput = 5.74
+    Server: AppServer_6
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.972607360281
+        avgHwQueueTime = 0.00863442384247
+        avgThreadQueueTime = 0.0
+        avgServiceTime = 0.981241784124
+        avgHwQueueLength = 0.0463668560341
+        avgThreadQueueLength = 0.0
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.522290152471
+        throughput = 5.37
+    Server: AppServer_7
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.497039222608
+        avgHwQueueTime = 0.482133551164
+        avgThreadQueueTime = 1.99201166137
+        avgServiceTime = 2.94780984851
+        avgHwQueueLength = 9.5438336453
+        avgThreadQueueLength = 39.4318708368
+        hwQueueLength = 10
+        hwInProcessCount = 10
+        threadQueueLength = 95
+        threadInUseCount = 20
+        utilization = 0.983889141152
+        throughput = 19.795
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.499428305848
+        avgHwQueueTime = 0.49860794164
+        avgThreadQueueTime = 4.56399236134
+        avgServiceTime = 5.5540122645
+        avgHwQueueLength = 9.83504164885
+        avgThreadQueueLength = 90.0247493274
+        hwQueueLength = 10
+        hwInProcessCount = 10
+        threadQueueLength = 39
+        threadInUseCount = 20
+        utilization = 0.985122333286
+        throughput = 19.725
+    Group: UserTypeX
+        numUsers = 700
+        minThinkTime = 2.0
+        maxThinkTime = 10.0
+        respondedRequestCount = 15918
+        unrespondedRequestCount = 216
+        avgResponseTime = 2.61556518891
+        stdDevResponseTime = 2.26915411641
+        throughput = 79.59
+        svc_1:
+            respondedRequestCount = 8014
+            unrespondedRequestCount = 42
+            avgResponseTime = 1.00494248856
+            stdDevResponseTime = 0.527997890498
+            throughput = 40.07
+        svc_2:
+            respondedRequestCount = 7904
+            unrespondedRequestCount = 174
+            avgResponseTime = 4.2486029319
+            stdDevResponseTime = 2.18862711492
+            throughput = 39.52
+
+*** Done ***
+
+
+***** Start Simulation -- 1 , 1 , [ 0 , 6 ) , [ 6 , 9 ) *****
+Simulation: nUsers = 700 ; simTime = 200
+<< ServerExample >>
+
+
+simtime = 200
+
+Servers:
+    Server: AppServer_0
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.00207061317
+        avgHwQueueTime = 0.214476995958
+        avgThreadQueueTime = 0.0251594035494
+        avgServiceTime = 1.24170701268
+        avgHwQueueLength = 1.81233061585
+        avgThreadQueueLength = 0.212596959992
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.846749668127
+        throughput = 8.45
+    Server: AppServer_1
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.994352488791
+        avgHwQueueTime = 0.198222595711
+        avgThreadQueueTime = 0.00653998957101
+        avgServiceTime = 1.19911507407
+        avgHwQueueLength = 1.68984762844
+        avgThreadQueueLength = 0.0557534110929
+        hwQueueLength = 0
+        hwInProcessCount = 8
+        threadQueueLength = 0
+        threadInUseCount = 8
+        utilization = 0.847685496695
+        throughput = 8.525
+    Server: AppServer_2
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.971674425945
+        avgHwQueueTime = 0.201297492784
+        avgThreadQueueTime = 0.00344194211061
+        avgServiceTime = 1.17641386084
+        avgHwQueueLength = 1.70599625134
+        avgThreadQueueLength = 0.0291704593874
+        hwQueueLength = 0
+        hwInProcessCount = 6
+        threadQueueLength = 0
+        threadInUseCount = 6
+        utilization = 0.823494075988
+        throughput = 8.475
+    Server: AppServer_3
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.987425859386
+        avgHwQueueTime = 0.138942482607
+        avgThreadQueueTime = 0.00496860071758
+        avgServiceTime = 1.13133694271
+        avgHwQueueLength = 1.11362399809
+        avgThreadQueueLength = 0.0398233347514
+        hwQueueLength = 0
+        hwInProcessCount = 7
+        threadQueueLength = 0
+        threadInUseCount = 7
+        utilization = 0.791421826298
+        throughput = 8.015
+    Server: AppServer_4
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.989107647029
+        avgHwQueueTime = 0.123334220114
+        avgThreadQueueTime = 0.000123088387462
+        avgServiceTime = 1.11256495553
+        avgHwQueueLength = 1.01504063154
+        avgThreadQueueLength = 0.00101301742882
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.814035593504
+        throughput = 8.23
+    Server: AppServer_5
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 1.01862832576
+        avgHwQueueTime = 0.279254702725
+        avgThreadQueueTime = 0.0486713491417
+        avgServiceTime = 1.34655437763
+        avgHwQueueLength = 2.34573950289
+        avgThreadQueueLength = 0.408839332791
+        hwQueueLength = 0
+        hwInProcessCount = 8
+        threadQueueLength = 0
+        threadInUseCount = 8
+        utilization = 0.855647793641
+        throughput = 8.4
+    Server: AppServer_6
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.498449739275
+        avgHwQueueTime = 0.0921749627625
+        avgThreadQueueTime = 0.000734367071991
+        avgServiceTime = 0.591359069109
+        avgHwQueueLength = 1.54208712702
+        avgThreadQueueLength = 0.0122859611144
+        hwQueueLength = 0
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 10
+        utilization = 0.833906413806
+        throughput = 16.73
+    Server: AppServer_7
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.499147736602
+        avgHwQueueTime = 0.110986460143
+        avgThreadQueueTime = 0.00278566507975
+        avgServiceTime = 0.612919861825
+        avgHwQueueLength = 1.88843461934
+        avgThreadQueueLength = 0.0473980913319
+        hwQueueLength = 0
+        hwInProcessCount = 9
+        threadQueueLength = 0
+        threadInUseCount = 9
+        utilization = 0.849299873828
+        throughput = 17.015
+    Server: AppServer_8
+        maxConcurrency = 10
+        numThreads = 20
+        speed = 20
+        avgProcessTime = 0.498453678646
+        avgHwQueueTime = 0.0848524255166
+        avgThreadQueueTime = 0.001673859756
+        avgServiceTime = 0.584979963919
+        avgHwQueueLength = 1.38776141932
+        avgThreadQueueLength = 0.0273759763093
+        hwQueueLength = 5
+        hwInProcessCount = 10
+        threadQueueLength = 0
+        threadInUseCount = 15
+        utilization = 0.815220991426
+        throughput = 16.355
+    Group: UserTypeX
+        numUsers = 700
+        minThinkTime = 2.0
+        maxThinkTime = 10.0
+        respondedRequestCount = 20039
+        unrespondedRequestCount = 81
+        avgResponseTime = 0.89934363662
+        stdDevResponseTime = 0.572949546204
+        throughput = 100.195
+        svc_1:
+            respondedRequestCount = 10019
+            unrespondedRequestCount = 47
+            avgResponseTime = 1.20211836882
+            stdDevResponseTime = 0.621887085668
+            throughput = 50.095
+        svc_2:
+            respondedRequestCount = 10020
+            unrespondedRequestCount = 34
+            avgResponseTime = 0.596599121458
+            stdDevResponseTime = 0.294111357686
+            throughput = 50.1
 
 *** Done ***

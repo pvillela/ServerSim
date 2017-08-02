@@ -39,7 +39,7 @@ def microservices_example(weight1, weight2, serverRange1, serverRange2):
         random.seed(12345)
 
         nUsers = 700
-        simtime = 500
+        simtime = 200
         hwThreads = 10
         swThreads = 20
         speed = 20
@@ -66,8 +66,8 @@ def microservices_example(weight1, weight2, serverRange1, serverRange2):
         grp = UserGroup(env, nUsers, "UserTypeX", weightedTxns, minThinkTime, maxThinkTime)
         grp.activateUsers()
 
-        print("\n\n***** Start Simulation (", weight1, "/", weight2, "/", serverRange1[0], serverRange1[-1],
-              "/", serverRange2[0], serverRange2[-1], ") *****", file=fi)
+        print("\n\n***** Start Simulation --", weight1, ",", weight2, ", [", serverRange1[0], ",", serverRange1[-1]+1,
+              ") , [", serverRange2[0], ",", serverRange2[-1]+1, ") *****", file=fi)
         print("Simulation: nUsers =", nUsers, "; simTime =", simtime, file=fi)
 
         env.run(until=simtime)
@@ -126,5 +126,13 @@ if __name__ == "__main__":
     print("\n\n\n@@@@@@@@@ Start comparative simulations @@@@@@@@@@")
     microservices_example(weight1=2, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
     microservices_example(weight1=2, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
+
     microservices_example(weight1=5, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
     microservices_example(weight1=5, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
+
+    microservices_example(weight1=1, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
+    microservices_example(weight1=1, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
+
+    microservices_example(weight1=1, weight2=1, serverRange1=range(0, 9), serverRange2=range(0, 9))
+    microservices_example(weight1=1, weight2=1, serverRange1=range(0, 7), serverRange2=range(7, 9))
+    microservices_example(weight1=1, weight2=1, serverRange1=range(0, 6), serverRange2=range(6, 9))
