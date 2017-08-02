@@ -83,6 +83,16 @@ class Server(object):
         return self._hardware.avgQueueLength
 
     @property
+    def hwQueueLength(self):
+        """Current number of HW requests in queue."""
+        return self._hardware.queueLength
+
+    @property
+    def hwInProcessCount(self):
+        """Current number of HW requests in process."""
+        return self._hardware.inUseCount
+
+    @property
     def utilization(self):
         """Return the fraction of capacity used."""
         return self._hardware.utilization
@@ -114,6 +124,16 @@ class Server(object):
         Based on number of thread releases, using Little's formula.
         """
         return self._threads.avgQueueLength
+
+    @property
+    def threadQueueLength(self):
+        """Current number of thread requests in queue."""
+        return self._threads.queueLength
+
+    @property
+    def threadInUseCount(self):
+        """Current number of requests using threads."""
+        return self._threads.inUseCount
 
     @property
     def threadUtilization(self):

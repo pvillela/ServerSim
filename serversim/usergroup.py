@@ -4,8 +4,11 @@ execution requests.
 """
 
 import random
-from .randutil import probChooser
+import math
+
 from livestats import livestats
+
+from .randutil import probChooser
 
 
 class UserGroup(object):
@@ -59,15 +62,23 @@ class UserGroup(object):
         self._overallTally = livestats.LiveStats(quantiles)  # overall tally
         self._tallyDict[None] = self._overallTally
 
+        # additional recordkeeping
+        self._requestCountDict = {}
+        for txn in self._txns:
+            self._requestCountDict[txn] = 0
+        self._requestCountDict[None] = 0
+
     def _user(self):
         """
         Process execution loop for user.
         """
-        while 1:
+        while True:
             thinkTime = random.uniform(self.minThinkTime, self.maxThinkTime)
             yield self.env.timeout(thinkTime)
             startTime = self.env.now
             svcReqFactory = self._pickSvcRequestFactory()
+            self._requestCountDict[svcReqFactory] += 1
+            self._requestCountDict[None] += 1
             yield svcReqFactory.makeSvcRequest().submit()
             responseTime = self.env.now - startTime
             self._overallTally.add(responseTime)
@@ -94,6 +105,9 @@ class UserGroup(object):
                 time across all service requests.
         """
         return self._tallyDict[txn].average
+
+    def stdDevResponseTime(self, txn=None):
+        return math.sqrt(abs(self._tallyDict[txn].variance()))
 
     def maxResponseTime(self, txn=None):
         """ Maximum response time for a given service requester or
@@ -142,3 +156,14 @@ class UserGroup(object):
                 time quantiles aggregated across all service requests.
         """
         return self._tallyDict[txn].quantiles()
+
+    def respondedRequestCount(self, txn=None):
+        """Number of requests submitted and responded to."""
+        return self._tallyDict[txn].num()
+
+    def unrespondedRequestCount(self, txn=None):
+        """Number of requests submitted but not yet responded to."""
+        return self._requestCountDict[txn] - self.respondedRequestCount(txn)
+
+    def throughput(self, txn=None):
+        return self.respondedRequestCount(txn) / self.env.now

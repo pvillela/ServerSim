@@ -25,6 +25,8 @@ class MeasuredResource(simpy.Resource):
         self.cumQueueTime = 0
         self.cumServiceTime = 0
         self.svcReqLog = list()
+        self.queueLength = 0
+        self.inUseCount = 0
 
     # def __repr__(self):
     #     return type(self).__name__ + repr(self.__dict__)
@@ -33,10 +35,13 @@ class MeasuredResource(simpy.Resource):
         """Overrides parent class method to support metrics."""
 
         submissionTime = self.env.now
+        self.queueLength += 1
 
         def cb(evt):
             evt.resource.cumQueueTime += self.env.now - submissionTime
-        
+            evt.resource.queueLength -= 1
+            evt.resource.inUseCount += 1
+
         req = simpy.Resource.request(self)
         req.submissionTime = submissionTime  # ad-hoc attribute
         if svcReq is not None:
@@ -47,6 +52,7 @@ class MeasuredResource(simpy.Resource):
     def release(self, req):
         """Overrides parent class method to support metrics."""
         self.releases += 1
+        self.inUseCount -= 1
         self.cumServiceTime += self.env.now - req.submissionTime
         return simpy.Resource.release(self, req)
         
