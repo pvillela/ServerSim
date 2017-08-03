@@ -39,6 +39,8 @@ class UserGroup(object):
         quantiles (list[float]): List of quantiles to be tallied.  It
             defaults to [0.5, 0.95, 0.99] if not provided.
     """
+
+    INFINITY = 1e99
     
     def __init__(self, env, numUsers, name, weightedTxns, minThinkTime,
                  maxThinkTime, quantiles=None):
@@ -47,11 +49,11 @@ class UserGroup(object):
         if isinstance(numUsers, int):
             numUsers = [(0, numUsers)]
         if not isinstance(numUsers, list):
-            raise TypeError("Argument numUsers must be an int or a list of pairs.")
+            raise TypeError("Argument numUsers must be a number or a list of pairs.")
         if not numUsers[0][0] == 0:
             raise ValueError("Argument numUsers first element must be a pair with 0 as the first component.")
         self.numUsers = numUsers
-        self.numUsersTimes = [p[0] for p in numUsers][1:] + [sys.maxint]
+        self.numUsersTimes = [p[0] for p in numUsers][1:] + [self.INFINITY]
         self.numUsersValues = [p[1] for p in numUsers]
         self.maxUsers = max(self.numUsersValues)
         self.name = name
