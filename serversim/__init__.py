@@ -19,10 +19,9 @@ from .util import nullary, curried_nullary
 
 indent = " " * 4
 
-const.logfile = open("simout.txt", "w")
+# const.logfile = open("simout.txt", "w")
+const.logfile = sys.stdout
 
-
-# const.logfile = sys.stdout
 
 def _closeLogfile():
     if const.logfile is not None and not const.logfile == sys.stdout and not const.logfile == sys.stderr:
