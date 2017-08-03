@@ -5,6 +5,7 @@ execution requests.
 
 import random
 import math
+import sys
 
 from livestats import livestats
 
@@ -40,10 +41,19 @@ class UserGroup(object):
     """
     
     def __init__(self, env, numUsers, name, weightedTxns, minThinkTime,
-                 maxThinkTime, quantiles=None, throtleFunc=None):
+                 maxThinkTime, quantiles=None):
         """Initializer."""
         self.env = env
+        if isinstance(numUsers, int):
+            numUsers = [(0, numUsers)]
+        if not isinstance(numUsers, list):
+            raise TypeError("Argument numUsers must be an int or a list of pairs.")
+        if not numUsers[0][0] == 0:
+            raise ValueError("Argument numUsers first element must be a pair with 0 as the first component.")
         self.numUsers = numUsers
+        self.numUsersTimes = [p[0] for p in numUsers][1:] + [sys.maxint]
+        self.numUsersValues = [p[1] for p in numUsers]
+        self.maxUsers = max(self.numUsersValues)
         self.name = name
         self.weightedTxns = weightedTxns
         self._txns = [x[0] for x in weightedTxns]
@@ -52,7 +62,6 @@ class UserGroup(object):
         if quantiles is None:
             quantiles = [0.5, 0.95, 0.99]
         self.quantiles = quantiles
-        self.throttleFunc = throtleFunc
 
         self._pickSvcRequestFactory = probChooser(*weightedTxns)
         
@@ -69,37 +78,38 @@ class UserGroup(object):
             self._requestCountDict[txn] = 0
         self._requestCountDict[None] = 0
 
-    THROTTLE_LIMIT = 100
+    # THROTTLE_LIMIT = 100
 
     def _user(self, userIdx):
         """
         Process execution loop for user.
         """
-        thf = self.throttleFunc
-        while True:
-            # user goes dormant if the throttle applies
-            if thf is not None and thf(self.env.now) < userIdx:
-                for t in range(1, self.THROTTLE_LIMIT):
-                    if thf(self.env.now + t) >= userIdx: break
-                yield self.env.timeout(t)
-            # user stays active otherwise
-            else:
-                thinkTime = random.uniform(self.minThinkTime, self.maxThinkTime)
-                yield self.env.timeout(thinkTime)
-                startTime = self.env.now
-                svcReqFactory = self._pickSvcRequestFactory()
-                self._requestCountDict[svcReqFactory] += 1
-                self._requestCountDict[None] += 1
-                yield svcReqFactory.makeSvcRequest().submit()
-                responseTime = self.env.now - startTime
-                self._overallTally.add(responseTime)
-                self._tallyDict[svcReqFactory].add(responseTime)
+        nTimes = len(self.numUsersTimes)
+        for i in range(nTimes):
+            nextBreakTime = self.numUsersTimes[i]
+            numActiveUsers = self.numUsersValues[i]
+            while self.env.now < nextBreakTime:
+                # user goes dormant if the throttle applies
+                if userIdx >= numActiveUsers:
+                    yield self.env.timeout(nextBreakTime - self.env.now)
+                # user stays active otherwise
+                else:
+                    thinkTime = random.uniform(self.minThinkTime, self.maxThinkTime)
+                    yield self.env.timeout(thinkTime)
+                    startTime = self.env.now
+                    svcReqFactory = self._pickSvcRequestFactory()
+                    self._requestCountDict[svcReqFactory] += 1
+                    self._requestCountDict[None] += 1
+                    yield svcReqFactory.makeSvcRequest().submit()
+                    responseTime = self.env.now - startTime
+                    self._overallTally.add(responseTime)
+                    self._tallyDict[svcReqFactory].add(responseTime)
 
     def activateUsers(self):
         """
         Create and activate the specified number of users.
         """
-        for userIdx in range(self.numUsers):
+        for userIdx in range(self.maxUsers):
             self.env.process(self._user(userIdx))
 
     def avgResponseTime(self, txn=None):
