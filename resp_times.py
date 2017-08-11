@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Sequence, Tuple
 import functools as ft
 
-import pylab as plt
+import matplotlib.pyplot as plt
 from livestats import livestats
 
 if TYPE_CHECKING:
@@ -68,8 +68,8 @@ def plot_means_q95(quantiles1, quantiles2):
 
     
 def compare_simulations(res1, res2):
-    grp1 = res1["grp"]
-    grp2 = res2["grp"]
+    grp1 = res1.grp
+    grp2 = res2.grp
 
     quantiles1 = resp_times_by_interval(5, grp1)
     quantiles2 = resp_times_by_interval(5, grp2)

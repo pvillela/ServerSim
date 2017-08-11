@@ -1,10 +1,10 @@
-# We start by importing the required libraries, as well as the __future__
-# import for compatibility between Python 2.7 and Python 3.x.
+# We start by importing the required libraries
 
 from __future__ import print_function
 
 from typing import List, Tuple, Sequence, Mapping, Any
 
+from collections import namedtuple
 import random
 import simpy
 from serversim import *
@@ -12,7 +12,11 @@ from serversim import *
 
 def deployment_example(num_users, weight1, weight2, server_range1,
                        server_range2):
-    # type: (int, float, float, Sequence[int], Sequence[int]) -> Mapping[str, Any]
+    # type: (int, float, float, Sequence[int], Sequence[int]) -> Result
+
+    Result = namedtuple("Result", ["num_users", "weight1", "weight2", "server_range1",
+                         "server_range2", "servers", "grp"])
+
     def cug(mid, delta):
         """Computation units generator"""
         def f():
@@ -64,7 +68,7 @@ def deployment_example(num_users, weight1, weight2, server_range1,
     grp.activate_users()
 
     env.run(until=simtime)
-    
-    return {"num_users": num_users, "weight1": weight1, "weight2": weight2,
-            "server_range1": server_range1, "server_range2": server_range2,
-            "servers": servers, "grp": grp}
+
+    return Result(num_users=num_users, weight1=weight1, weight2=weight2,
+            server_range1=server_range1, server_range2=server_range2,
+            servers=servers, grp=grp)

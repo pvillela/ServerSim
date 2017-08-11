@@ -3,7 +3,7 @@ Classes representing computing services that are executed on servers.
 """
 
 from typing import Callable, Any, Iterator, Optional, List, Mapping, \
-    Sequence
+    Sequence, Tuple
 import logging
 
 import simpy
@@ -44,13 +44,15 @@ class SvcRequest(object):
         time_dict (Mapping[str, float]): Dictionary with contents of *time_log*,
             for easier access to information.
     """
-    def __init__(self, env, svc_name, gen, server, in_val,
+    def __init__(self, env, parent, svc_name, gen, server, in_val,
                  in_blocking_call=False):
-        # type: (simpy.Environment, str, Callable[[SvcRequest], Iterator[simpy.Event]], Optional[Server], Any, bool) -> None
+        # type: (simpy.Environment, Optional[SvcRequest], str, Callable[[SvcRequest], Iterator[simpy.Event]], Optional[Server], Any, bool) -> None
         """Initializer.
 
         Args:
             env: The SimPy Environment.
+            parent: The immediately containing service request, in case this
+                is part of a composite service request.  None othersise.
             svc_name: Name of the service this request is associated with.
             gen: Generator which defines the behavior of this request.  The
                 generator produces an iterator which yields simpy.Event
@@ -73,6 +75,7 @@ class SvcRequest(object):
                 to its sub-requests.
         """
         self._env = env
+        self.parent = parent
         self.svc_name = svc_name
         self.gen = gen
         self.server = server
@@ -178,7 +181,7 @@ class SvcRequester(object):
     """
 
     def __init__(self, env, svc_name, log=None):
-        # type: (simpy.Environment, str, Optional[List[SvcRequest]]) -> None
+        # type: (simpy.Environment, str, Optional[List[Tuple[str, SvcRequest]]]) -> None
         """Initializer.
 
         Args:
@@ -211,15 +214,18 @@ class SvcRequester(object):
         # type: (SvcRequest) -> None
         """Add a service request to the service request log."""
         if self.log is not None:
-            self.log.append(svc_req)
+            self.log.append((self.svc_name, svc_req))
 
-    def make_svc_request(self, in_val=None, in_blocking_call=False):
-        # type: (Any, bool) -> SvcRequest
+    def make_svc_request(self, parent, in_val=None, in_blocking_call=False):
+        # type: (Optional[SvcRequest], Any, bool) -> SvcRequest
         """ Produce a SvcRequest object.
 
         Default implementation, can be overridden.
 
         Args:
+            parent: The parent service request of the produced service
+                request if it is part of a composite service request,
+                None otherwise.
             in_val: Sets this as the input value of produced service request.
             in_blocking_call: Sets this as the in_blocking_call attribute
                 of the produced service request.
@@ -227,8 +233,8 @@ class SvcRequester(object):
         Returns:
             A service request.
         """
-        res = SvcRequest(self.env, self.svc_name, self._gen, None, in_val,
-                         in_blocking_call)
+        res = SvcRequest(self.env, parent, self.svc_name, self._gen, None,
+                         in_val, in_blocking_call)
         self._add_to_log(res)
         return res
 
@@ -317,14 +323,14 @@ class CoreSvcRequester(SvcRequester):
             server.thread_release(thread_req)
             svc_req.log_time("sw_thread_released")
 
-    def make_svc_request(self, in_val=None, in_blocking_call=False):
-        # type: (Any, bool) -> SvcRequest
+    def make_svc_request(self, parent, in_val=None, in_blocking_call=False):
+        # type: (Optional[SvcRequest], Any, bool) -> SvcRequest
         """Overrides default implementation in base class.
 
         See base class docstring
         """
         server = self.fserver(self.svc_name)
-        res = super(CoreSvcRequester, self).make_svc_request(in_val,
+        res = super(CoreSvcRequester, self).make_svc_request(parent, in_val,
                                                              in_blocking_call)
         res.server = server
         return res
@@ -361,8 +367,8 @@ class Async(SvcRequester):
 
         See base class.
         """
-        enclosed_svc_req = self.svc_requester.make_svc_request(svc_req.in_val,
-                                                               False)
+        enclosed_svc_req = self.svc_requester.make_svc_request(
+            None, svc_req.in_val, False)
         enclosed_svc_req.submit()
         svc_req.complete(None)
         yield self.env.timeout(0)
@@ -380,7 +386,7 @@ class Blkg(SvcRequester):
     """
 
     def __init__(self, env, svc_requester, log=None):
-        # type: (simpy.Environment, SvcRequester, List[SvcRequest]) -> None
+        # type: (simpy.Environment, SvcRequester, Optional[List[Tuple[str, SvcRequest]]]) -> None
         """Initializer.
 
         Args:
@@ -401,11 +407,6 @@ class Blkg(SvcRequester):
         """
         enclosed_svc_req = svc_req.__dict__["enclosed_svc_req"]
         enclosed_svc_req.server = svc_req.server
-
-        enclosed_svc_req = self.svc_requester.make_svc_request(
-            svc_req.in_val, True)
-        if svc_req.server is not None:
-            enclosed_svc_req.server = svc_req.server
         req_thread = None
         if not svc_req.in_blocking_call:
             assert enclosed_svc_req.server is not None, \
@@ -421,15 +422,16 @@ class Blkg(SvcRequester):
             svc_req.log_time("sw_thread_released")
         svc_req.complete(enclosed_svc_req.out_val)
 
-    def make_svc_request(self, in_val=None, in_blocking_call=False):
-        # type: (Any, bool) -> SvcRequest
+    def make_svc_request(self, parent, in_val=None, in_blocking_call=False):
+        # type: (Optional[SvcRequest], Any, bool) -> SvcRequest
         """Overrides default implementation in base class.
 
         See base class docstring
         """
-        svc_req = super(Blkg, self).make_svc_request(in_val, in_blocking_call)
+        svc_req = super(Blkg, self).make_svc_request(parent, in_val,
+                                                     in_blocking_call)
         enclosed_svc_req = self.svc_requester.make_svc_request(
-            in_val, in_blocking_call)
+            svc_req, in_val, in_blocking_call)
         svc_req.server = enclosed_svc_req.server
         svc_req.enclosed_svc_req = enclosed_svc_req  # ad-hoc attribute
         return svc_req
@@ -497,7 +499,8 @@ class Seq(SvcRequester):
             svc_req.in_blocking_call if self.cont else False
 
         for requester in self.tail_requesters:
-            request = requester.make_svc_request(val, others_in_blocking_call)
+            request = requester.make_svc_request(svc_req, val,
+                                                 others_in_blocking_call)
             if self.cont:
                 request.server = svc_req.server
             yield request.submit()
@@ -505,15 +508,16 @@ class Seq(SvcRequester):
 
         svc_req.complete(val)
 
-    def make_svc_request(self, in_val=None, in_blocking_call=False):
-        # type: (Any, bool) -> SvcRequest
+    def make_svc_request(self, parent, in_val=None, in_blocking_call=False):
+        # type: (Optional[SvcRequest], Any, bool) -> SvcRequest
         """Overrides default implementation in base class.
 
         See base class docstring
         """
-        svc_req = super(Seq, self).make_svc_request(in_val, in_blocking_call)
+        svc_req = super(Seq, self).make_svc_request(parent, in_val,
+                                                    in_blocking_call)
         head_svc_req = self.head_requester.make_svc_request(
-            in_val, in_blocking_call)
+            svc_req, in_val, in_blocking_call)
         svc_req.server = head_svc_req.server
         svc_req.head_svc_req = head_svc_req  # ad-hoc attribute
         return svc_req
@@ -575,7 +579,7 @@ class Par(SvcRequester):
         """
 
         # With parallel calls, in_blocking_call is always False.
-        svc_reqs = [requester.make_svc_request(svc_req.in_val, False)
+        svc_reqs = [requester.make_svc_request(svc_req, svc_req.in_val, False)
                     for requester in self.svc_requesters]
         if self.cont:
             server = svc_req.server if not None else svc_reqs[0].server
@@ -607,7 +611,7 @@ class Fmap(SvcRequester):
         See base class.
         """
         base_req = self.base_requester.make_svc_request(
-            svc_req.in_val, svc_req.in_blocking_call)
+            svc_req, svc_req.in_val, svc_req.in_blocking_call)
         yield base_req.submit()
         new_req = self.frequester(base_req.outVal)
         if self.cont:

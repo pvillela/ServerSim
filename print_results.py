@@ -1,3 +1,4 @@
+# __future__ import for compatibility between Python 2.7 and Python 3.x.
 
 from __future__ import print_function
 
@@ -6,17 +7,17 @@ from typing import Sequence, Any, IO
 from serversim import *
 
 
-def print_results(numUsers=None, weight1=None, weight2=None, serverRange1=None,
-                  serverRange2=None, servers=None, grp=None, fi=None):
+def print_results(num_users=None, weight1=None, weight2=None, server_range1=None,
+                  server_range2=None, servers=None, grp=None, fi=None):
     # type: (int, float, float, Sequence[int], Sequence[int], Sequence[Server], UserGroup, IO[str]) -> None
     
     if fi is None:
         import sys
         fi = sys.stdout
 
-    print("\n\n***** Start Simulation --", numUsers, ",", weight1, ",", weight2, ", [", serverRange1[0], ",", serverRange1[-1] + 1,
-          ") , [", serverRange2[0], ",", serverRange2[-1] + 1, ") *****", file=fi)
-    print("Simulation: num_users =", numUsers, file=fi)
+    print("\n\n***** Start Simulation --", num_users, ",", weight1, ",", weight2, ", [", server_range1[0], ",", server_range1[-1] + 1,
+          ") , [", server_range2[0], ",", server_range2[-1] + 1, ") *****", file=fi)
+    print("Simulation: num_users =", num_users, file=fi)
 
     print("<< ServerExample >>\n", file=fi)
 
@@ -52,7 +53,7 @@ def print_results(numUsers=None, weight1=None, weight2=None, serverRange1=None,
     print(indent*2 + "throughput =", grp.throughput(None), file=fi)
 
     for txn in grp.svcs:
-        print(indent*2 + txn.svcName + ":", file=fi)
+        print(indent*2 + txn.svc_name + ":", file=fi)
         print(indent * 3 + "responded_request_count =", grp.responded_request_count(txn), file=fi)
         print(indent * 3 + "unresponded_request_count =", grp.unresponded_request_count(txn), file=fi)
         print(indent * 3 + "avg_response_time =", grp.avg_response_time(txn), file=fi)

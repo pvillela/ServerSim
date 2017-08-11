@@ -129,7 +129,7 @@ class UserGroup(object):
                     svc = self._pick_svc()
                     self._request_count_dict[svc] += 1
                     self._request_count_dict[None] += 1
-                    svc_req = svc.make_svc_request()
+                    svc_req = svc.make_svc_request(None)
                     if self.svc_req_log is not None:
                         self.svc_req_log.append((self.name, svc_req))
                     yield svc_req.submit()
