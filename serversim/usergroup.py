@@ -221,7 +221,7 @@ class UserGroup(object):
     def responded_request_count(self, svc=None):
         # type: (Optional[SvcRequester]) -> int
         """Number of requests submitted and responded to."""
-        return self._tally_dict[svc].num()
+        return self._tally_dict[svc].count
 
     def unresponded_request_count(self, svc=None):
         # type: (Optional[SvcRequester]) -> int

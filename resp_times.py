@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Sequence, Tuple
 import functools as ft
 
-import numpy as np
 import pylab as plt
 from livestats import livestats
 
@@ -10,7 +9,7 @@ if TYPE_CHECKING:
 
 
 def resp_times_by_interval(time_resolution, grp):
-    # type: (float, UserGroup) -> Tuple[Sequence[float], Sequence[float], Sequence[float], Sequence[float]]
+    # type: (float, UserGroup) -> Tuple[Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[float]]
     quantiles = [0.5, 0.95, 0.99]
 
     xys = [(int(svc_req.time_dict["submitted"]/time_resolution),
@@ -29,29 +28,41 @@ def resp_times_by_interval(time_resolution, grp):
 
     xs = xlvs.keys()
     xs.sort()
-    xs = np.array(xs)
-    q_50 = np.array([xlvs[x].quantiles()[0] for x in xs])
-    q_95 = np.array([xlvs[x].quantiles()[1] for x in xs])
-    q_99 = np.array([xlvs[x].quantiles()[2] for x in xs])
 
-    return xs, q_50, q_95, q_99
+    counts = [xlvs[x].count for x in xs]
+    means = [xlvs[x].average for x in xs]
+    q_50 = [xlvs[x].quantiles()[0] for x in xs]
+    q_95 = [xlvs[x].quantiles()[1] for x in xs]
+    q_99 = [xlvs[x].quantiles()[2] for x in xs]
+
+    return xs, counts, means, q_50, q_95, q_99
 
 
-def plot_q50_q95(quantiles1, quantiles2):
+def plot_means_q95(quantiles1, quantiles2):
 
     x = quantiles1[0]  # should be same as quantiles2[0]
-    
-    q1_50 = quantiles1[1]
-    q2_50 = quantiles2[1]
 
-    q1_95 = quantiles1[2]
-    q2_95 = quantiles2[2]
+    counts1 = quantiles1[1]
+    counts2 = quantiles2[1]
 
-    plt.plot(x, q1_50, color='b')
-    plt.plot(x, q1_95, color='c')
+    means1 = quantiles1[2]
+    means2 = quantiles2[2]
 
-    plt.plot(x, q2_50, color='r')
-    plt.plot(x, q2_95, color='m')
+    q1_95 = quantiles1[4]
+    q2_95 = quantiles2[4]
+
+    # Plot counts
+    plt.plot(x, counts1, color='b')
+    plt.plot(x, counts2, color='r')
+    plt.show()
+
+    # Plot averages and 95th percentiles
+
+    plt.plot(x, means1, color='b')
+    plt.plot(x, q1_95, color='b')
+
+    plt.plot(x, means2, color='r')
+    plt.plot(x, q2_95, color='r')
 
     plt.show()
 
@@ -63,4 +74,4 @@ def compare_simulations(res1, res2):
     quantiles1 = resp_times_by_interval(5, grp1)
     quantiles2 = resp_times_by_interval(5, grp2)
 
-    plot_q50_q95(quantiles1, quantiles2)
+    plot_means_q95(quantiles1, quantiles2)
