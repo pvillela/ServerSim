@@ -8,7 +8,7 @@ from functools import wraps, partial
 import simpy
 
 from serversim import Server, CoreSvcRequester
-from serversim.randutil import probChooser, rand_int, gen_int, rand_float, \
+from serversim.randutil import prob_chooser, rand_int, gen_int, rand_float, \
     gen_float, rand_choice, gen_choice, rand_list, gen_list
 
 
@@ -136,7 +136,7 @@ def inject_servers_svcrqrs(
     maxSvcRqrs=20,
     maxSvcReqs=1000,
     n_examples=N_EXAMPLES,
-    # svcReqLog=None
+    # svc_req_log=None
     **kwargs
     ):
     """ Decorator to inject servers and service requeusters into tests.

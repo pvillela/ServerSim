@@ -12,7 +12,7 @@ import const
 from .measuredresource import MeasuredResource
 from .server import Server
 from .service import (
-    SvcRequester, CoreSvcRequester, Async, Blkg, Seq, Par, Fmap)
+    SvcRequest, SvcRequester, CoreSvcRequester, Async, Blkg, Seq, Par, Fmap)
 from .usergroup import UserGroup
 from .util import nullary, curried_nullary
 

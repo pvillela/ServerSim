@@ -11,7 +11,7 @@ import simpy
 import pytest
 from hamcrest import assert_that, close_to #, greater_than, less_than, equal_to
 
-from serversim.randutil import probChooser, rand_int, gen_int, rand_float, \
+from serversim.randutil import prob_chooser, rand_int, gen_int, rand_float, \
     gen_float, rand_choice, gen_choice, rand_list, gen_list
 from testhelper import fi, dump_servers, dump_svc_reqs
 from randhelper import ServersimRandom, repeat, inject_servers_svcrqrs
@@ -48,8 +48,8 @@ def test_a_core_service_requests_process_time_on_a_server_r(
         # svcRqr = choice(svcRqrLst)  # this is expensive, replaced below
         j = random.randint(0, len(svcRqrLst) - 1)
         svcRqr = svcRqrLst[j]
-        svcReq = svcRqr.makeSvcRequest(None)
-        # print(">>> submitting", svcRqr.svcName, file=fi)
+        svcReq = svcRqr.make_svc_request(None)
+        # print(">>> submitting", svcRqr.svc_name, file=fi)
         svcReq.submit()
 
     simTime = 1000000000
@@ -64,10 +64,10 @@ def test_a_core_service_requests_process_time_on_a_server_r(
 
     # Scenario: A core service request's process time on a server
     #     The process time is request.compUnits / (server.speed /
-    #         server.maxConcurrency).
+    #         server.max_concurrency).
     for svcReq in svcReqLog:
         server = svcReq.server
-        assert_that(svcReq.processTime,
+        assert_that(svcReq.process_time,
                     close_to(svcReq.compUnits / (
                     server.speed / server.maxConcurrency), delta))
 
@@ -80,43 +80,43 @@ def test_a_core_service_requests_process_time_on_a_server_r(
     #         The server's average processing time is the average of the
     #             processing time over all core service requests processed
     #             on the server.
-    #         The server's average (hardware thread) queue time is the average
-    #             of the (hardware thread) queue time over all core service
+    #         The server's average (_hardware thread) queue time is the average
+    #             of the (_hardware thread) queue time over all core service
     #             requests processed on the server.
     #         The server's average service time is the average of the service
     #             time over all core service requests processed on the server.
     for server in serverLst:
         print(">>>", server.name, "hwThreads=", server.maxConcurrency,
               "_threads=", server.numThreads, "speed=", server.speed, file=fi)
-        svcReqLog = server.svcReqLog
+        svcReqLog = server.svc_req_log
         nSvcReqs = len(svcReqLog)
         print("nSvcReqs", nSvcReqs, file=fi)
         if nSvcReqs != 0:
             print("svcReq processTimes",
-                  [(svcReq.svcName, svcReq.processTime) for svcReq in
+                  [(svcReq.svcName, svcReq.process_time) for svcReq in
                    svcReqLog], file=fi)
             print("svcReq hwQueueTimes",
-                  [(svcReq.svcName, svcReq.hwQueueTime) for svcReq in
+                  [(svcReq.svcName, svcReq.hw_queue_time) for svcReq in
                    svcReqLog], file=fi)
             print("svcReq serviceTimes",
-                  [(svcReq.svcName, svcReq.serviceTime) for svcReq in
+                  [(svcReq.svcName, svcReq.service_time) for svcReq in
                    svcReqLog], file=fi)
             avgSvcReqProcessTime = \
-                sum([svcReq.processTime for svcReq in svcReqLog]) / nSvcReqs
+                sum([svcReq.process_time for svcReq in svcReqLog]) / nSvcReqs
             avgSvcReqHwQueueTime = \
-                sum([svcReq.hwQueueTime for svcReq in svcReqLog]) / nSvcReqs
+                sum([svcReq.hw_queue_time for svcReq in svcReqLog]) / nSvcReqs
             avgSvcReqServiceTime = \
-                sum([svcReq.serviceTime for svcReq in svcReqLog]) / nSvcReqs
+                sum([svcReq.service_time for svcReq in svcReqLog]) / nSvcReqs
             print("Before assertions", file=fi)
-            print(avgSvcReqProcessTime, server.avgProcessTime, file=fi)
-            print(avgSvcReqHwQueueTime, server.avgHwQueueTime, file=fi)
-            print(avgSvcReqServiceTime, server.avgServiceTime, file=fi)
+            print(avgSvcReqProcessTime, server.avg_process_time, file=fi)
+            print(avgSvcReqHwQueueTime, server.avg_hw_queue_time, file=fi)
+            print(avgSvcReqServiceTime, server.avg_service_time, file=fi)
             assert_that(avgSvcReqProcessTime,
-                        close_to(server.avgProcessTime, delta))
+                        close_to(server.avg_process_time, delta))
             assert_that(avgSvcReqHwQueueTime,
-                        close_to(server.avgHwQueueTime, delta))
+                        close_to(server.avg_hw_queue_time, delta))
             assert_that(avgSvcReqServiceTime,
-                        close_to(server.avgServiceTime, delta))
+                        close_to(server.avg_service_time, delta))
 
     print("@@@@@@@@ End test: " + str(test_count) + " ended: " + str(env.now),
           file=fi)

@@ -1,192 +1,226 @@
 """
-Class to represent a group of users or clients that submit service
-execution requests.
+Represents a group of users or clients that submit service requests.
 """
 
 import random
 import math
-import sys
+from typing import Union, Sequence, Tuple, Optional
 
 from livestats import livestats
+import simpy
 
-from .randutil import probChooser
+from .randutil import prob_chooser
+from . import SvcRequester
 
 
 class UserGroup(object):
-    """ Represents a set of identical users or clients that submit
-        service execution requests.
+    """Represents a set of identical users or clients that submit
+    service requests.
 
-    Each user can repeatedly execute service requests randomly
+    Each user repeatedly executes service requests randomly
     selected from the set of service requests specified for the group.
 
     Attributes:
-        env: Simpy Environment.
-        numUsers (int): Number of users in group.
-        name (str): This user group's name.
-        weightedTxns (list[(any, Number)]): List of pairs of
-            SvcRequestFactory instances and positive numbers
-            representing the different service request types issued by
-            the users in the group and their weights.   The weights are
-            the relative frequencies with which the svcRequests will be
-            executed (the weights do not need to add up to 1, as they
-            are normalized by this class).
-        minThinkTime (Number): The minimum think time between service
-            requests.  Think time will be uniformly distributed between
-            minThinkTime and maxThinkTime.
-        maxThinkTime (Number): The maximum think time between service
-            requests.  Think time will be uniformly distributed between
-            minThinkTime and maxThinkTime.
-        quantiles (list[float]): List of quantiles to be tallied.  It
-            defaults to [0.5, 0.95, 0.99] if not provided.
+        << See __init__ args >>
+        << Additional attributes or modifications to __init__ args >>
+
+        num_users: If the num_users argument is an int, it is transformed
+            into the list [(0, num_users)].
+        svcs (SvcRequester): The first components of *weighted_svcs*.
     """
 
     INFINITY = 1e99
-    
-    def __init__(self, env, numUsers, name, weightedTxns, minThinkTime,
-                 maxThinkTime, quantiles=None):
-        """Initializer."""
+
+    def __init__(self, env, num_users, name, weighted_svcs, min_think_time,
+                 max_think_time, quantiles=None):
+        # type: (simpy.Environment, Union[int, Sequence[Tuple[float, int]]], str, Sequence[Tuple[SvcRequester, float]], float, float, Optional[Sequence[float]]) -> None
+        """Initializer.
+
+        Args:
+            env: The Simpy Environment.
+            num_users: Number of users in group.  This can be either a
+                positive integer or a sequence of (float, int), where
+                the floats are monotonically increasing.  In this case,
+                the sequence represents a step function of time, where each pair
+                represents a step whose range of *x* values extend from the
+                first component of the pair (inclusive) to the first
+                component of the next pair (exclusive), and whose *y* value
+                is the second component of the pair.  The first pair in
+                the sequence must have 0 as its first component.
+            name: This user group's name.
+            weighted_svcs: List of pairs of
+                SvcRequester instances and positive numbers
+                representing the different service request types issued by
+                the users in the group and their weights.   The weights are
+                the relative frequencies with which the svcRequests will be
+                executed (the weights do not need to add up to 1, as they
+                are normalized by this class).
+            min_think_time: The minimum think time between service
+                requests.  Think time will be uniformly distributed between
+                min_think_time and max_think_time.
+            max_think_time: The maximum think time between service
+            requests.  Think time will be uniformly distributed between
+            min_think_time and max_think_time.
+            quantiles: List of quantiles to be tallied.  It
+                defaults to [0.5, 0.95, 0.99] if not provided.
+        """
         self.env = env
-        if isinstance(numUsers, int):
-            numUsers = [(0, numUsers)]
-        if not isinstance(numUsers, list):
-            raise TypeError("Argument numUsers must be a number or a list of pairs.")
-        if not numUsers[0][0] == 0:
-            raise ValueError("Argument numUsers first element must be a pair with 0 as the first component.")
-        self.numUsers = numUsers
-        self.numUsersTimes = [p[0] for p in numUsers][1:] + [self.INFINITY]
-        self.numUsersValues = [p[1] for p in numUsers]
-        self.maxUsers = max(self.numUsersValues)
+        if isinstance(num_users, int):
+            num_users = [(0, num_users)]
+        if not isinstance(num_users, list):
+            raise TypeError(
+                "Argument num_users must be a number or a list of pairs.")
+        if not num_users[0][0] == 0:
+            raise ValueError("Argument num_users first element must be a pair "
+                             "with 0 as the first component.")
+        self.num_users = num_users
+        self._num_users_times = [p[0] for p in num_users][1:] + [self.INFINITY]
+        self._num_users_values = [p[1] for p in num_users]
+        self._max_users = max(self._num_users_values)
         self.name = name
-        self.weightedTxns = weightedTxns
-        self._txns = [x[0] for x in weightedTxns]
-        self.minThinkTime = minThinkTime
-        self.maxThinkTime = maxThinkTime
+        self.weighted_svcs = weighted_svcs
+        self.svcs = [x[0] for x in weighted_svcs]
+        self.min_think_time = min_think_time
+        self.max_think_time = max_think_time
         if quantiles is None:
             quantiles = [0.5, 0.95, 0.99]
         self.quantiles = quantiles
 
-        self._pickSvcRequestFactory = probChooser(*weightedTxns)
+        self._pick_svc = prob_chooser(*weighted_svcs)
         
         # create Tally objects for response times: overall and by svcRequest
-        self._tallyDict = {}  # map from svcRequest to tally
-        for txn in self._txns:
-            self._tallyDict[txn] = livestats.LiveStats(quantiles)
-        self._overallTally = livestats.LiveStats(quantiles)  # overall tally
-        self._tallyDict[None] = self._overallTally
+        self._tally_dict = {}  # map from svcRequest to tally
+        for svc in self.svcs:
+            self._tally_dict[svc] = livestats.LiveStats(quantiles)
+        self._overall_tally = livestats.LiveStats(quantiles)  # overall tally
+        self._tally_dict[None] = self._overall_tally
 
         # additional recordkeeping
-        self._requestCountDict = {}
-        for txn in self._txns:
-            self._requestCountDict[txn] = 0
-        self._requestCountDict[None] = 0
+        self._request_count_dict = {}
+        for svc in self.svcs:
+            self._request_count_dict[svc] = 0
+        self._request_count_dict[None] = 0
 
     # THROTTLE_LIMIT = 100
 
-    def _user(self, userIdx):
+    def _user(self, user_idx):
         """
         Process execution loop for user.
         """
-        nTimes = len(self.numUsersTimes)
-        for i in range(nTimes):
-            nextBreakTime = self.numUsersTimes[i]
-            numActiveUsers = self.numUsersValues[i]
-            while self.env.now < nextBreakTime:
+        n_times = len(self._num_users_times)
+        for i in range(n_times):
+            next_break_time = self._num_users_times[i]
+            num_active_users = self._num_users_values[i]
+            while self.env.now < next_break_time:
                 # user goes dormant if the throttle applies
-                if userIdx >= numActiveUsers:
-                    yield self.env.timeout(nextBreakTime - self.env.now)
+                if user_idx >= num_active_users:
+                    yield self.env.timeout(next_break_time - self.env.now)
                 # user stays active otherwise
                 else:
-                    thinkTime = random.uniform(self.minThinkTime, self.maxThinkTime)
-                    yield self.env.timeout(thinkTime)
-                    startTime = self.env.now
-                    svcReqFactory = self._pickSvcRequestFactory()
-                    self._requestCountDict[svcReqFactory] += 1
-                    self._requestCountDict[None] += 1
-                    yield svcReqFactory.makeSvcRequest().submit()
-                    responseTime = self.env.now - startTime
-                    self._overallTally.add(responseTime)
-                    self._tallyDict[svcReqFactory].add(responseTime)
+                    think_time = random.uniform(self.min_think_time,
+                                                self.max_think_time)
+                    yield self.env.timeout(think_time)
+                    start_time = self.env.now
+                    svc = self._pick_svc()
+                    self._request_count_dict[svc] += 1
+                    self._request_count_dict[None] += 1
+                    yield svc.make_svc_request().submit()
+                    response_time = self.env.now - start_time
+                    self._overall_tally.add(response_time)
+                    self._tally_dict[svc].add(response_time)
 
-    def activateUsers(self):
+    def activate_users(self):
         """
-        Create and activate the specified number of users.
+        Create and activate the users.
         """
-        for userIdx in range(self.maxUsers):
-            self.env.process(self._user(userIdx))
+        for user_idx in range(self._max_users):
+            self.env.process(self._user(user_idx))
 
-    def avgResponseTime(self, txn=None):
-        """ Average response time for a given service requester or
+    def avg_response_time(self, svc=None):
+        # type: (Optional[SvcRequester]) -> float
+        """ Average response time for a given service or
             aggregate across all service requests,
 
         Args:
-            txn (serversim.SvcRequester): Given service requester
+            svc (serversim.SvcRequester): given service
                 instance or None.
 
         Returns:
-            float: Average response time for the given service requester
-                if txn is not None.  Otherwise, the average response
+            float: Average response time for the given service
+                if svc is not None.  Otherwise, the average response
                 time across all service requests.
         """
-        return self._tallyDict[txn].average
+        return self._tally_dict[svc].average
 
-    def stdDevResponseTime(self, txn=None):
-        return math.sqrt(abs(self._tallyDict[txn].variance()))
+    def std_dev_response_time(self, svc=None):
+        # type: (Optional[SvcRequester]) -> float
+        """Standard deviation for a given service or aggregate across all
+        services.
+        """
+        return math.sqrt(abs(self._tally_dict[svc].variance()))
 
-    def maxResponseTime(self, txn=None):
-        """ Maximum response time for a given service requester or
-            aggregate across all service requests,
+    def max_response_time(self, svc=None):
+        # type: (Optional[SvcRequester]) -> float
+        """Maximum response time for a given service or
+        aggregate across all service requests,
 
         Args:
-            txn (serversim.SvcRequester): Given service requester
+            svc (serversim.SvcRequester): given service
                 instance or None.
 
         Returns:
-            float: Maximum response time for the given service requester
-                if txn is not None.  Otherwise, the maximum response
+            float: Maximum response time for the given service
+                if svc is not None.  Otherwise, the maximum response
                 time across all service requests.
         """
-        return self._tallyDict[txn].max_val
+        return self._tally_dict[svc].max_val
 
-    def minResponseTime(self, txn=None):
-        """ Minimum response time for a given service requester or
-            aggregate across all service requests,
+    def min_response_time(self, svc=None):
+        # type: (Optional[SvcRequester]) -> float
+        """Minimum response time for a given service or
+        aggregate across all service requests,
 
         Args:
-            txn (serversim.SvcRequester): Given service requester
+            svc (serversim.SvcRequester): given service
                 instance or None.
 
         Returns:
-            float: Minimum response time for the given service requester
-                if txn is not None.  Otherwise, the minimum response
+            float: Minimum response time for the given service
+                if svc is not None.  Otherwise, the minimum response
                 time across all service requests.
         """
-        return self._tallyDict[txn].min_val
+        return self._tally_dict[svc].min_val
 
-    def responseTimeQuantiles(self, txn=None):
-        """ Response time quantiles for a given service requester or
-            aggregate across all service requests,
+    def response_time_quantiles(self, svc=None):
+        # type: (Optional[SvcRequester]) -> Sequence[float]
+        """Response time quantiles for a given service or
+        aggregate across all service requests,
 
             The quantiles are as specified in the constructor or the
             defaults.
 
         Args:
-            txn (serversim.SvcRequester): Given service requester
+            svc (serversim.SvcRequester): given service
                 instance or None.
 
         Returns:
             float: Response time quantiles for the given service
-                requester if txn is not None.  Otherwise, the response
+                requester if svc is not None.  Otherwise, the response
                 time quantiles aggregated across all service requests.
         """
-        return self._tallyDict[txn].quantiles()
+        return self._tally_dict[svc].quantiles()
 
-    def respondedRequestCount(self, txn=None):
+    def responded_request_count(self, svc=None):
+        # type: (Optional[SvcRequester]) -> int
         """Number of requests submitted and responded to."""
-        return self._tallyDict[txn].num()
+        return self._tally_dict[svc].num()
 
-    def unrespondedRequestCount(self, txn=None):
+    def unresponded_request_count(self, svc=None):
+        # type: (Optional[SvcRequester]) -> int
         """Number of requests submitted but not yet responded to."""
-        return self._requestCountDict[txn] - self.respondedRequestCount(txn)
+        return self._request_count_dict[svc] - self.responded_request_count(svc)
 
-    def throughput(self, txn=None):
-        return self.respondedRequestCount(txn) / self.env.now
+    def throughput(self, svc=None):
+        # type: (Optional[SvcRequester]) -> float
+        """Aggregate responded requests per unit of time."""
+        return self.responded_request_count(svc) / self.env.now

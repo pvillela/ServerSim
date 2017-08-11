@@ -41,7 +41,7 @@ def microservices_example(numUsers, weight1, weight2, serverRange1, serverRange2
 
         random.seed(12345)
 
-        # numUsers = 700
+        # num_users = 700
         simtime = 200
         hwThreads = 10
         swThreads = 20
@@ -67,11 +67,11 @@ def microservices_example(numUsers, weight1, weight2, serverRange1, serverRange2
         maxThinkTime = 10.0 # 1.5 # 20
 
         grp = UserGroup(env, numUsers, "UserTypeX", weightedTxns, minThinkTime, maxThinkTime)
-        grp.activateUsers()
+        grp.activate_users()
 
         print("\n\n***** Start Simulation --", numUsers, ",", weight1, ",", weight2, ", [", serverRange1[0], ",", serverRange1[-1] + 1,
               ") , [", serverRange2[0], ",", serverRange2[-1] + 1, ") *****", file=fi)
-        print("Simulation: numUsers =", numUsers, "; simTime =", simtime, file=fi)
+        print("Simulation: num_users =", numUsers, "; simTime =", simtime, file=fi)
 
         env.run(until=simtime)
 
@@ -85,38 +85,38 @@ def microservices_example(numUsers, weight1, weight2, serverRange1, serverRange2
         print("\n" + "Servers:", file=fi)
         for svr in servers:
             print(indent*1 + "Server:", svr.name, file=fi)
-            print(indent*2 + "maxConcurrency =", svr.maxConcurrency, file=fi)
-            print(indent*2 + "numThreads =", svr.numThreads, file=fi)
+            print(indent * 2 + "max_concurrency =", svr.max_concurrency, file=fi)
+            print(indent * 2 + "num_threads =", svr.num_threads, file=fi)
             print(indent*2 + "speed =", svr.speed, file=fi)
-            print(indent*2 + "avgProcessTime =", svr.avgProcessTime, file=fi)
-            print(indent*2 + "avgHwQueueTime =", svr.avgHwQueueTime, file=fi)
-            print(indent*2 + "avgThreadQueueTime =", svr.avgThreadQueueTime, file=fi)
-            print(indent*2 + "avgServiceTime =", svr.avgServiceTime, file=fi)
-            print(indent*2 + "avgHwQueueLength =", svr.avgHwQueueLength, file=fi)
-            print(indent*2 + "avgThreadQueueLength =", svr.avgThreadQueueLength, file=fi)
-            print(indent*2 + "hwQueueLength =", svr.hwQueueLength, file=fi)
-            print(indent*2 + "hwInProcessCount =", svr.hwInProcessCount, file=fi)
-            print(indent*2 + "threadQueueLength =", svr.threadQueueLength, file=fi)
-            print(indent*2 + "threadInUseCount =", svr.threadInUseCount, file=fi)
+            print(indent * 2 + "avg_process_time =", svr.avg_process_time, file=fi)
+            print(indent * 2 + "avg_hw_queue_time =", svr.avg_hw_queue_time, file=fi)
+            print(indent * 2 + "avg_thread_queue_time =", svr.avg_thread_queue_time, file=fi)
+            print(indent * 2 + "avg_service_time =", svr.avg_service_time, file=fi)
+            print(indent * 2 + "avg_hw_queue_length =", svr.avg_hw_queue_length, file=fi)
+            print(indent * 2 + "avg_thread_queue_length =", svr.avg_thread_queue_length, file=fi)
+            print(indent * 2 + "hw_queue_length =", svr.hw_queue_length, file=fi)
+            print(indent * 2 + "hw_in_process_count =", svr.hw_in_process_count, file=fi)
+            print(indent * 2 + "thread_queue_length =", svr.thread_queue_length, file=fi)
+            print(indent * 2 + "thread_in_use_count =", svr.thread_in_use_count, file=fi)
             print(indent*2 + "utilization =", svr.utilization, file=fi)
             print(indent*2 + "throughput =", svr.throughput, file=fi)
 
         print(indent*1 + "Group:", grp.name, file=fi)
-        print(indent*2 + "numUsers =", grp.numUsers, file=fi)
-        print(indent*2 + "minThinkTime =", grp.minThinkTime, file=fi)
-        print(indent*2 + "maxThinkTime =", grp.maxThinkTime, file=fi)
-        print(indent*2 + "respondedRequestCount =", grp.respondedRequestCount(None), file=fi)
-        print(indent*2 + "unrespondedRequestCount =", grp.unrespondedRequestCount(None), file=fi)
-        print(indent*2 + "avgResponseTime =", grp.avgResponseTime(None), file=fi)
-        print(indent*2 + "stdDevResponseTime =", grp.stdDevResponseTime(None), file=fi)
+        print(indent * 2 + "num_users =", grp.num_users, file=fi)
+        print(indent * 2 + "min_think_time =", grp.min_think_time, file=fi)
+        print(indent * 2 + "max_think_time =", grp.max_think_time, file=fi)
+        print(indent * 2 + "responded_request_count =", grp.responded_request_count(None), file=fi)
+        print(indent * 2 + "unresponded_request_count =", grp.unresponded_request_count(None), file=fi)
+        print(indent * 2 + "avg_response_time =", grp.avg_response_time(None), file=fi)
+        print(indent * 2 + "std_dev_response_time =", grp.std_dev_response_time(None), file=fi)
         print(indent*2 + "throughput =", grp.throughput(None), file=fi)
 
-        for txn in grp._txns:
-            print(indent*2 + txn.svcName + ":", file=fi)
-            print(indent*3 + "respondedRequestCount =", grp.respondedRequestCount(txn), file=fi)
-            print(indent*3 + "unrespondedRequestCount =", grp.unrespondedRequestCount(txn), file=fi)
-            print(indent*3 + "avgResponseTime =", grp.avgResponseTime(txn), file=fi)
-            print(indent*3 + "stdDevResponseTime =", grp.stdDevResponseTime(txn), file=fi)
+        for txn in grp.svcs:
+            print(indent*2 + txn.svc_name + ":", file=fi)
+            print(indent * 3 + "responded_request_count =", grp.responded_request_count(txn), file=fi)
+            print(indent * 3 + "unresponded_request_count =", grp.unresponded_request_count(txn), file=fi)
+            print(indent * 3 + "avg_response_time =", grp.avg_response_time(txn), file=fi)
+            print(indent * 3 + "std_dev_response_time =", grp.std_dev_response_time(txn), file=fi)
             print(indent*3 + "throughput =", grp.throughput(txn), file=fi)
 
     finally:
@@ -129,20 +129,20 @@ if __name__ == "__main__":
     print("\n\n\n@@@@@@@@@ Start comparative simulations @@@@@@@@@@")
     microservices_example(numUsers=700, weight1=2, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
     microservices_example(numUsers=700, weight1=2, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
-
-    microservices_example(numUsers=700, weight1=5, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
-    microservices_example(numUsers=700, weight1=5, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
-
-    microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
-    microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
-
-    microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 9), serverRange2=range(0, 9))
-    microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 7), serverRange2=range(7, 9))
-    microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 6), serverRange2=range(6, 9))
-
-    microservices_example(numUsers=usersCurve, weight1=2, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
-    microservices_example(numUsers=usersCurve, weight1=2, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
-
-    microservices_example(numUsers=usersCurve, weight1=1, weight2=1, serverRange1=range(0, 9), serverRange2=range(0, 9))
-    microservices_example(numUsers=usersCurve, weight1=1, weight2=1, serverRange1=range(0, 7), serverRange2=range(7, 9))
-    microservices_example(numUsers=usersCurve, weight1=1, weight2=1, serverRange1=range(0, 6), serverRange2=range(6, 9))
+    #
+    # microservices_example(numUsers=700, weight1=5, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
+    # microservices_example(numUsers=700, weight1=5, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
+    #
+    # microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
+    # microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
+    #
+    # microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 9), serverRange2=range(0, 9))
+    # microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 7), serverRange2=range(7, 9))
+    # microservices_example(numUsers=700, weight1=1, weight2=1, serverRange1=range(0, 6), serverRange2=range(6, 9))
+    #
+    # microservices_example(numUsers=usersCurve, weight1=2, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
+    # microservices_example(numUsers=usersCurve, weight1=2, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
+    #
+    # microservices_example(numUsers=usersCurve, weight1=1, weight2=1, serverRange1=range(0, 9), serverRange2=range(0, 9))
+    # microservices_example(numUsers=usersCurve, weight1=1, weight2=1, serverRange1=range(0, 7), serverRange2=range(7, 9))
+    # microservices_example(numUsers=usersCurve, weight1=1, weight2=1, serverRange1=range(0, 6), serverRange2=range(6, 9))

@@ -2,140 +2,175 @@
 Classes representing computer servers.
 """
 
-from . import MeasuredResource
+from typing import Optional, List, TYPE_CHECKING
+
+import simpy
+import simpy.resources.resource as simpyrr
+
+from .measuredresource import MeasuredResource
+
+if TYPE_CHECKING:
+    from .service import SvcRequest
 
 
 class Server(object):
-    """
-    Represents a server.  
+    """Represents a server.
     
     A server can take a finite number of connections and
     support arbitrary service request types.
     
     Attributes:
-        env: SimPy Environment
-        maxConcurrency: The maximum of _hardware threads for the server.
-        numThreads: The maximum number of software threads for the server.
-        _threads: Simpy Resource representing the server's software threads.
-        speed: Aggregate server speed across all _hardware threads.
-        name: The server's name.
+        << See __init__. >>
     """
     
-    def __init__(self, env, maxConcurrency, numThreads, speed, name):
-        """Initializer."""
+    def __init__(self, env, max_concurrency, num_threads, speed, name):
+        # type: (simpy.Environment, int, int, float, str) -> None
+        """Initializer.
+
+        Args:
+            env: SimPy Environment
+            max_concurrency: The maximum of _hardware threads for the server.
+            num_threads: The maximum number of software threads for the server.
+            speed: Aggregate server speed across all _hardware threads.
+            name: The server's name.
+        """
         self.env = env
-        self.maxConcurrency = maxConcurrency
-        self.numThreads = numThreads
-        self.speed = speed  # aggregate server speed across all _hardware _threads
+        self.max_concurrency = max_concurrency
+        self.num_threads = num_threads
+        self.speed = speed  # aggregate server speed across all hardware threads
         self.name = name
-        self._hardware = MeasuredResource(env, maxConcurrency)
-        self._threads = MeasuredResource(env, numThreads)
+        self._hardware = MeasuredResource(env, max_concurrency)
+        self._threads = MeasuredResource(env, num_threads)
 
-    def processDuration(self, compUnits):
+    def process_duration(self, comp_units):
+        # type: (float) -> float
+        """The time required to process a request of comp_units compute units.
         """
-        The time required to process a request of compUnits compute units.
-        """
-        return compUnits / (self.speed / self.maxConcurrency)
+        return comp_units / (self.speed / self.max_concurrency)
 
-    def hwRequest(self, svcReq=None):
-        return self._hardware.request(svcReq)
+    def hw_request(self, svc_req=None):
+        # type: (Optional[SvcRequest]) -> simpyrr.Request
+        """Request a hardware thread for svc_req."""
+        return self._hardware.request(svc_req)
 
-    def hwRelease(self, req):
+    def hw_release(self, req):
+        # type: (simpyrr.Request) -> simpyrr.Release
+        """Release the hardware thread request req."""
         return self._hardware.release(req)
 
-    def threadRequest(self, svcReq=None):
-        return self._threads.request(svcReq)
+    def thread_request(self, svc_req=None):
+        # type: (Optional[SvcRequest]) -> simpyrr.Request
+        """Request a software thread for svc_req."""
+        return self._threads.request(svc_req)
 
-    def threadRelease(self, req):
+    def thread_release(self, req):
+        # type: (simpyrr.Request) -> simpyrr.Release
+        """Release the software thread request req."""
         return self._threads.release(req)
 
     @property
-    def svcReqLog(self):
-        return self._hardware.svcReqLog
+    def svc_req_log(self):
+        # type: () -> List[SvcRequest]
+        """Return the hardware service request log."""
+        return self._hardware.svc_req_log
 
     @property
-    def threadReqLog(self):
-        return self._threads.svcReqLog
+    def thread_req_log(self):
+        # type: () -> List[SvcRequest]
+        """Return the software thread service request log."""
+        return self._threads.svc_req_log
 
     @property
     def throughput(self):
+        # type: () -> float
         """Returns the throughput of this resource up until now."""
         return self._hardware.throughput
 
     @property
-    def avgHwQueueTime(self):
+    def avg_hw_queue_time(self):
+        # type: () -> float
         """Returns the average queuing time per release."""
-        return self._hardware.avgQueueTime
+        return self._hardware.avg_queue_time
 
     @property
-    def avgProcessTime(self):
+    def avg_process_time(self):
+        # type: () -> float
         """Returns the average processing time per release."""
-        return self._hardware.avgUseTime
+        return self._hardware.avg_use_time
 
     @property
-    def avgHwQueueLength(self):
+    def avg_hw_queue_length(self):
+        # type: () -> float
         """Average _hardware queue length.
 
         Returns the time-average length of queue of requests waiting to
         be granted by this resource, per resource releases, using Little's
         formula.
         """
-        return self._hardware.avgQueueLength
+        return self._hardware.avg_queue_length
 
     @property
-    def hwQueueLength(self):
+    def hw_queue_length(self):
+        # type: () -> float
         """Current number of HW requests in queue."""
-        return self._hardware.queueLength
+        return self._hardware.queue_length
 
     @property
-    def hwInProcessCount(self):
+    def hw_in_process_count(self):
+        # type: () -> int
         """Current number of HW requests in process."""
-        return self._hardware.inUseCount
+        return self._hardware.in_use_count
 
     @property
     def utilization(self):
+        # type: () -> float
         """Return the fraction of capacity used."""
         return self._hardware.utilization
 
     @property
-    def avgThreadQueueTime(self):
+    def avg_thread_queue_time(self):
+        # type: () -> float
         """The average thread queuing time per software thread release."""
-        return self._threads.avgQueueTime
+        return self._threads.avg_queue_time
 
     @property
-    def avgThreadUseTime(self):
+    def avg_thread_use_time(self):
+        # type: () -> float
         """The average thread use time per software thread release."""
-        return self._threads.avgUseTime
+        return self._threads.avg_use_time
 
     @property
-    def avgServiceTime(self):
-        """ The average thread service (wait + use) time per  software
-            thread release.
-
-            Shadows the property from base class.
+    def avg_service_time(self):
+        # type: () -> float
+        """The average thread service (wait + use) time per  software
+        thread release.
         """
-        return self._threads.avgServiceTime
+        return self._threads.avg_service_time
 
     @property
-    def avgThreadQueueLength(self):
-        """ The time-average length of the queue of requests to be
-            granted a software thread,
+    def avg_thread_queue_length(self):
+        # type: () -> float
+        """The time-average length of the queue of requests to be
+        granted a software thread,
 
         Based on number of thread releases, using Little's formula.
         """
-        return self._threads.avgQueueLength
+        return self._threads.avg_queue_length
 
     @property
-    def threadQueueLength(self):
+    def thread_queue_length(self):
+        # type: () -> int
         """Current number of thread requests in queue."""
-        return self._threads.queueLength
+        return self._threads.queue_length
 
     @property
-    def threadInUseCount(self):
-        """Current number of requests using threads."""
-        return self._threads.inUseCount
+    def thread_in_use_count(self):
+        # type: () -> int
+        """Current number of requests using _threads."""
+        return self._threads.in_use_count
 
     @property
-    def threadUtilization(self):
+    def thread_utilization(self):
+        # type: () -> float
         """The fraction of thread capacity used."""
         return self._threads.utilization

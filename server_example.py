@@ -65,7 +65,7 @@ try:
             userGroup = UserGroup(env, nUsers, "UserTypeX", weightedTxns, minThinkTime, maxThinkTime)
             userGroups = (userGroup,)  # to facilitate printing of inputs
 
-            userGroup.activateUsers()
+            userGroup.activate_users()
 
             maxSimtime = simTime
 
@@ -84,33 +84,33 @@ try:
             print >> fi, "\n" + "Servers:"
             for svr in servers:
                 print >> fi, indent*1 + "Server:", svr.name
-                print >> fi, indent*2 + "maxConcurrency =", svr.maxConcurrency
-                print >> fi, indent*2 + "numThreads =", svr.numThreads
+                print >> fi, indent*2 + "max_concurrency =", svr.max_concurrency
+                print >> fi, indent*2 + "num_threads =", svr.num_threads
                 print >> fi, indent*2 + "speed =", svr.speed
                 print >> fi, indent*2 + "throughput =", svr.throughput
-                print >> fi, indent*2 + "avgProcessTime =", svr.avgProcessTime
-                print >> fi, indent*2 + "avgQueueTime =", svr.avgQueueTime
-                print >> fi, indent*2 + "avgServiceTime =", svr.avgServiceTime
-                print >> fi, indent*2 + "avgQueueLength =", svr.avgQueueLength
+                print >> fi, indent*2 + "avg_process_time =", svr.avg_process_time
+                print >> fi, indent*2 + "avg_queue_time =", svr.avgQueueTime
+                print >> fi, indent*2 + "avg_service_time =", svr.avg_service_time
+                print >> fi, indent*2 + "avg_queue_length =", svr.avgQueueLength
                 print >> fi, indent*2 + "utilization =", svr.utilization
 
             print >> fi, "\n" + "User Groups:"
             for grp in userGroups:
                 print >> fi, indent*1 + "Group:", grp.name
-                print >> fi, indent*2 + "numUsers =", grp.numUsers
-                print >> fi, indent*2 + "minThinkTime =", grp.minThinkTime
-                print >> fi, indent*2 + "maxThinkTime =", grp.maxThinkTime
+                print >> fi, indent*2 + "num_users =", grp.num_users
+                print >> fi, indent*2 + "min_think_time =", grp.min_think_time
+                print >> fi, indent*2 + "max_think_time =", grp.max_think_time
                 print >> fi, indent*2 + "request count =", \
-                    grp._overallTally.num()
+                    grp._overall_tally.num()
                 print >> fi, indent*2 + "avg response time =", \
-                    grp._overallTally.mean()
+                    grp._overall_tally.mean()
 
-                for txn in grp._txns:
+                for txn in grp.svcs:
                     print >> fi, indent*2 + txn.svcName + ":"
-                    print >> fi, indent*3 + "count =", grp._tallyDict[txn].num()
-                    print >> fi, indent*3 + "avg response time =", grp._tallyDict[txn].mean()
+                    print >> fi, indent*3 + "count =", grp._tally_dict[txn].num()
+                    print >> fi, indent*3 + "avg response time =", grp._tally_dict[txn].mean()
                     print >> fi, indent*3 + "std dev of response time =", \
-                        math.sqrt(abs(grp._tallyDict[txn].variance()))
+                        math.sqrt(abs(grp._tally_dict[txn].variance()))
 
 finally:
     if not fi == sys.stdout:
