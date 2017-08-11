@@ -9,17 +9,17 @@ import random
 import simpy
 
 from serversim import *
-from serversim.util import step_function
 
 
-#fi = open("simout.txt", "w")
+# fi = open("simout.txt", "w")
 fi = sys.stdout
 
 
 usersCurve = [(0, 900), (50, 650), (100, 900), (150, 650)]
 
 
-def microservices_example(numUsers, weight1, weight2, serverRange1, serverRange2):
+def microservices_example(num_users, weight1, weight2, server_range1,
+                          server_range2):
 
     def cug(mid, delta):
         """Computation units geneartor"""
@@ -27,15 +27,15 @@ def microservices_example(numUsers, weight1, weight2, serverRange1, serverRange2
             return random.uniform(mid - delta, mid + delta)
         return f
 
-    def ldBal(svcType):
+    def ld_bal(svc_name):
         """Application server load-balancer."""
-        if svcType == "svc_1":
-            server = random.choice(servers1)
-        elif svcType == "svc_2":
-            server = random.choice(servers2)
+        if svc_name == "svc_1":
+            s = random.choice(servers1)
+        elif svc_name == "svc_2":
+            s = random.choice(servers2)
         else:
             assert False, "Invalid service type."
-        return server
+        return s
 
     try:
 
@@ -43,35 +43,42 @@ def microservices_example(numUsers, weight1, weight2, serverRange1, serverRange2
 
         # num_users = 700
         simtime = 200
-        hwThreads = 10
-        swThreads = 20
+        hw_threads = 10
+        sw_threads = 20
         speed = 20
         svc_1_comp_units = 2.0
         svc_2_comp_units = 1.0
 
         env = simpy.Environment()
 
-        nServers = max(serverRange1[-1]+1, serverRange2[-1]+1)
-        servers = [Server(env, hwThreads, swThreads, speed, "AppServer_%s" % i) for i in range(nServers)]
-        servers1 = [servers[i] for i in serverRange1]
-        servers2 = [servers[i] for i in serverRange2]
+        n_servers = max(server_range1[-1] + 1, server_range2[-1] + 1)
+        servers = [Server(env, hw_threads, sw_threads, speed, "AppServer_%s" % i)
+                   for i in range(n_servers)]
+        servers1 = [servers[i] for i in server_range1]
+        servers2 = [servers[i] for i in server_range2]
 
-        svc_1 = CoreSvcRequester(env, "svc_1", cug(svc_1_comp_units, svc_1_comp_units*.9), ldBal)
-        svc_2 = CoreSvcRequester(env, "svc_2", cug(svc_2_comp_units, svc_2_comp_units*.9), ldBal)
+        svc_1 = CoreSvcRequester(env, "svc_1", cug(svc_1_comp_units,
+                                                   svc_1_comp_units*.9), ld_bal)
+        svc_2 = CoreSvcRequester(env, "svc_2", cug(svc_2_comp_units,
+                                                   svc_2_comp_units*.9), ld_bal)
 
-        weightedTxns = [(svc_1, weight1),
-                        (svc_2, weight2)
-                       ]
+        weighted_txns = [(svc_1, weight1),
+                         (svc_2, weight2)
+                         ]
 
-        minThinkTime = 2.0 # .5 # 4
-        maxThinkTime = 10.0 # 1.5 # 20
+        min_think_time = 2.0  # .5 # 4
+        max_think_time = 10.0  # 1.5 # 20
 
-        grp = UserGroup(env, numUsers, "UserTypeX", weightedTxns, minThinkTime, maxThinkTime)
+        grp = UserGroup(env, num_users, "UserTypeX", weighted_txns,
+                        min_think_time, max_think_time)
         grp.activate_users()
 
-        print("\n\n***** Start Simulation --", numUsers, ",", weight1, ",", weight2, ", [", serverRange1[0], ",", serverRange1[-1] + 1,
-              ") , [", serverRange2[0], ",", serverRange2[-1] + 1, ") *****", file=fi)
-        print("Simulation: num_users =", numUsers, "; simTime =", simtime, file=fi)
+        print("\n\n***** Start Simulation --", num_users, ",", weight1, ",",
+              weight2, ", [", server_range1[0], ",", server_range1[-1] + 1,
+              ") , [", server_range2[0], ",", server_range2[-1] + 1, ") *****",
+              file=fi)
+        print("Simulation: num_users =", num_users, "; simTime =", simtime,
+              file=fi)
 
         env.run(until=simtime)
 
@@ -127,8 +134,8 @@ def microservices_example(numUsers, weight1, weight2, serverRange1, serverRange2
 
 if __name__ == "__main__":
     print("\n\n\n@@@@@@@@@ Start comparative simulations @@@@@@@@@@")
-    microservices_example(numUsers=700, weight1=2, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
-    microservices_example(numUsers=700, weight1=2, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))
+    microservices_example(num_users=700, weight1=2, weight2=1, server_range1=range(0, 10), server_range2=range(0, 10))
+    microservices_example(num_users=700, weight1=2, weight2=1, server_range1=range(0, 8), server_range2=range(8, 10))
     #
     # microservices_example(numUsers=700, weight1=5, weight2=1, serverRange1=range(0, 10), serverRange2=range(0, 10))
     # microservices_example(numUsers=700, weight1=5, weight2=1, serverRange1=range(0, 8), serverRange2=range(8, 10))

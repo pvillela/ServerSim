@@ -41,11 +41,10 @@ class MeasuredResource(simpy.Resource):
         self.releases = 0  # type: int
         self.cum_queue_time = 0  # type: float
         self.cum_service_time = 0  # type: float
-        self.svc_req_log = list()  # type: List[SvcRequest]
         self.queue_length = 0  # type: int
         self.in_use_count = 0  # type: int
 
-    def request(self, svc_req=None):
+    def request(self):
         # type: (Optional[SvcRequest]) -> simpyrr.Request
         """Overrides parent class method to support metrics."""
 
@@ -60,8 +59,6 @@ class MeasuredResource(simpy.Resource):
 
         req = simpy.Resource.request(self)
         req.submission_time = submission_time  # ad-hoc attribute
-        if svc_req is not None:
-            self.svc_req_log.append(svc_req)
         req.callbacks.append(cb)
         return req
 
