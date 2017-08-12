@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Sequence, Tuple
 import functools as ft
+from collections import OrderedDict
 
 import matplotlib.pyplot as plt
 from livestats import livestats
@@ -8,7 +9,7 @@ if TYPE_CHECKING:
     from serversim import UserGroup
 
 
-def resp_times_by_interval(time_resolution, grp):
+def minibatch_resp_times(time_resolution, grp):
     # type: (float, UserGroup) -> Tuple[Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[float]]
     quantiles = [0.5, 0.95, 0.99]
 
@@ -38,7 +39,7 @@ def resp_times_by_interval(time_resolution, grp):
     return xs, counts, means, q_50, q_95, q_99
 
 
-def plot_means_q95(quantiles1, quantiles2):
+def plot_counts_means_q95(quantiles1, quantiles2):
 
     x = quantiles1[0]  # should be same as quantiles2[0]
 
@@ -52,17 +53,28 @@ def plot_means_q95(quantiles1, quantiles2):
     q2_95 = quantiles2[4]
 
     # Plot counts
-    plt.plot(x, counts1, color='b')
-    plt.plot(x, counts2, color='r')
+    plt.plot(x, counts1, color='b', label="Counts 1")
+    plt.plot(x, counts2, color='r', label="Counts 2")
+    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.xlabel("Time buckets")
+    plt.ylabel("Throughput")
     plt.show()
 
     # Plot averages and 95th percentiles
 
-    plt.plot(x, means1, color='b')
-    plt.plot(x, q1_95, color='b')
+    plt.plot(x, means1, color='b', label="Means 1")
+    plt.plot(x, q1_95, color='c', label="95th Percentile 1")
 
-    plt.plot(x, means2, color='r')
-    plt.plot(x, q2_95, color='r')
+    plt.plot(x, means2, color='r', label="Means 2")
+    plt.plot(x, q2_95, color='m', label="95th Percentile 2")
+
+    # Hack to avoid duplicated labels (https://stackoverflow.com/questions/13588920/stop-matplotlib-repeating-labels-in-legend)
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = OrderedDict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
+    plt.xlabel("Time buckets")
+    plt.ylabel("Response times")
 
     plt.show()
 
@@ -71,7 +83,7 @@ def compare_simulations(res1, res2):
     grp1 = res1.grp
     grp2 = res2.grp
 
-    quantiles1 = resp_times_by_interval(5, grp1)
-    quantiles2 = resp_times_by_interval(5, grp2)
+    quantiles1 = minibatch_resp_times(5, grp1)
+    quantiles2 = minibatch_resp_times(5, grp2)
 
-    plot_means_q95(quantiles1, quantiles2)
+    plot_counts_means_q95(quantiles1, quantiles2)

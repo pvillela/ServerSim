@@ -21,9 +21,9 @@ class SvcRequest(object):
     A service request submission is implemented as a SimPy Process.
 
     A service request can be a composite of sub-requests.
-    However, that composition is not explicit in terms of
-    composite service request object instances using a composite pattern.
-    Such a composition is implemented through the *gen* attribute of the
+    A service request that is part of a composite has an attribute that
+    is a reference to its parent service request.  In addition,
+    such a composition is implemented through the *gen* attribute of the
     service request, which is a generator.  That generator can yield service
     request submissions for other service requests.
 
@@ -31,13 +31,15 @@ class SvcRequest(object):
     held on the target server only while the service request itself
     is executing; the thread is relinquished when the request
     finishes executing and it passes control to its sub-requests.
+    However, blocking service requests can be modeled as well (see the
+    *Blkg* class).
 
     Attributes:
         << See __init__ arguments. >>
         << Additional attributes: >>
 
         out_val (Any): Output value produced from in_val by the service
-            execution.
+            execution.  None by default.
         id (int): The unique numerical ID of this request.
         time_log (List[Tuple[str, float]]): List of tag-time pairs
             representing significant occurrences for this request.
@@ -171,7 +173,9 @@ class SvcRequester(object):
     """Base class of service requesters.
 
     A service requester represents a service.  In this framework,
-    a service requester is a factory for service requests.
+    a service requester is a factory for service requests.  "Deploying"
+    a service on a server is modeled by having service requests
+    produced by the service requester sent to the target server.
 
     A service requester can be a composite of sub-requesters, thus
     representing a composite service.
@@ -240,11 +244,12 @@ class SvcRequester(object):
 
 
 class CoreSvcRequester(SvcRequester):
-    """Core srvice requester implementation.
+    """This is the core service requester implementation that
+    interacts with servers to utilize server resources.
 
-    Typical service requesters are instances of this class or
-    composites of such instances.  See the various service
-    request combinators in this module.
+    All service requesters are either instances of this class or
+    composites of such instances created using the various
+    service requester combinators in this module
 
     Attributes:
         << See __init__. >>
@@ -337,10 +342,11 @@ class CoreSvcRequester(SvcRequester):
 
 
 class Async(SvcRequester):
-    """Wraps a service requester to produce asynchronous service requests.
+    """Wraps a service requester to produce asynchronous fire-and-forget
+    service requests.
 
     An asynchronous service request completes and returns immediately
-    to the head_requester, while the underlying (wrapped) service request is
+    to the parent request, while the underlying (child) service request is
     scheduled for execution on its target server.
 
     Attributes:
@@ -441,8 +447,8 @@ class Seq(SvcRequester):
     """Combines a non-empty list of service requesters to yield a
     sequential composite service requester.
 
-    This composite service requester produces composite service
-    requests.  A composite service request produced by this service
+    This service requester produces composite service requests.
+    A composite service request produced by this service
     requester consists of a service request from each of the
     provided service requesters.  Each of the service requests is
     submitted in sequence, i.e., each service request is
@@ -450,12 +456,6 @@ class Seq(SvcRequester):
 
     Attributes:
         << See __init__. >>
-        << Modified as follows: >>
-
-        head_requester: The head of the __init__ parameter svc_requesters.
-        tail_requesters: The tail of the __init__ parameter svc_requesters.
-
-        << Note: svc_requesters is not an attribute. >>
     """
 
     def __init__(self, env, svc_name, svc_requesters, cont=False, log=None):
@@ -465,7 +465,9 @@ class Seq(SvcRequester):
         Args:
             env: See base class.
             svc_name: See base class.
-            svc_requesters: See class docstring.
+            svc_requesters: A composite service request produced by this
+                service requester consists of a service request from each of
+                the provided service requesters
             cont: If true, the sequence executes as continuations
                 of the first request, all on the same server.  Otherwise,
                 each request can execute on a different server.
@@ -474,10 +476,11 @@ class Seq(SvcRequester):
         assert len(svc_requesters) > 0, "List of service requesters " \
             "must be non-empty"
         SvcRequester.__init__(self, env, svc_name, log)
+        self.svc_requesters = svc_requesters
         head_requester = svc_requesters[0]
         tail_requesters = svc_requesters[1:]
-        self.head_requester = head_requester
-        self.tail_requesters = tail_requesters
+        self._head_requester = head_requester
+        self._tail_requesters = tail_requesters
         self.cont = cont
 
     def _gen(self, svc_req):
@@ -493,12 +496,12 @@ class Seq(SvcRequester):
         val = head_svc_req.out_val
 
         # Below, the in_blocking_call argument is False when the requests
-        # produced by tail_requesters are separate service requests,
+        # produced by _tail_requesters are separate service requests,
         # not continuations of previous requests on the same server.
         others_in_blocking_call = \
             svc_req.in_blocking_call if self.cont else False
 
-        for requester in self.tail_requesters:
+        for requester in self._tail_requesters:
             request = requester.make_svc_request(svc_req, val,
                                                  others_in_blocking_call)
             if self.cont:
@@ -516,7 +519,7 @@ class Seq(SvcRequester):
         """
         svc_req = super(Seq, self).make_svc_request(parent, in_val,
                                                     in_blocking_call)
-        head_svc_req = self.head_requester.make_svc_request(
+        head_svc_req = self._head_requester.make_svc_request(
             svc_req, in_val, in_blocking_call)
         svc_req.server = head_svc_req.server
         svc_req.head_svc_req = head_svc_req  # ad-hoc attribute
@@ -527,8 +530,8 @@ class Par(SvcRequester):
     """Combines a non-empty list of service requesters to yield a
     parallel composite service requester.
 
-    This composite service requester produces composite service
-    requests.  A composite service request produced by this service
+    This service requester produces composite service requests.
+    A composite service request produced by this service
     requester consists of a service request from each of the
     provided service requesters.  All of the service requests are
     submitted concurrently.
@@ -591,31 +594,3 @@ class Par(SvcRequester):
 
         out_vals = [req.out_val for req in svc_reqs]
         svc_req.complete(self.f(out_vals))
-
-
-class Fmap(SvcRequester):
-    """
-    FlatMap combinator for service requesters.
-    """
-    def __init__(self, env, svc_name, base_requester, frequester, cont=False,
-                 log=None):
-        SvcRequester.__init__(self, env, svc_name, log)
-        self.base_requester = base_requester
-        self.frequester = frequester
-        self.cont = cont
-
-    def _gen(self, svc_req):
-        # type: (SvcRequest) -> Iterator[simpy.Event]
-        """Generator that will be part of each produced service request.
-
-        See base class.
-        """
-        base_req = self.base_requester.make_svc_request(
-            svc_req, svc_req.in_val, svc_req.in_blocking_call)
-        yield base_req.submit()
-        new_req = self.frequester(base_req.outVal)
-        if self.cont:
-            new_req.server = svc_req.server
-            new_req.inBlockingCall = svc_req.in_blocking_call
-        yield new_req.submit()
-        svc_req.complete(new_req.outVal)

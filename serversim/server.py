@@ -34,12 +34,12 @@ class Server(object):
             num_threads: The maximum number of software threads for the server.
             speed: Aggregate server speed across all _hardware threads.
             name: The server's name.
-            hw_svc_req_log: If not None, a sequence where hardware
+            hw_svc_req_log: If not None, a list where hardware
                 service requests will be logged.  Each log entry is a
                 triple ("hw", name, svc_req), where name is this server's
                 name and svc_req is the current service request asking for
                 hardware resources.
-            sw_svc_req_log: If not None, a sequence where software thread
+            sw_svc_req_log: If not None, a list where software thread
                 service requests will be logged.  Each log entry is a
                 triple ("sw", name, svc_req), where name is this server's
                 name and svc_req is the current service request asking for a

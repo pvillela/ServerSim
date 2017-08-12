@@ -1,17 +1,17 @@
-# We start by importing the required libraries
-
 from __future__ import print_function
 
-from typing import List, Tuple, Sequence, Mapping, Any
+from typing import List, Tuple, Sequence
 
 from collections import namedtuple
 import random
+
 import simpy
+
 from serversim import *
 
 
-def deployment_example(num_users, weight1, weight2, server_range1,
-                       server_range2):
+def simulate_deployment_example(num_users, weight1, weight2, server_range1,
+                                server_range2):
     # type: (int, float, float, Sequence[int], Sequence[int]) -> Result
 
     Result = namedtuple("Result", ["num_users", "weight1", "weight2", "server_range1",
@@ -33,7 +33,6 @@ def deployment_example(num_users, weight1, weight2, server_range1,
             assert False, "Invalid service type."
         return svr
 
-    # num_users = 700
     simtime = 200
     hw_threads = 10
     sw_threads = 20

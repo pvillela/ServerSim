@@ -1,5 +1,3 @@
-# __future__ import for compatibility between Python 2.7 and Python 3.x.
-
 from __future__ import print_function
 
 from typing import Sequence, Any, IO
@@ -52,10 +50,10 @@ def print_results(num_users=None, weight1=None, weight2=None, server_range1=None
     print(indent * 2 + "std_dev_response_time =", grp.std_dev_response_time(None), file=fi)
     print(indent*2 + "throughput =", grp.throughput(None), file=fi)
 
-    for txn in grp.svcs:
-        print(indent*2 + txn.svc_name + ":", file=fi)
-        print(indent * 3 + "responded_request_count =", grp.responded_request_count(txn), file=fi)
-        print(indent * 3 + "unresponded_request_count =", grp.unresponded_request_count(txn), file=fi)
-        print(indent * 3 + "avg_response_time =", grp.avg_response_time(txn), file=fi)
-        print(indent * 3 + "std_dev_response_time =", grp.std_dev_response_time(txn), file=fi)
-        print(indent*3 + "throughput =", grp.throughput(txn), file=fi)
+    for svc in grp.svcs:
+        print(indent*2 + svc.svc_name + ":", file=fi)
+        print(indent * 3 + "responded_request_count =", grp.responded_request_count(svc), file=fi)
+        print(indent * 3 + "unresponded_request_count =", grp.unresponded_request_count(svc), file=fi)
+        print(indent * 3 + "avg_response_time =", grp.avg_response_time(svc), file=fi)
+        print(indent * 3 + "std_dev_response_time =", grp.std_dev_response_time(svc), file=fi)
+        print(indent*3 + "throughput =", grp.throughput(svc), file=fi)

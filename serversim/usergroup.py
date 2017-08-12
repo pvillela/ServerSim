@@ -24,8 +24,6 @@ class UserGroup(object):
         << See __init__ args >>
         << Additional attributes or modifications to __init__ args >>
 
-        num_users: If the num_users argument is an int, it is transformed
-            into the list [(0, num_users)].
         svcs (List[SvcRequester]): The first components of *weighted_svcs*.
     """
 
@@ -47,20 +45,22 @@ class UserGroup(object):
                 component of the next pair (exclusive), and whose *y* value
                 is the second component of the pair.  The first pair in
                 the sequence must have 0 as its first component.
+                If the num_users argument is an int, it is transformed
+                into the list [(0, num_users)].
             name: This user group's name.
             weighted_svcs: List of pairs of
                 SvcRequester instances and positive numbers
                 representing the different service request types issued by
-                the users in the group and their weights.   The weights are
-                the relative frequencies with which the svcRequests will be
-                executed (the weights do not need to add up to 1, as they
-                are normalized by this class).
+                the users in the group and their weights.  The weights are
+                the relative frequencies with which the service requesters
+                will be executed (the weights do not need to add up to 1,
+                as they are normalized by this class).
             min_think_time: The minimum think time between service
-                requests.  Think time will be uniformly distributed between
-                min_think_time and max_think_time.
+                requests from a user.  Think time will be uniformly
+                distributed between min_think_time and max_think_time.
             max_think_time: The maximum think time between service
-            requests.  Think time will be uniformly distributed between
-            min_think_time and max_think_time.
+                requests from a user.  Think time will be uniformly
+                distributed between min_think_time and max_think_time.
             quantiles: List of quantiles to be tallied.  It
                 defaults to [0.5, 0.95, 0.99] if not provided.
             svc_req_log: If not None, a sequence where service requests will
