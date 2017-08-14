@@ -10,8 +10,8 @@ import simpy
 from serversim import *
 
 
-def simulate_deployment_example(num_users, weight1, weight2, server_range1,
-                                server_range2):
+def simulate_deployment_scenario(num_users, weight1, weight2, server_range1,
+                                 server_range2):
     # type: (int, float, float, Sequence[int], Sequence[int]) -> Result
 
     Result = namedtuple("Result", ["num_users", "weight1", "weight2", "server_range1",

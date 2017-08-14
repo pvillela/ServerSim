@@ -71,7 +71,8 @@ def plot_counts_means_q95(quantiles1, quantiles2):
     # Hack to avoid duplicated labels (https://stackoverflow.com/questions/13588920/stop-matplotlib-repeating-labels-in-legend)
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = OrderedDict(zip(labels, handles))
-    plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1),
+               loc=2, borderaxespad=0.)
 
     plt.xlabel("Time buckets")
     plt.ylabel("Response times")
@@ -79,9 +80,9 @@ def plot_counts_means_q95(quantiles1, quantiles2):
     plt.show()
 
     
-def compare_simulations(res1, res2):
-    grp1 = res1.grp
-    grp2 = res2.grp
+def compare_scenarios(sc1, sc2):
+    grp1 = sc1.grp
+    grp2 = sc2.grp
 
     quantiles1 = minibatch_resp_times(5, grp1)
     quantiles2 = minibatch_resp_times(5, grp2)
