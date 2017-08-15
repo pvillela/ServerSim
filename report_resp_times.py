@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING, Sequence, Tuple
 import functools as ft
 from collections import OrderedDict
+import itertools as it
 
 import matplotlib.pyplot as plt
+import pandas as pd
 from livestats import livestats
 
 if TYPE_CHECKING:
@@ -10,6 +12,30 @@ if TYPE_CHECKING:
 
 
 def minibatch_resp_times(time_resolution, grp):
+    # type: (float, UserGroup) -> Tuple[Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[float]]
+
+    xys = [(int(svc_req.time_dict["submitted"]),
+            svc_req.time_dict["completed"] - svc_req.time_dict["submitted"])
+           for (_, svc_req) in grp.svc_req_log
+           if svc_req.is_completed]
+
+    times, vals = it.izip(*xys)
+    series = pd.Series(vals, index=times)
+    grouped_vals = series.groupby(by=lambda x: int(x/time_resolution))
+
+    xs = grouped_vals.groups.keys()
+    xs.sort()
+
+    counts = grouped_vals.count().values
+    means = grouped_vals.mean().values
+    q_50 = grouped_vals.quantile(.50).values
+    q_95 = grouped_vals.quantile(.95).values
+    q_99 = grouped_vals.quantile(.99).values
+
+    return xs, counts, means, q_50, q_95, q_99
+
+
+def minibatch_resp_times_without_pandas(time_resolution, grp):
     # type: (float, UserGroup) -> Tuple[Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[float]]
     quantiles = [0.5, 0.95, 0.99]
 
