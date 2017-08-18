@@ -1,8 +1,6 @@
 from typing import TYPE_CHECKING, Sequence, Tuple
 import functools as ft
-from collections import OrderedDict
 
-import matplotlib.pyplot as plt
 import pandas as pd
 from livestats import livestats
 
@@ -19,15 +17,15 @@ def minibatch_resp_times_pandas1(time_resolution, grp):
            if svc_req.is_completed)
 
     df = pd.DataFrame(xys, columns=["time", "resp_time"])
-    grouped = df.groupby("time")
+    grouped = df.groupby("time")["resp_time"]
 
-    counts_df = grouped.count()['resp_time']
-    ts = counts_df.index.values
-    counts = counts_df.values
-    means = grouped.mean()['resp_time'].values
-    q_50 = grouped.quantile(.50)['resp_time'].values
-    q_95 = grouped.quantile(.95)['resp_time'].values
-    q_99 = grouped.quantile(.99)['resp_time'].values
+    counts_ser = grouped.count()
+    ts = counts_ser.index.values
+    counts = counts_ser.values
+    means = grouped.mean().values
+    q_50 = grouped.quantile(.50).values
+    q_95 = grouped.quantile(.95).values
+    q_99 = grouped.quantile(.99).values
 
     return ts, counts, means, q_50, q_95, q_99
 
