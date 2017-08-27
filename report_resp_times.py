@@ -49,10 +49,11 @@ def plot_counts_means_q95(minibatch1, minibatch2):
     q1_95 = minibatch1.q_95
     q2_95 = minibatch2.q_95
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=(10, 9))  # size in inches
+    grid = plt.GridSpec(2, 3, hspace=0.25)
 
     # Plot counts
-    axc = fig.add_axes([0, .97, .77, .77])
+    axc = fig.add_subplot(grid[0, :-1])
     axc.plot(x, counts1, color='b', label="Counts 1")
     axc.plot(x, counts2, color='r', label="Counts 2")
     axc.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
@@ -60,7 +61,7 @@ def plot_counts_means_q95(minibatch1, minibatch2):
     axc.set_ylabel("Throughput")
 
     # Plot response time averages and 95th percentiles
-    axr = fig.add_axes([0, 0, .77, .77])
+    axr = fig.add_subplot(grid[1, :-1])
     axr.plot(x, means1, color='b', label="Means 1")
     axr.plot(x, q1_95, color='c', label="95th Percentile 1")
     axr.plot(x, means2, color='r', label="Means 2")
